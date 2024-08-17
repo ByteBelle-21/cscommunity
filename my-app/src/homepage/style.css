@@ -1,0 +1,331 @@
+.desktop {
+  background-color: #fff7f7;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100vw;
+}
+
+.desktop .div {
+  background-color: #fff7f7;
+  height: 4224px;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+  right: 0;
+}
+
+.desktop .vector {
+  height: 238px;
+  left: 2409px;
+  position: absolute;
+  top: 9597px;
+  width: 167px;
+}
+
+.desktop .img {
+  height: 8px;
+  left: 1434px;
+  position: absolute;
+  top: 2639px;
+  width: 5px;
+}
+
+.desktop .vector-2 {
+  height: 12px;
+  left: 0;
+  position: absolute;
+  top: 1559px;
+  width: 15px;
+}
+
+.desktop .vector-3 {
+  height: 12px;
+  left: 19px;
+  position: absolute;
+  top: 1557px;
+  width: 19px;
+}
+
+.desktop .vector-4 {
+  height: 13px;
+  left: 41px;
+  position: absolute;
+  top: 1552px;
+  width: 17px;
+}
+
+.desktop .vector-5 {
+  height: 13px;
+  left: 15px;
+  position: absolute;
+  top: 1575px;
+  width: 16px;
+}
+
+.desktop .vector-6 {
+  height: 12px;
+  left: 35px;
+  position: absolute;
+  top: 1571px;
+  width: 15px;
+}
+
+.desktop .vector-7 {
+  height: 11px;
+  left: 54px;
+  position: absolute;
+  top: 1568px;
+  width: 17px;
+}
+
+.desktop .vector-8 {
+  height: 10px;
+  left: 46px;
+  position: absolute;
+  top: 1605px;
+  width: 13px;
+}
+
+.desktop .vector-9 {
+  height: 10px;
+  left: 65px;
+  position: absolute;
+  top: 1602px;
+  width: 13px;
+}
+
+.desktop .vector-10 {
+  height: 11px;
+  left: 93px;
+  position: absolute;
+  top: 1580px;
+  width: 14px;
+}
+
+.desktop .vector-11 {
+  height: 9px;
+  left: 33px;
+  position: absolute;
+  top: 1592px;
+  width: 12px;
+}
+
+.desktop .vector-12 {
+  height: 12px;
+  left: 49px;
+  position: absolute;
+  top: 1587px;
+  width: 16px;
+}
+
+.desktop .vector-13 {
+  height: 13px;
+  left: 70px;
+  position: absolute;
+  top: 1583px;
+  width: 18px;
+}
+
+.desktop .group {
+  background-color: #15133c;
+  height: 378px;
+  left: -1px;
+  position: absolute;
+  top: 3846px;
+  width: 1441px;
+}
+
+.desktop .group-2 {
+  height: 260px;
+  left: 864px;
+  position: absolute;
+  top: 672px;
+  width: 450px;
+}
+
+.desktop .overlap {
+  height: 257px;
+  left: 132px;
+  position: absolute;
+  top: 1170px;
+  width: 1177px;
+}
+
+.desktop .vector-14 {
+  height: 4px;
+  left: 604px;
+  position: absolute;
+  top: 42px;
+  width: 35px;
+}
+
+.desktop .vector-15 {
+  height: 4px;
+  left: 604px;
+  position: absolute;
+  top: 31px;
+  width: 35px;
+}
+
+.desktop .vector-16 {
+  height: 23px;
+  left: 612px;
+  position: absolute;
+  top: 0;
+  width: 20px;
+}
+
+.desktop .frame {
+  align-items: center;
+  display: inline-flex;
+  gap: 67px;
+  left: 0;
+  position: absolute;
+  top: 7px;
+}
+
+.desktop .group-wrapper {
+  background-color: #fedfdf;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 250px;
+  position: relative;
+  width: 244px;
+}
+
+.desktop .group-3 {
+  height: 109px;
+  left: 50px;
+  position: absolute;
+  top: 22px;
+  width: 137px;
+}
+
+.desktop .img-wrapper {
+  background-color: #f8f9d5;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 250px;
+  position: relative;
+  width: 244px;
+}
+
+.desktop .group-4 {
+  height: 137px;
+  left: 41px;
+  position: absolute;
+  top: 16px;
+  width: 163px;
+}
+
+.desktop .group-5 {
+  height: 258px;
+  margin-bottom: -8px;
+  position: relative;
+  width: 252px;
+}
+
+.desktop .group-6 {
+  height: 258px;
+  margin-bottom: -8px;
+  margin-right: -4px;
+  position: relative;
+  width: 252px;
+}
+
+.desktop .vector-17 {
+  height: 3px;
+  left: 609px;
+  position: absolute;
+  top: 1151px;
+  width: 4px;
+}
+
+.desktop .group-7 {
+  height: 376px;
+  left: 107px;
+  position: absolute;
+  top: 1597px;
+  width: 600px;
+}
+
+.desktop .group-8 {
+  background-color: #15133c;
+  height: 300px;
+  left: -3px;
+  position: absolute;
+  top: 2132px;
+  width: 1443px;
+}
+
+.desktop .overlap-group-wrapper {
+  height: 477px;
+  left: 756px;
+  position: absolute;
+  top: 3286px;
+  width: 617px;
+}
+
+.desktop .overlap-group {
+  height: 477px;
+  position: relative;
+}
+
+.desktop .ellipse {
+  background-color: #fff6e3f7;
+  border-radius: 228.16px/238.5px;
+  height: 477px;
+  left: 161px;
+  position: absolute;
+  top: 0;
+  width: 456px;
+}
+
+.desktop .group-9 {
+  height: 269px;
+  left: 0;
+  position: absolute;
+  top: 30px;
+  width: 489px;
+}
+
+.desktop .overlap-2 {
+  height: 499px;
+  left: -4px;
+  position: absolute;
+  top: -6px;
+  width: 1447px;
+}
+
+.desktop .rectangle {
+  background-color: #fff2d7;
+  height: 60vh;
+  left: 0;
+  position: absolute;
+  top: 36px;
+  width: 100vw;
+}
+
+.desktop .group-10 {
+  height: 45vh;
+  left: 30vw;
+  position: absolute;
+  top: 24vh;
+  width: 40vw;
+}
+
+.desktop .rectangle-2 {
+  background-color: #1a183e;
+  height: 6vh;
+  left: 2px;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+}
+
+.desktop .exclude {
+  height: 504px;
+  left: 27px;
+  position: absolute;
+  top: 7269px;
+  width: 1440px;
+}
