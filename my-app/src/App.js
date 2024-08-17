@@ -21,7 +21,7 @@ function App() {
                 <img src="/Group 182.png"  />
                 <img src="/Group 168.png"  />
                 <img src="/Group 174.png"  />
-                <div className='screen' />
+                <img src="Desktop - 15.png" style={{border:'0.1vh solid black'}}/>
                 <img src="/Group 162.png"  />
                 <img src="/Group 176.png"  />
                 <img src="/Group 179.png"  />
@@ -30,6 +30,18 @@ function App() {
         </div>
         <Container>
             <div className='intro-para'>
+                <div className='intro-text'>
+                    <h5>Feeling stuck and can’t find solutions ? <br/>Just ask our community !</h5>
+                    <p>Post your question and let our community guide you to the answer
+                        We're here to help, one solution at a time! Whether you're seeking 
+                        advice, troubleshooting an issue, or just curious about something,
+                        you're in the right place.
+                    </p>
+                    
+                </div>
+                <div className='working-boy'>
+                    <img src="/Group 185.png"/>
+                </div>
                 
             </div>
         </Container>

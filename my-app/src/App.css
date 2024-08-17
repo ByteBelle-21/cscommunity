@@ -50,5 +50,23 @@
 .intro-para{
     display: flex;
     flex-direction: row;
-    
+    margin-top: 10vw;
+}
+
+
+.intro-text{
+    width: auto;
+}
+
+.working-boy{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:left;
+    width: 50%;
+}
+
+.working-boy img{
+    height: 30vh;
+    margin-left: auto;
 }
