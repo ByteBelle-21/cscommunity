@@ -4,15 +4,57 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import { useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 
 function App() {
-  return (
+
+    const [show, setshow] = useState(false)
+    const openSignUp=()=>{
+        setshow(true)
+    }
+    const closeSignup= ()=>{
+        setshow(false)
+    }
+
+    return (
     <div className='homepage'>
         <Stack direction="horizontal" gap={3} className="full-width-bands">
-            <Nav.Link href="/home" className="me-auto mx-4">CScommunity</Nav.Link>
-            <Nav.Link href="/home">Sign Up</Nav.Link>
+            <Nav.Link href="#" className="me-auto mx-4">CScommunity</Nav.Link>
+            <Nav.Link href="#" onClick={openSignUp}>Sign Up</Nav.Link>
             <Nav.Link href="/home" className="mx-4">Log In</Nav.Link>
         </Stack>
+        <Modal size="lg" show={show} onHide={closeSignup}  style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}}centered  >
+            <Modal.Body className='horizontal-placement'>
+                <div className='form-img-text vertical-placement'>
+                    <h5 className='mb-0'>Welcome</h5>
+                    <p>Engage, Explore, and Share</p>
+                    <img src="/Group 196.png"/>
+                </div>
+                <div className='signup-field vertical-placement'>
+                    <h5>Sign Up</h5>
+                    <Form>
+                        <Form.Group controlId="signup-email">
+                            <Form.Label>Email address</Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" size="lg" />
+                        </Form.Group>
+                        <Form.Group controlId="signup-password">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" size="lg"/>
+                        </Form.Group>
+                        <Form.Group className="me-auto" controlId="repeat-password">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" size="lg" />
+                        </Form.Group>
+                        <Button type='submit'>Continue</Button>
+                    </Form>
+                </div>
+
+            </Modal.Body>
+        </Modal>
+
+
         <div className='welcome-board vertical-placement'>
             <Container className='title vertical-placement'>
                 <h4 className='mb-0'>Welcome to our Community</h4>

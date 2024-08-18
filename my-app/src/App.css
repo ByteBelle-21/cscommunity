@@ -104,12 +104,34 @@
     width:30vw !important;
     margin-top: 5vw;
     margin-bottom: 5vw;
-   
-
-
 }
 
 .band-button{
     margin: 0.5vw;
     width: 10vw;
+}
+
+
+
+.form-img-text{
+    width: 40%;
+    height: 70vh;
+    background-color: pink;
+    border-top-left-radius: 1vw; 
+    border-bottom-left-radius:1vw ;  
+}
+
+
+
+.form-img-text img{
+    height: 30%;
+    margin-top: 2vw;
+}
+
+.signup-field{
+    width:60%;
+}
+
+.form-control{
+    width: 20%;
 }
