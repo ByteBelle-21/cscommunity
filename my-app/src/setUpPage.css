@@ -1,0 +1,32 @@
+.setuppage{
+    background-color: #FEF0D1;
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+}
+
+.horizontal-placement{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.vertical-placement{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-container{
+    background-color: white;
+    width: 70vw !important;
+    height: 80vh;
+    border-radius: 1vw;
+}
+
+.image-field{
+    width: 30% !important;
+    background-color: aqua;
+}
