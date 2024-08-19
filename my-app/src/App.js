@@ -7,16 +7,35 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import NavLink from 'react-bootstrap/esm/NavLink';
+import CloseButton from 'react-bootstrap/CloseButton';
 
 function App() {
 
-    const [show, setshow] = useState(false)
+    const [signupShow, setSignupShow] = useState(false)
     const openSignUp=()=>{
-        setshow(true)
+        setSignupShow(true)
     }
     const closeSignup= ()=>{
-        setshow(false)
+        setSignupShow(false)
+    }
+
+
+    const [loginShow, setLoginShow] = useState(false)
+    const openLogin=()=>{
+        setLoginShow(true)
+    }
+    const closeLogin= ()=>{
+        setLoginShow(false)
+    }
+
+    const goTOSignup=()=>{
+        closeLogin();
+        openSignUp();
+    }
+
+    const goToLogin=()=>{
+        closeSignup();
+        openLogin();
     }
 
     return (
@@ -24,21 +43,22 @@ function App() {
         <Stack direction="horizontal" gap={3} className="full-width-bands">
             <Nav.Link href="#" className="me-auto mx-4">CScommunity</Nav.Link>
             <Nav.Link href="#" onClick={openSignUp}>Sign Up</Nav.Link>
-            <Nav.Link href="/home" className="mx-4">Log In</Nav.Link>
+            <Nav.Link href="#" className="mx-4" onClick={openLogin}>Log In</Nav.Link>
         </Stack>
-        <Modal size='lg' show={show} onHide={closeSignup} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
+
+        <Modal size='lg' show={signupShow} onHide={closeSignup} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
             <Modal.Body className='horizontal-placement'>
-                <div className='form-img-text vertical-placement'>
+                <div className='form-img-text left-img vertical-placement'>
                     <h5 className='mb-0'>Welcome</h5>
                     <p>Engage, Explore, and Share</p>
                     <img src="/Group 196.png"/>
                 </div>
-                <div className='signup-field vertical-placement'>
+                <div className='form-field vertical-placement'>
                     <h5 className='mb-4'>Sign Up</h5>
                     <Form >
                         <Form.Group controlId="signup-username" >
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="email" placeholder="Enter username" className='mb-3'/>
+                            <Form.Control type="text" placeholder="Enter username" className='mb-3'/>
                         </Form.Group>
                         <Form.Group controlId="signup-email">
                             <Form.Label>Email address</Form.Label>
@@ -48,18 +68,37 @@ function App() {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" placeholder="Password" className='mb-3'/>
                         </Form.Group>
-                        <Form.Group className="me-auto" controlId="repeat-password">
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" className='mb-3'/>
-                        </Form.Group>
-                        <Button type='submit' className="btn btn-primary w-100">Continue</Button>
+                        <Button type='submit' className="btn btn-primary w-100" >Sign up</Button>
                     </Form>
-                    <Nav.Link style={{fontSize:'small'}}>Already have an account? Log In</Nav.Link>
+                    <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                 </div>
-
             </Modal.Body>
         </Modal>
 
+        <Modal size='lg' show={loginShow} onHide={closeLogin} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
+            <Modal.Body className='horizontal-placement'>
+                <div className='form-field vertical-placement'>
+                    <h5 className='mb-4'>Log in</h5>
+                    <Form >
+                        <Form.Group controlId="signup-username" >
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type="email" placeholder="Enter username" className='mb-3'/>
+                        </Form.Group>
+                        <Form.Group controlId="signup-password">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" className='mb-3'/>
+                        </Form.Group>
+                        <Button type='submit' className="btn btn-primary w-100" >Log in</Button>
+                    </Form>
+                    <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goTOSignup}>Don't have an account? Sign up</Nav.Link>
+                </div>
+                <div className='form-img-text right-img vertical-placement'>
+                    <h5 className='mb-0'>Welcome Back</h5>
+                    <p>Engage, Explore, and Share</p>
+                    <img src="/Group 196.png"/>
+                </div>
+            </Modal.Body>
+        </Modal>
 
         <div className='welcome-board vertical-placement'>
             <Container className='title vertical-placement'>

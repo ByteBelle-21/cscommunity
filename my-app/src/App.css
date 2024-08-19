@@ -115,18 +115,26 @@
 .form-img-text{
     width: 40%;
     height: 70vh;
-    background-color: pink;
-    border-top-left-radius: 1vw; 
-    border-bottom-left-radius:1vw ;  
+    background-color: pink; 
 }
 
-.signup-field{
+
+.left-img{
+    border-top-left-radius: 1vw; 
+    border-bottom-left-radius:1vw ; 
+}
+
+.right-img{
+    border-top-right-radius: 1vw; 
+    border-bottom-right-radius:1vw ; 
+}
+
+.form-field{
     width:60%;
 }
-.signup-field form{
-    width: 70% !important;
+.form-field form{
+    width: 60% !important;
 }
-
 
 label.form-label{
     margin-bottom: 0 !important;
@@ -136,6 +144,20 @@ label.form-label{
     height: 30%;
     margin-top: 2vw;
 }
+
+.wrap-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 1vw;
+}
+
+.wrap-container img{
+    height: 4vw;
+    margin: 0.5vw;
+}
+
+
 
 
 
