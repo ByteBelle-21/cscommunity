@@ -112,7 +112,6 @@
 }
 
 
-
 .form-img-text{
     width: 40%;
     height: 70vh;
@@ -121,17 +120,23 @@
     border-bottom-left-radius:1vw ;  
 }
 
+.signup-field{
+    width:60%;
+}
+.signup-field form{
+    width: 70% !important;
+}
 
+
+label.form-label{
+    margin-bottom: 0 !important;
+}
 
 .form-img-text img{
     height: 30%;
     margin-top: 2vw;
 }
 
-.signup-field{
-    width:60%;
-}
 
-.form-control{
-    width: 20%;
-}
+
+

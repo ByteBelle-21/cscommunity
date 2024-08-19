@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import NavLink from 'react-bootstrap/esm/NavLink';
 
 function App() {
 
@@ -25,7 +26,7 @@ function App() {
             <Nav.Link href="#" onClick={openSignUp}>Sign Up</Nav.Link>
             <Nav.Link href="/home" className="mx-4">Log In</Nav.Link>
         </Stack>
-        <Modal size="lg" show={show} onHide={closeSignup}  style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}}centered  >
+        <Modal size='lg' show={show} onHide={closeSignup} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
             <Modal.Body className='horizontal-placement'>
                 <div className='form-img-text vertical-placement'>
                     <h5 className='mb-0'>Welcome</h5>
@@ -33,22 +34,27 @@ function App() {
                     <img src="/Group 196.png"/>
                 </div>
                 <div className='signup-field vertical-placement'>
-                    <h5>Sign Up</h5>
-                    <Form>
+                    <h5 className='mb-4'>Sign Up</h5>
+                    <Form >
+                        <Form.Group controlId="signup-username" >
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type="email" placeholder="Enter username" className='mb-3'/>
+                        </Form.Group>
                         <Form.Group controlId="signup-email">
                             <Form.Label>Email address</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email" size="lg" />
+                            <Form.Control type="email" placeholder="Enter email" className='mb-3' />
                         </Form.Group>
                         <Form.Group controlId="signup-password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" size="lg"/>
+                            <Form.Control type="password" placeholder="Password" className='mb-3'/>
                         </Form.Group>
                         <Form.Group className="me-auto" controlId="repeat-password">
                             <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" size="lg" />
+                            <Form.Control type="password" placeholder="Password" className='mb-3'/>
                         </Form.Group>
-                        <Button type='submit'>Continue</Button>
+                        <Button type='submit' className="btn btn-primary w-100">Continue</Button>
                     </Form>
+                    <Nav.Link style={{fontSize:'small'}}>Already have an account? Log In</Nav.Link>
                 </div>
 
             </Modal.Body>
