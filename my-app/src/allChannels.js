@@ -12,6 +12,7 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
 
+
 function AllChannels(){
     const [createChannelform, setCreateChannelForm] = useState(false)
     const openCreationForm = ()=>{
@@ -21,7 +22,9 @@ function AllChannels(){
         setCreateChannelForm(false)
     }
 
-
+    const showchannel =()=>{
+        alert('svhjd')
+    }
 
 
     return(
@@ -42,7 +45,31 @@ function AllChannels(){
             </div>
             <div className='horizontal-placement' style={{margin:'2vh'}}>
                 <Container className='channels-list'>
-
+                    <Row style={{width:'80%',fontSize:'small',margin:'0.5vw'}}>
+                        <Col xs={6} md={6}>Channel</Col>
+                        <Col xs={2} md={1}>Posts</Col>
+                        <Col xs={2} md={1}>People</Col>
+                        <Col xs={2} md={4}>Creator</Col>
+                    </Row>
+                    <Row className='channel horizontal-placement' onClick={showchannel}>
+                        <Col xs={6} md={6}><h6>dmhcvjqhvdckw</h6></Col>
+                        <Col xs={2} md={1}>50</Col>
+                        <Col xs={2} md={1}>30</Col>
+                        <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                    </Row>
+                    <Row className='channel horizontal-placement'>
+                        <Col xs={6} md={6}>Chansdhcvjsvhcknel</Col>
+                        <Col xs={2} md={1}>50</Col>
+                        <Col xs={2} md={1}>30</Col>
+                        <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                    </Row>
+                    <Row className='channel horizontal-placement'>
+                        <Col xs={6} md={6}>Chansdhcvjsvhcknel</Col>
+                        <Col xs={2} md={1}>50</Col>
+                        <Col xs={2} md={1}>30</Col>
+                        <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                    </Row>
+                    
                 </Container>
                 <Container className='rightside-bar vertical-placement '>  
                     <Container className='direct-messages '>
@@ -87,36 +114,7 @@ function AllChannels(){
                                 <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
                             </Stack>
                         </div>
-                        <div className='direct-msg-member'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='direct-msg-member'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='direct-msg-member'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
+    
                         <div className='direct-msg-member'>
                             <Stack direction="horizontal" gap={3}>
                                 <img src="/Group 205.png"  style={{height:'2vw'}}/>
@@ -136,13 +134,13 @@ function AllChannels(){
                     <Modal  show={createChannelform} onHide={closeCreationForm} centered style={{"--bs-modal-border-radius":'1vw'}} >
                         <Modal.Body className='vertical-placement'>
                             <h5>Create your Own Channel</h5>
-                            <Form className='mt-2'>
+                            <Form className=' new-channels-form mt-2'>
                                 <Form.Group controlId="signup-username" >
                                     <Form.Label>Enter Channel Name</Form.Label>
                                     <Form.Control type="text" placeholder="i.e Java discussion channel" className='mb-3'/>
                                 </Form.Group>
-                                <Button>Create Channel</Button>
                             </Form>
+                             <Button className='channel-form-button'>Create</Button>
                         </Modal.Body>
                     </Modal>                                
                 </Container>

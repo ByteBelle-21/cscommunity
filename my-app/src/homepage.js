@@ -47,6 +47,11 @@ function Homepage() {
         event.preventDefault(); 
         navigateTo('/setup');
     }
+
+    const goToAllChannels=(event)=>{
+        event.preventDefault();
+        navigateTo('/all-channels')
+    }
     
 
     return (
@@ -91,7 +96,7 @@ function Homepage() {
             <Modal.Body className='horizontal-placement'>
                 <div className='form-field vertical-placement'>
                     <h5 className='mb-4'>Log in</h5>
-                    <Form >
+                    <Form  onSubmit={goToAllChannels}>
                         <Form.Group controlId="signup-username" >
                             <Form.Label>Username</Form.Label>
                             <Form.Control type="email" placeholder="Enter username" className='mb-3'/>
