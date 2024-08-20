@@ -1,45 +1,36 @@
-.allChannels-page{
-    width: 100vw;
-    height: 100vh;
-    background-color: #FFF6F8;
-    overflow-x:hidden;
-}
-
-.sub-head{
-    width: 100vw;
-    height: 6vh;
-    background-color:#FFF6F8 ;
-    box-shadow: 0px 0px 7px gray;
-}
 
 .search-container{
     height: 5vh;
     background-color: #C3BEFF;
     padding-left:1vw;
     padding-right: 0.3vw;
-    border-radius: 3vw !important;
+    
 }
 
 
 .search-bar{
-    width: 20vw !important;
+    width: 15vw !important;
     height: 4.5vh !important;
     font-size: small !important;
     border-radius: 3vw !important;
 }
 
-.channels-list{
-    height: 85vh;
-    width: 75% !important;
+.channel-list{
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% ;
+    width: 100%;
+    background-color: #FBE9A6;
     overflow-y: auto;
 }
 
+
 .channel{
-    width: 80%;
-    height: 4vw;
+    width: 90%;
+    height: 6vw;
     background-color: white;
     margin-bottom: 1vw;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -52,61 +43,33 @@
 }
 
 
-.rightside-bar{
-    width: 25% !important;
-    margin: 0 !important;
-    overflow-x: hidden;
-}
-
 .direct-messages{
-    display: flex;
-    flex-direction: column;
-    padding: 0 !important;
-    margin: 0 !important;
-    height:50vh;
-    overflow-y: auto;
+    height:50% !important;
 }
 
-.direct-messages::-webkit-scrollbar {
-    width: 0.5vw;
-    background-color: #C3BEFF;
-    border-radius: 1vw;
+.create-channel-container{
+    height:40% !important;
 }
 
-.direct-msg-member{
-    margin-bottom: 0.5vw;
-    height: 3.5vw;
-    width: 100%;
-    background-color: white;
-    padding: 0.5vw;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-
-.direct-msg-member:hover{
-    background-color: #C3BEFF;
-}
-
-
-.create-channel-stack{
+.create-channel-block{
     width: 70%;
-    height: 30vh ;
+    height: 100% ;
     background-color: #FBE9A6;
     border-radius: 1vw;
-    padding: 0.5vw;
-    margin-top: 1vw;
-
 }
 
 .create-channel-btn{
     background-color: black !important;
     border-color: black !important;
-    color: white !important;
-   
+    color: white !important;  
 }
 
-.create-channel-stack img{
-    height: 15vh;
+.create-channel-btn:hover{
+    transform: scale(1.05);
+}
+
+.create-channel-block img{
+    height: 50% !important;
     margin-bottom: 1vw;
 }
 
