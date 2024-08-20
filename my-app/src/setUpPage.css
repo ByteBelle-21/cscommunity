@@ -24,9 +24,36 @@
     width: 70vw !important;
     height: 80vh;
     border-radius: 1vw;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .image-field{
-    width: 30% !important;
-    background-color: aqua;
+    width: 20vw !important;
+    height: 100% !important;
+    background-color: rgb(151, 232, 232);
+}
+
+.image-field img{
+    height: 20vw;
+}
+
+.form-field{
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.wrap-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.wrap-container img{
+    height: 10vw;
+}
+
+.done-button{
+    margin-left: auto !important;
+    background-color: #6C63FF !important ;
+    border:#6C63FF !important ;
 }
