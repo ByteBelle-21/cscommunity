@@ -1,6 +1,7 @@
 import './App.css';
 import SetUpPage from './setUpPage';
 import Homepage from './homepage';
+import AllChannels from './allChannels';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/setup" element={<SetUpPage />} />
+                <Route path="/all-channels" element={<AllChannels />} />
             </Routes>
     );
 }

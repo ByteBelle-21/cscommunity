@@ -1,0 +1,61 @@
+.allChannels-page{
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    background-color: #FFF6F8;
+}
+
+.sub-head{
+    width: 100vw;
+    height: 3vw;
+    background-color:#FFF6F8 ;
+    box-shadow: 0px 0px 7px gray;
+}
+
+.search-container{
+    height: 2.5vw;
+    background-color: #C3BEFF;
+    padding-left:1vw;
+    padding-right: 0.3vw;
+    border-radius: 3vw !important;
+}
+
+
+.search-bar{
+    width: 20vw !important;
+    height: 2.2vw !important;
+    font-size: small !important;
+    border-radius: 3vw !important;
+}
+
+.channels-list{
+    width: 60% !important;
+}
+
+.rightside-bar{
+    width: 30% !important;
+    overflow-x: hidden;
+    margin: 0 !important;
+}
+
+.direct-messages{
+    height: 50%;
+    overflow-y: auto;
+    padding: 0 !important;
+}
+
+.direct-msg-member{
+    margin-bottom: 0.5vw;
+    height: 3.5vw;
+    width: 100%;
+    background-color: white;
+    padding: 0.5vw;
+}
+
+
+.create-channel-stack{
+    height: 10vw !important;
+    background-color: #FBE9A6;
+}
+
+

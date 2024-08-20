@@ -5,32 +5,21 @@
     overflow-x: hidden;
 }
 
-.horizontal-placement{
-    display:flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
-.vertical-placement{
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
 .main-container{
     background-color: white;
     width: 70vw !important;
     height: 80vh;
     border-radius: 1vw;
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+    padding: 0 !important;
 }
 
 .image-field{
     width: 20vw !important;
     height: 100% !important;
     background-color: rgb(151, 232, 232);
+    border-top-left-radius: 1vw;
+    border-bottom-left-radius: 1vw;
 }
 
 .image-field img{
@@ -50,6 +39,20 @@
 
 .wrap-container img{
     height: 10vw;
+}
+
+.wrap-container .btn{
+    padding: 0 !important;
+    background-color: white !important ;
+    border:white !important ;
+}
+
+.wrap-container .btn:hover{
+    background-color: #6C63FF !important ;
+}
+
+.wrap-container .btn.active{
+    background-color: #6C63FF !important ;
 }
 
 .done-button{
