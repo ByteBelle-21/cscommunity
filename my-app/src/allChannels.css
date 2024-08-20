@@ -1,19 +1,19 @@
 .allChannels-page{
     width: 100vw;
     height: 100vh;
-    overflow-x: hidden;
     background-color: #FFF6F8;
+    overflow-x:hidden;
 }
 
 .sub-head{
     width: 100vw;
-    height: 3vw;
+    height: 6vh;
     background-color:#FFF6F8 ;
     box-shadow: 0px 0px 7px gray;
 }
 
 .search-container{
-    height: 2.5vw;
+    height: 5vh;
     background-color: #C3BEFF;
     padding-left:1vw;
     padding-right: 0.3vw;
@@ -23,25 +23,33 @@
 
 .search-bar{
     width: 20vw !important;
-    height: 2.2vw !important;
+    height: 4.5vh !important;
     font-size: small !important;
     border-radius: 3vw !important;
 }
 
 .channels-list{
-    width: 60% !important;
+    width: 75% !important;
 }
 
 .rightside-bar{
-    width: 30% !important;
-    overflow-x: hidden;
+    width: 25% !important;
     margin: 0 !important;
+    overflow-x: hidden;
 }
 
 .direct-messages{
-    height: 50%;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     padding: 0 !important;
+    height:50vh;
+    overflow-y: auto;
+}
+
+.direct-messages::-webkit-scrollbar {
+    width: 0.5vw;
+    background-color: #C3BEFF;
+    border-radius: 1vw;
 }
 
 .direct-msg-member{
@@ -54,8 +62,25 @@
 
 
 .create-channel-stack{
-    height: 10vw !important;
+    width: 70%;
+    height: 30vh ;
     background-color: #FBE9A6;
+    border-radius: 1vw;
+    padding: 0.5vw;
+    margin-top: 1vw;
+
+}
+
+.create-channel-btn{
+    background-color: black !important;
+    border-color: black !important;
+    color: white !important;
+   
+}
+
+.create-channel-stack img{
+    height: 15vh;
+    margin-bottom: 1vw;
 }
 
 
