@@ -11,6 +11,8 @@ import Button from 'react-bootstrap/esm/Button';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
+import DirectMessage from './directmessage';
+
 
 
 function AllChannels(){
@@ -25,6 +27,9 @@ function AllChannels(){
     const navigateTo = useNavigate()
     const showchannel =()=>{
         navigateTo('/channel')
+    }
+    const showConversation = () =>{
+        navigateTo('/messages')
     }
 
 
@@ -154,7 +159,7 @@ function AllChannels(){
                     </Container>
                 </Container>
                 <Container className='small-grid-container'>  
-                <h6>Direct Messages</h6>
+                    <h6>Direct Messages</h6>
                     <Container className=' direct-messages small-grid-container-child'>
                         <div className='child-blocks'>
                             <Stack direction="horizontal" gap={3}>
@@ -163,7 +168,7 @@ function AllChannels(){
                                     Username
                                     <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
                                 </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
+                                <Nav.Link style={{fontSize:'small'}} onClick={showConversation}>View Conversation</Nav.Link>
                             </Stack>
                         </div>
                         <div className='child-blocks'>

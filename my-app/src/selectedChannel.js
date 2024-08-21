@@ -9,7 +9,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 
 
+
 function SelectedChannel(){
+   
     return(
         <div className='page-layout'>
             <Stack direction="horizontal" gap={3} className="navbar">

@@ -1,0 +1,51 @@
+.left-sidebar{
+    width: 25% !important;
+    
+}
+
+.middle-sidebar{
+    width: 55% !important;
+    background-color: #ffffff !important;
+}
+
+.right-sidebar{
+    width: 20% !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5vh !important;
+}
+
+.right-sidebar .btn{
+    background-color: white !important;
+    border-color: white !important;
+    width: 60%;
+    color: black !important;
+    box-shadow: 0px 4px 10px rgba(14, 14, 14, 0.2)
+}
+
+.right-sidebar .btn:hover{
+    transform: scale(1.05);
+    background-color: #C3BEFF !important;
+    border-color: #C3BEFF !important;
+}
+
+
+
+
+.all-conversations{
+    height: 85vh !important;
+    padding: 0 !important;
+}
+
+.child-blocks{
+    margin-right: 0.5vw !important;
+    width: 98% !important;
+}
+
+.user-info{
+    padding: 2vh;
+    width: 80% !important;
+    font-size: small;
+
+}
