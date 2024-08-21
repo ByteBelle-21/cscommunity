@@ -5,7 +5,8 @@ import Stack from 'react-bootstrap/Stack';
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/esm/Container';
-import Button from 'react-bootstrap/esm/Button';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
 
 
 function SelectedChannel(){
@@ -26,15 +27,14 @@ function SelectedChannel(){
                             <option value="people">People</option>
                             <option value="post">Post</option>
                         </Form.Select>   
-                        <Form.Control placeholder="Channel or people or post" className='search-bar'/>
+                        <Form.Control placeholder="people or post" className='search-bar'/>
                     </Form> 
                 </div>       
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className='small-grid-container' >  
                 <h6>Direct Messages</h6>
-                   <Container className='small-grid-container-child'>
-                        
+                   <Container className='small-grid-container-child'> 
                         <div className='child-blocks'>
                             <Stack direction="horizontal" gap={3}>
                                 <img src="/Group 205.png"  style={{height:'2vw'}}/>
@@ -167,7 +167,14 @@ function SelectedChannel(){
                    </Container>       
                 </Container>
                 <Container className='large-grid-container'>
-
+                    <Container className='all-posts'>
+                        wkjnrfgjehrfvbkwjhefkjwnhbdcjabfjnhdnfvjwb
+                    </Container>   
+                    <Form className='text-area'>
+                        <Form.Group  controlId="post">
+                            <Form.Control as="textarea" rows={3} style={{height:'2vw'}}/>
+                        </Form.Group>
+                    </Form>
                 </Container>
             </div>
         </div>

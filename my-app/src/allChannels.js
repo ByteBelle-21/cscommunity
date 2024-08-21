@@ -52,64 +52,91 @@ function AllChannels(){
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className='large-grid-container '>
+                    <Container className='col-titles'>
+                        <Row style={{width:'100%'}} >
+                            <Col xs={6} md={6}>Channel</Col>
+                            <Col xs={2} md={1}>Posts</Col>
+                            <Col xs={2} md={1}>People</Col>
+                            <Col xs={2} md={4}>Creator</Col>
+                        </Row>
+                    </Container>
                     <Container className="channel-list">
-
-                        <Row style={{width:'80%',margin:'0.5vw'}}>
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
-                        <Row style={{width:'80%',margin:'0.5vw'}}>
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
-                        <Row style={{width:'80%',margin:'0.5vw'}}>
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
-                        <Row style={{width:'80%',margin:'0.5vw'}}>
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
-                        <Row style={{width:'80%',margin:'0.5vw'}}>
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
-                        <Row style={{width:'80%',margin:'0.5vw'}}>
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}><h6>dmhcvjqhvdckw</h6></Col>
+                        <Row  className='channel horizontal-placement' onClick={showchannel}>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
                             <Col xs={2} md={1}>50</Col>
                             <Col xs={2} md={1}>30</Col>
                             <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
                         </Row>
                         <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}><h6>dmhcvjqhvdckw</h6></Col>
+                            <Col xs={6} md={6}>    
+                                <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
                             <Col xs={2} md={1}>50</Col>
                             <Col xs={2} md={1}>30</Col>
                             <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
                         </Row>
                         <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}><h6>dmhcvjqhvdckw</h6></Col>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
                             <Col xs={2} md={1}>50</Col>
                             <Col xs={2} md={1}>30</Col>
                             <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
                         </Row>
                         <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}><h6>dmhcvjqhvdckw</h6></Col>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
+                            <Col xs={2} md={1}>50</Col>
+                            <Col xs={2} md={1}>30</Col>
+                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                        </Row>
+                        <Row className='channel horizontal-placement' onClick={showchannel}>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
+                            <Col xs={2} md={1}>50</Col>
+                            <Col xs={2} md={1}>30</Col>
+                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                        </Row>
+                        <Row className='channel horizontal-placement' onClick={showchannel}>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
+                            <Col xs={2} md={1}>50</Col>
+                            <Col xs={2} md={1}>30</Col>
+                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                        </Row>
+                        <Row className='channel horizontal-placement' onClick={showchannel}>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
+                            <Col xs={2} md={1}>50</Col>
+                            <Col xs={2} md={1}>30</Col>
+                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                        </Row>
+                        <Row className='channel horizontal-placement' onClick={showchannel}>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
+                            <Col xs={2} md={1}>50</Col>
+                            <Col xs={2} md={1}>30</Col>
+                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                        </Row>
+                        <Row className='channel horizontal-placement' onClick={showchannel}>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
+                            <Col xs={2} md={1}>50</Col>
+                            <Col xs={2} md={1}>30</Col>
+                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
+                        </Row>
+                        <Row className='channel horizontal-placement' onClick={showchannel}>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
                             <Col xs={2} md={1}>50</Col>
                             <Col xs={2} md={1}>30</Col>
                             <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
@@ -117,7 +144,9 @@ function AllChannels(){
                     
                     
                         <Row className='channel horizontal-placement'>
-                            <Col xs={6} md={6}>Chansdhcvjsvhcknel</Col>
+                            <Col xs={6} md={6}>
+                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
+                            </Col>
                             <Col xs={2} md={1}>50</Col>
                             <Col xs={2} md={1}>30</Col>
                             <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
