@@ -29,7 +29,12 @@
 .form-field{
     overflow-x: hidden;
     overflow-y: auto;
+    backface-visibility: hidden;
+    transition: transform 0.6s ease-in-out;
 }
+
+
+
 
 .wrap-container{
     display: flex;
@@ -37,8 +42,17 @@
     justify-content: flex-start;
 }
 
+.carousel.slide{
+    background-color: #6C63FF;
+    width: 100% !important;
+}
+
+.carousel-indicator{
+    display: none !important;
+}
+
 .wrap-container img{
-    height: 10vw;
+    height: vw;
 }
 
 .wrap-container .btn{

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './setUpPage.css';
 import './homepage.css';
 import Container from 'react-bootstrap/Container'; 

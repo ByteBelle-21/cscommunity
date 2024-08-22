@@ -132,6 +132,43 @@
 .form-field{
     width:60%;
 }
+
+.carousel{
+    width: 100% !important;
+}
+.carousel-item.active{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.carousel-indicators{
+    display: none !important;
+}
+
+
+
+.wrap-container img{
+    height: vw;
+}
+
+.wrap-container .btn{
+    padding: 0 !important;
+    background-color: white !important ;
+    border:white !important ;
+}
+
+.wrap-container .btn:hover{
+    background-color: #6C63FF !important ;
+}
+
+.wrap-container .btn.active{
+    background-color: #6C63FF !important ;
+}
+
+
+
 .form-field form{
     width: 60% !important;
 }
@@ -154,11 +191,4 @@ label.form-label{
 
 .wrap-container img{
     height: 4vw;
-    margin: 0.5vw;
-}
-
-
-
-
-
-
+    margin: 0.5vw;}
