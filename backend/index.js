@@ -343,6 +343,44 @@ app.post('/signup', (request, response) => {
 
 
 
+app.post('/login', (request, response) => {
+    const input_username = request.body.loginUsername;
+    const input_password = request.body.loginPassword;
+    database.query(`SELECT * FROM userTable WHERE username=?`,[input_username],(error,result)=>{
+        if(error){
+            response.status(500).send("Server error during sign up1");
+            return;
+        }
+        else{
+            if(result.length===0){
+                response.status(401).send("Provided username is not associated with any account");
+                
+            }
+            else{
+                database.query(`SELECT * FROM userTable WHERE username=? and password=?`,[input_username,input_password],(error,result)=>{
+                    if(error){
+                        response.status(500).send("Server error during sign up2");
+                        return;
+                    }
+                    else{
+                        if(result.length===0){
+                            response.status(401).send("Wrong password.Try again");
+                            
+                        }
+                        else{
+                            response.status(200).send("Successfully logged in")
+                        }
+                        
+                    }
+                })
+            }
+        }
+    })
+
+});
+
+
+
 
 
 

@@ -44,11 +44,35 @@ function Homepage() {
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/signup', data);
             if (response.status === 200) {
-                //console.log(response.data.message);
-                navigateTo('/setup');
+                navigateTo('/all-channels')
             } 
             else if(response.status === 401){
-                alert('this is aleart')
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+      
+    }
+
+    const [loginUsername, setLoginUsername] = useState('')
+    
+    const [loginPassword, setLoginPassword] = useState('')
+
+
+    const handleLogin =async(e)=>{
+        e.preventDefault();
+        const data = {
+            loginUsername, loginPassword
+        }
+    
+        try {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/login', data);
+            if (response.status === 200) {
+                navigateTo('/all-channels')
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
             }
         } catch (error) {
             console.error("Catched axios error: ",error);
@@ -77,10 +101,6 @@ function Homepage() {
         openLogin();
     }
 
-    const goToAllChannels=(event)=>{
-        event.preventDefault();
-        navigateTo('/all-channels')
-    }
 
     const [avatar, setAvatar] = useState(null)
     const handleAvatarClick=(index,imgNum)=>{
@@ -198,14 +218,14 @@ function Homepage() {
             <Modal.Body className='horizontal-placement'>
                 <div className='form-field vertical-placement'>
                     <h5 className='mb-4'>Log in</h5>
-                    <Form  onSubmit={goToAllChannels}>
+                    <Form  onSubmit={handleLogin}>
                         <Form.Group controlId="signup-username" >
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="email" placeholder="Enter username" className='mb-3'/>
+                            <Form.Control type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setLoginUsername(e.target.value)}/>
                         </Form.Group>
                         <Form.Group controlId="signup-password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" className='mb-3'/>
+                            <Form.Control type="password" placeholder="Password" className='mb-3'onChange={(e) => setLoginPassword(e.target.value)}/>
                         </Form.Group>
                         <Button type='submit' className="btn btn-primary w-100" >Log in</Button>
                     </Form>
