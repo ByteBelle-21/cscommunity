@@ -1,0 +1,104 @@
+
+.search-container{
+    height: 5vh;
+    background-color: #C3BEFF;
+    padding-left:1vw;
+    padding-right: 0.3vw;
+    
+}
+
+
+.search-bar{
+    width: 15vw !important;
+    height: 4.5vh !important;
+    font-size: small !important;
+    border-radius: 3vw !important;
+}
+
+.channel-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 85vh;
+    width: 100%;
+    overflow-y: auto !important;
+}
+
+.channel-list::-webkit-scrollbar{
+    width: 0.3vw;
+    background-color: #C3BEFF;
+    border-radius: 1vw;
+}
+
+
+
+.row {
+    flex-shrink: 0 !important;
+}
+
+
+.col-titles{
+    width: 90% !important;
+    margin-bottom: 1vw;
+}
+
+.channel{
+    width: 90%;
+    height: 6vw;
+    background-color: white;
+    margin-bottom: 1vw;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.channel:hover{
+    cursor: pointer;
+    transform: scale(1.05);
+    background-color: #C3BEFF;
+}
+
+
+.direct-messages{
+    height:50% !important;
+}
+
+.create-channel-container{
+    height:40% !important;
+}
+
+.create-channel-block{
+    width: 70%;
+    height: 100% ;
+    background-color: #FBE9A6;
+    border-radius: 1vw;
+}
+
+.create-channel-btn{
+    background-color: black !important;
+    border-color: black !important;
+    color: white !important;  
+}
+
+.create-channel-btn:hover{
+    transform: scale(1.05);
+}
+
+.create-channel-block img{
+    height: 50% !important;
+    margin-bottom: 1vw;
+}
+
+.new-channels-form {
+    width: 60%;
+}
+
+.channel-form-button{
+    width: 60% !important;
+    background-color: #6C63FF !important ;
+    border-color: #6C63FF !important ;
+}
+
+
+
+
