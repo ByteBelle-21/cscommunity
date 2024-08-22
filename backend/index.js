@@ -61,17 +61,18 @@ function useDatabase(){
 
 
 function createUserTable(){
+    //skills JSON,
     database.query(`CREATE TABLE IF NOT EXISTS userTable 
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                         username VARCHAR(50) NOT NULL, 
-                        name VARCHAR(100) NOT NULL, 
+                        name VARCHAR(100), 
                         email VARCHAR(100) NOT NULL,
                         password VARCHAR(100) NOT NULL,
-                        avatar VARCHAR(200) NOT NULL,
-                        skills JSON,
-                        occupation VARCHAR(100) NOT NULL,
-                        totalPosts INT NOT NULL,
-                        likes INT NOT NULL)`,(error,result)=>{
+                        avatar VARCHAR(200),
+                        
+                        occupation VARCHAR(100),
+                        totalPosts INT,
+                        likes INT)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table userTable: ',error);
                                 return;
@@ -234,6 +235,50 @@ function addForeignkeys(){
 
 
 
+app.post('/signup', (request, response) => {
+    const input_username = request.body.signupUsername;
+    const input_email = request.body.signupEmail;
+    const input_password = request.body.signupPassword;
+    database.query(`SELECT * FROM userTable WHERE email=?`,[input_email],(error,result)=>{
+        if(error){
+            response.status(500).send("Server error during sign up1");
+            return;
+        }
+        else{
+            if(result.length!==0){
+                response.status(401).send("Provided email is already associated with other account");
+                return;
+            }
+            else{
+                database.query(`SELECT * FROM userTable WHERE username=?`,[input_username],(error,result)=>{
+                    if(error){
+                        response.status(500).send("Server error during sign up2");
+                        return;
+                    }
+                    else{
+                        if(result.length!==0){
+                            response.status(401).send("Provided username is already associated with someone's account. Try other username");
+                            return;
+                        }
+                        else{
+                            database.query(`INSERT INTO userTable (username,name,email,password,avatar,occupation,totalPosts,likes) VALUES (?, ?, ?,?,?,?,?,?)`,[input_username,"example", input_email,input_password,"avatar","student",0,0],(error,result)=>{
+                                if(error){
+                                    response.status(500).send("Server error during sign up3 :",error);
+                                    return;
+                                }
+                                else{
+                                    response.status(200).send("Successfully signed up")
+                                }
+                            })
+                        }
+
+                    }
+                })
+            }
+        }
+    })
+
+});
 
 
 

@@ -8,10 +8,10 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 function Homepage() {
-    
+    const navigateTo = useNavigate()
     // To open the sign up form
     const [signupShow, setSignupShow] = useState(false)
     const openSignUp=()=>{
@@ -19,6 +19,34 @@ function Homepage() {
     }
     const closeSignup= ()=>{
         setSignupShow(false)
+    }
+
+    const [signupUsername, setSignupUsername] = useState('')
+    const [signupEmail, setSignupEmail] = useState('')
+    const [signupPassword, setSignupPassword] = useState('')
+
+
+    const handleSignup =async(e)=>{
+        e.preventDefault();
+        const data = {
+            signupUsername, signupEmail, signupPassword
+        }
+        try {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/signup', data);
+            if (response.status === 200) {
+                //console.log(response.data.message);
+                navigateTo('/setup');
+            } 
+            else if(response.status === 401){
+                //console.log(response.data.message);
+            }
+            else{
+                //console.log(response.data.message);
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+      
     }
 
 
@@ -40,12 +68,6 @@ function Homepage() {
     const goToLogin=()=>{
         closeSignup();
         openLogin();
-    }
-
-    const navigateTo = useNavigate()
-    const goToSetup =(event)=>{
-        event.preventDefault(); 
-        navigateTo('/setup');
     }
 
     const goToAllChannels=(event)=>{
@@ -72,18 +94,18 @@ function Homepage() {
                 </div>
                 <div className='form-field vertical-placement'>
                     <h5 className='mb-4'>Sign Up</h5>
-                    <Form onSubmit={goToSetup}>
+                    <Form onSubmit={handleSignup}>
                         <Form.Group controlId="signup-username" >
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" placeholder="Enter username" className='mb-3'/>
+                            <Form.Control type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setSignupUsername(e.target.value)} />
                         </Form.Group>
                         <Form.Group controlId="signup-email">
                             <Form.Label>Email address</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email" className='mb-3' />
+                            <Form.Control type="email" placeholder="Enter email" className='mb-3' onChange={(e) => setSignupEmail(e.target.value)} />
                         </Form.Group>
                         <Form.Group controlId="signup-password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" className='mb-3'/>
+                            <Form.Control type="password" placeholder="Password" className='mb-3' onChange={(e) => setSignupPassword(e.target.value)} />
                         </Form.Group>
                         <Button type='submit' className="btn btn-primary w-100" >Sign up</Button>
                     </Form>
