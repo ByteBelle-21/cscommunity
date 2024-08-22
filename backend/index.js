@@ -65,14 +65,14 @@ function createUserTable(){
     database.query(`CREATE TABLE IF NOT EXISTS userTable 
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                         username VARCHAR(50) NOT NULL, 
-                        name VARCHAR(100), 
                         email VARCHAR(100) NOT NULL,
                         password VARCHAR(100) NOT NULL,
-                        avatar VARCHAR(200),
-                        
-                        occupation VARCHAR(100),
-                        totalPosts INT,
-                        likes INT)`,(error,result)=>{
+                        name VARCHAR(100)  NOT NULL, 
+                        occupation VARCHAR(100)  NOT NULL,
+                        skills TEXT  NOT NULL,
+                        avatar VARCHAR(200)  NOT NULL,
+                        totalPosts INT  NOT NULL,
+                        likes INT  NOT NULL)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table userTable: ',error);
                                 return;
@@ -84,11 +84,13 @@ function createUserTable(){
 function createPostsTable(){
     database.query(`CREATE TABLE IF NOT EXISTS postsTable 
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        replyTo INT,
+                        replyTo INT ,
                         username INT,
-                        datetime DATETIME DEFAULT CURRENT_TIMESTAMP, 
+                        datetime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
                         post VARCHAR(1000) NOT NULL, 
-                        files JSON,
+                        filename VARCHAR(255) NULL,
+                        filetype VARCHAR(50) NULL,
+                        filedata LONGBLOB NULL,
                         channel INT)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table postsTable: ',error);
@@ -120,17 +122,72 @@ function createMessagesTable(){
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                         sender INT, 
                         reciever INT, 
-                        datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        datetime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
                         message VARCHAR(1000) NOT NULL,
-                        files JSON)`,(error,result)=>{
+                        filename VARCHAR(255) NULL,
+                        filetype VARCHAR(50) NULL,
+                        filedata LONGBLOB NULL)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table messagesTable: ',error);
                                 return;
                             }
                             console.log('Successfully created table messagesTable');
-                            addForeignkeys();
+                            //addForeignkeys();
                         })
 }
+
+
+
+
+/** 
+function addForeignkeys(){
+    database.query(`ALTER TABLE postsTable 
+                                ADD CONSTRAINT fk_replyTo_posttable
+                                FOREIGN KEY (replyTo) REFERENCES postsTable(id) ON DELETE SET NULL,
+                                ADD CONSTRAINT fk_username_posttable
+                                FOREIGN KEY (username) REFERENCES userTable(id) ON DELETE SET NULL,
+                                ADD CONSTRAINT fk_channel_posttable
+                                FOREIGN KEY (channel) REFERENCES channelsTable(id) ON DELETE SET NULL`,(error, result)=>{
+                                    if (error){
+                                        console.error('Error while adding foreign key to table postsTable: ',error);
+                                        return;
+                                    }
+                                    console.log('Successfully added foreign key to table postsTable');
+                                    
+                                });
+
+    database.query(`ALTER TABLE channelsTable 
+                                ADD CONSTRAINT fk_username_channelstable
+                                FOREIGN KEY (username) REFERENCES userTable(id) ON DELETE SET NULL`,(error, result)=>{
+                                    if (error){
+                                        console.error('Error while adding foreign key to table channelsTable: ',error);
+                                        return;
+                                    }
+                                    console.log('Successfully added foreign key to table channelsTable');
+                                    
+                                });
+
+    database.query(`ALTER TABLE messagesTable 
+                                ADD CONSTRAINT fk_sender_messagestable
+                                FOREIGN KEY (sender) REFERENCES userTable(id) ON DELETE SET NULL, 
+                                ADD CONSTRAINT fk_reciever_messagestable
+                                FOREIGN KEY (reciever) REFERENCES userTable(id) ON DELETE SET NULL`,(error, result)=>{
+                                    if (error){
+                                        console.error('Error while adding foreign key to table messagesTable: ',error);
+                                        return;
+                                    }
+                                    console.log('Successfully added foreign key to table messagesTable');
+                                    
+                                });
+
+}
+
+
+
+
+
+
+
 
 
 function addForeignkeys(){
@@ -233,12 +290,16 @@ function addForeignkeys(){
                     });    
 }
 
-
+*/
 
 app.post('/signup', (request, response) => {
     const input_username = request.body.signupUsername;
     const input_email = request.body.signupEmail;
     const input_password = request.body.signupPassword;
+    const input_name = request.body.signupName;
+    const input_occupation = request.body.signupOccupation;
+    const input_skills = request.body.skills;
+    const input_avatar = request.body.signupAvatar;
     database.query(`SELECT * FROM userTable WHERE email=?`,[input_email],(error,result)=>{
         if(error){
             response.status(500).send("Server error during sign up1");
@@ -247,7 +308,7 @@ app.post('/signup', (request, response) => {
         else{
             if(result.length!==0){
                 response.status(401).send("Provided email is already associated with other account");
-                return;
+                
             }
             else{
                 database.query(`SELECT * FROM userTable WHERE username=?`,[input_username],(error,result)=>{
@@ -258,12 +319,12 @@ app.post('/signup', (request, response) => {
                     else{
                         if(result.length!==0){
                             response.status(401).send("Provided username is already associated with someone's account. Try other username");
-                            return;
+                            
                         }
                         else{
-                            database.query(`INSERT INTO userTable (username,name,email,password,avatar,occupation,totalPosts,likes) VALUES (?, ?, ?,?,?,?,?,?)`,[input_username,"example", input_email,input_password,"avatar","student",0,0],(error,result)=>{
+                            database.query(`INSERT INTO userTable (username,email,password,name,occupation,skills,avatar,totalPosts,likes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,[input_username, input_email,input_password,input_name, input_occupation, input_skills,input_avatar,0,0],(error,result)=>{
                                 if(error){
-                                    response.status(500).send("Server error during sign up3 :",error);
+                                    response.status(500).send("Server error during sign up3 :");
                                     return;
                                 }
                                 else{

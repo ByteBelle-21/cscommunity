@@ -35,11 +35,12 @@ function Homepage() {
 
     const handleSignup =async(e)=>{
         e.preventDefault();
-        const skillsArray = signupSkills.split(',').map(item => item.trim());
-        const skillsJson = {skills: skillsArray}
+        const skillsArray = signupSkills.split(',').map(item => item.trim()).join(',');
+        
         const data = {
-            signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skillsJson, signupAvatar
+            signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skills: skillsArray, signupAvatar
         }
+    
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/signup', data);
             if (response.status === 200) {
@@ -47,10 +48,7 @@ function Homepage() {
                 navigateTo('/setup');
             } 
             else if(response.status === 401){
-                //console.log(response.data.message);
-            }
-            else{
-                //console.log(response.data.message);
+                alert('this is aleart')
             }
         } catch (error) {
             console.error("Catched axios error: ",error);
@@ -99,6 +97,13 @@ function Homepage() {
         }
     }
 
+    const goToPrevForm=()=>{
+        if (carouselRef.current) {
+            carouselRef.current.prev();
+        }
+    }
+
+
     return (
     <div className='homepage'>
 
@@ -134,7 +139,7 @@ function Homepage() {
                                 </Form.Group>
 
                                     
-                                    <Button type='submit' className="btn btn-primary w-100" onClick={goToNextForm} >Continue</Button>
+                                    <Button  className="btn btn-primary w-100" onClick={goToNextForm} >Continue</Button>
                                 
                                 
                             </Form>
@@ -155,13 +160,16 @@ function Homepage() {
                                     <Form.Label>Skills</Form.Label>
                                     <Form.Control type="text" placeholder="Enter skills" className='mb-3' onChange={(e) => setSignupSkills(e.target.value)} />
                                 </Form.Group>
-                                    <Button type='submit' className="btn btn-primary w-100" onClick={goToNextForm} >Continue</Button>
+                                <Stack direction="horizontal" gap={3}>
+                                    <Button  className="btn btn-primary w-100" onClick={goToPrevForm} >Go back</Button>
+                                    <Button className="btn btn-primary w-100" onClick={goToNextForm} >Continue</Button>
+                                </Stack>
                             </Form>
                             <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                         </Carousel.Item>
                         <Carousel.Item className='vertical-placement'>
                             <h5 className='mb-4'>Sign Up</h5>
-                            <Form onSubmit={handleSignup}>
+                            <Form >
                                 <Form.Group controlId="signup-avatar">
                                     <Form.Label>Choose your Avatar</Form.Label>
                                         <Container className='wrap-container'>
@@ -172,7 +180,10 @@ function Homepage() {
                                             ))}
                                         </Container>
                                 </Form.Group>
-                                <Button type='submit' className="btn btn-primary w-100" onClick={handleSignup} >Sign up</Button>
+                                <Stack direction="horizontal" gap={3}>
+                                    <Button className="btn btn-primary w-100" onClick={goToPrevForm} >Go back</Button>
+                                    <Button type='submit' className="btn btn-primary w-100" onClick={handleSignup} >Sign Up</Button>
+                                </Stack>
                             </Form>
                             <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                         </Carousel.Item>
