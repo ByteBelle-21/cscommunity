@@ -8,15 +8,17 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/esm/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
 import DirectMessage from './directmessage';
+import axios from 'axios';
 
 
 
 function AllChannels({removeAuthentication}){
     const [createChannelform, setCreateChannelForm] = useState(false)
+    const [username, setUsername] = useState('')
     const openCreationForm = ()=>{
         setCreateChannelForm(true)
     }
@@ -35,6 +37,39 @@ function AllChannels({removeAuthentication}){
     const goToHome =()=>{
         navigateTo('/')
     }
+
+    useEffect(()=>{
+        setUsername(sessionStorage.getItem('auth_user'));
+    },[])
+
+
+    const [channel, setChannel] = useState('')
+
+
+    const handleChannelCreation =async(e)=>{
+        e.preventDefault();
+        const data = {
+            username,channel
+        }
+        try {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/createchannel', data);
+            if (response.status === 200) {
+                console.log("Successfully created channel")
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+      
+    }
+
+
+
+
+
+  
 
     return(
         <div className="page-layout">
@@ -251,10 +286,10 @@ function AllChannels({removeAuthentication}){
                             <Form className=' new-channels-form mt-2'>
                                 <Form.Group controlId="signup-username" >
                                     <Form.Label>Enter Channel Name</Form.Label>
-                                    <Form.Control type="text" placeholder="i.e Java discussion channel" className='mb-3'/>
+                                    <Form.Control type="text" placeholder="i.e Java discussion channel" className='mb-3' onChange={(e) => setChannel(e.target.value)}/>
                                 </Form.Group>
                             </Form>
-                             <Button className='channel-form-button'>Create</Button>
+                             <Button type='submit' className='channel-form-button' onClick={handleChannelCreation}>Create</Button>
                         </Modal.Body>
                     </Modal>                                
                 </Container>

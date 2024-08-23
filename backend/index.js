@@ -106,8 +106,8 @@ function createChannelsTable(){
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                         username INT,
                         channel VARCHAR(500) NOT NULL,
-                        totalpeople INT NOT NULL,
-                        totalposts INT NOT NULL)`,(error,result)=>{
+                        totalpeople INT NULL,
+                        totalposts INT NULL)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table channelsTable: ',error);
                                 return;
@@ -368,11 +368,56 @@ app.post('/login', (request, response) => {
                             
                         }
                         else{
-                            response.status(200).send("Successfully logged in")
+                            response.status(200).send("Successfully logged in");
                         }
                         
                     }
                 })
+            }
+        }
+    })
+
+});
+
+
+
+app.post('/createchannel', (request, response) => {
+    const input_username = request.body.username;
+    const input_channel = request.body.channel;
+    database.query(`SELECT * FROM channelsTable WHERE channel=?`,[input_channel],(error,result)=>{
+        if(error){
+            response.status(500).send("Server error during creating channel1");
+            return;
+        }
+        else{
+            if(result.length!==0){
+                response.status(401).send("Provided channel name already exists.");
+                
+            }
+            else{
+                database.query(`SELECT id FROM userTable WHERE username=?`,[input_username],(error,result)=>{
+                    if(error){
+                        response.status(500).send("Server error during retrieving user id from userTable");
+                        return;
+                    }
+                    else{
+                        if (result.length ===0){
+                            response.status(401).send("Couldn't find user id in userTable");
+                        }
+                        else{
+                            
+                            const userId = result[0].id;
+                            database.query(`INSERT INTO channelsTable (username,channel,totalpeople,totalposts) VALUES (?, ?, ?, ?)`,[userId, input_channel,0,0],(error,result)=>{
+                            if(error){
+                                response.status(500).send("Server error during creating channel2");
+                                return;
+                            }
+                            else{
+                                response.status(200).send("Successfully created channel");
+                            }
+                        })}
+                    }
+                })            
             }
         }
     })
