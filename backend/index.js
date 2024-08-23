@@ -463,6 +463,47 @@ app.get('/allchannels',(request,response)=>{
 })
 })
 
+app.get('/connectedusers',(request,response)=>{
+    const user = request.params.user;
+    console.log(user); 
+    database.query(`SELECT id FROM userTable WHERE username=?`,[user],(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving user id for direct messages");
+            return;
+        }
+        else{
+            if(result.length===0){
+                response.status(401).send("user id doesn't exists for current user");
+            }
+            else{
+                const userId = result[0].id;
+                database.query(`SELECT  CASE WHEN m.sender=? THEN u_reciever.avatar 
+                                            WHEN m.reciever=? THEN u_sender.avatar 
+                                        END AS avatar,
+                                        CASE WHEN m.sender=? THEN u_reciever.username 
+                                            WHEN m.reciever=? THEN u_sender.username 
+                                        END AS username
+                                        FROM messagesTable m
+                                        JOIN userTable u_reciever ON m.reciever = u_reciever.id 
+                                        JOIN userTable u_sender ON m.sender = u_sender.id `,[userId,userId,userId,userId],(error, result)=>{
+                                            if (error){
+                                                response.status(500).send("Server error during retrieving direct messages");
+                                                return;
+                                            }
+                                            response.status(200).json(result)
+                    
+                })
+
+            }
+        } 
+    })
+    
+})
+
+
+
+
+
 
 
 
