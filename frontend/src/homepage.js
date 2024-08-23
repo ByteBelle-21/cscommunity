@@ -15,7 +15,7 @@ import { useRef } from 'react';
 
 function Homepage({authentication}) {
     const navigateTo = useNavigate()
-    // To open the sign up form
+    
     const [signupShow, setSignupShow] = useState(false)
     const openSignUp=()=>{
         setSignupShow(true)
@@ -337,24 +337,36 @@ function Homepage({authentication}) {
             <Container className='horizontal-placement'>
                 <Card>
                     <Card.Body className='member-card'>
+                        <div horizontal-placement>
+                            <img src="/Group 205.png" style={{height:'5vh'}} /> Username
+
+                        </div>
+                        
+                        <h6 className="mt-2">name sjhbcjh</h6>
+                        <p style={{fontSize:'1.5vh'}}>⭐⭐⭐⭐</p>
+                        
                     </Card.Body>
                 </Card>
                 <Card>
                     <Card.Body className='member-card'>
+                        
+                        <img src="/Group 206.png" style={{height:'5vh'}} /> Username
+                        <h6 className="mt-2">name sjhbcjh</h6>
+                        <p style={{fontSize:'1.5vh'}}>⭐⭐⭐⭐</p>
+                        
                     </Card.Body>
                 </Card>
                 <Card>
                     <Card.Body className='member-card'>
+                        
+                        <img src="/Group 200.png" style={{height:'5vh'}} /> Username
+                        <h6 className="mt-2">name sjhbcjh</h6>
+                        <p style={{fontSize:'1.5vh'}}>⭐⭐⭐⭐</p>
+                        
                     </Card.Body>
                 </Card>
-                <Card>
-                    <Card.Body className='member-card'>
-                    </Card.Body>
-                </Card>
-                <Card>
-                    <Card.Body className='member-card'>
-                    </Card.Body>
-                </Card>
+                
+               
                 <div style={{background:'#1A183F'}} className='vertical-placement'>
                         <h6 style={{color:'white'}}> + 30</h6>
                         <h6 style={{color:'white'}}>Members in our community</h6>    

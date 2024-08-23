@@ -74,10 +74,16 @@
 }
 
 .member-card{
-    height: 10vh;
-    width: 5vw;
+    padding: 0 !important;
+    height: 11vh;
+    width: 10vw;
     background-color: white;
     margin: 1vw;
+}
+
+
+.member-card img{
+    height: 5vh !important;
 }
 
 
