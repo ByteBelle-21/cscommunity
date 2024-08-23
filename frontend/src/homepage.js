@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Carousel from 'react-bootstrap/Carousel';
 import { useRef } from 'react';
+import Alert from 'react-bootstrap/Alert';
 
 
 function Homepage({authentication}) {
@@ -32,15 +33,14 @@ function Homepage({authentication}) {
     const [signupSkills, setSignupSkills] = useState('')
     const [signupAvatar, setSignupAvatar] = useState('')
 
+    const [showAlert, setShowAlert] = useState(false);
 
     const handleSignup =async(e)=>{
         e.preventDefault();
         const skillsArray = signupSkills.split(',').map(item => item.trim()).join(',');
-        
         const data = {
             signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skills: skillsArray, signupAvatar
         }
-    
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/signup', data);
             if (response.status === 200) {
@@ -81,6 +81,54 @@ function Homepage({authentication}) {
         }
       
     }
+
+
+
+
+    const [activeMembers, setActiveMembers] = useState([])
+    useEffect(()=>{
+        const fetchMembers= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
+                if (response.status === 200) {
+                    setActiveMembers(response.data);
+                    console.log("Successfully retrieved active members");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchMembers();  
+    },[]);
+
+
+    const [popularChannels, setPopularChannels] = useState([]);
+    useEffect(()=>{
+        const fetchChannels= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/popularchannels');
+                if (response.status === 200) {
+                    setPopularChannels(response.data);
+                    console.log("Successfully retrieved popular channels");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchChannels();  
+    },[]);
+
+
+
+
 
 
     const [loginShow, setLoginShow] = useState(false)
@@ -149,15 +197,15 @@ function Homepage({authentication}) {
                             <Form onSubmit={handleSignup}>
                                 <Form.Group controlId="signup-username" >
                                     <Form.Label>Username</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setSignupUsername(e.target.value)} />
+                                    <Form.Control required type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setSignupUsername(e.target.value)} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-email">
                                     <Form.Label>Email address</Form.Label>
-                                    <Form.Control type="email" placeholder="Enter email" className='mb-3' onChange={(e) => setSignupEmail(e.target.value)} />
+                                    <Form.Control  required   type="email" placeholder="Enter email" className='mb-3' onChange={(e) => setSignupEmail(e.target.value)} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-password">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" placeholder="Password" className='mb-3' onChange={(e) => setSignupPassword(e.target.value)} />
+                                    <Form.Control required    type="password" placeholder="Password" className='mb-3' onChange={(e) => setSignupPassword(e.target.value)} />
                                 </Form.Group>
 
                                     
@@ -172,15 +220,15 @@ function Homepage({authentication}) {
                             <Form onSubmit={handleSignup}>
                                 <Form.Group controlId="signup-name" >
                                     <Form.Label>Name</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter name" className='mb-3' onChange={(e) => setSignupName(e.target.value)} />
+                                    <Form.Control required type="text" placeholder="Enter name" className='mb-3' onChange={(e) => setSignupName(e.target.value)} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-occupation">
                                     <Form.Label>Occupation</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter occupation" className='mb-3' onChange={(e) => setSignupOccupation(e.target.value)} />
+                                    <Form.Control  required   type="text" placeholder="Enter occupation" className='mb-3' onChange={(e) => setSignupOccupation(e.target.value)} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-skills">
                                     <Form.Label>Skills</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter skills" className='mb-3' onChange={(e) => setSignupSkills(e.target.value)} />
+                                    <Form.Control  required   type="text" placeholder="Enter skills" className='mb-3' onChange={(e) => setSignupSkills(e.target.value)} />
                                 </Form.Group>
                                 <Stack direction="horizontal" gap={3}>
                                     <Button  className="btn btn-primary w-100" onClick={goToPrevForm} >Go back</Button>
@@ -204,13 +252,11 @@ function Homepage({authentication}) {
                                 </Form.Group>
                                 <Stack direction="horizontal" gap={3}>
                                     <Button className="btn btn-primary w-100" onClick={goToPrevForm} >Go back</Button>
-                                    <Button type='submit' className="btn btn-primary w-100" onClick={handleSignup} >Sign Up</Button>
+                                    <Button className="btn btn-primary w-100" onClick={handleSignup} >Sign Up</Button>
                                 </Stack>
                             </Form>
                             <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                         </Carousel.Item>
-                    
-
                     </Carousel>
                     </div>
             </Modal.Body>
@@ -223,13 +269,13 @@ function Homepage({authentication}) {
                     <Form  onSubmit={handleLogin}>
                         <Form.Group controlId="signup-username" >
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setLoginUsername(e.target.value)}/>
+                            <Form.Control   required   type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setLoginUsername(e.target.value)}/>
                         </Form.Group>
                         <Form.Group controlId="signup-password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" className='mb-3'onChange={(e) => setLoginPassword(e.target.value)}/>
+                            <Form.Control  required type="password" placeholder="Password" className='mb-3'onChange={(e) => setLoginPassword(e.target.value)}/>
                         </Form.Group>
-                        <Button type='submit' className="btn btn-primary w-100" >Log in</Button>
+                        <Button className="btn btn-primary w-100" >Log in</Button>
                     </Form>
                     <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goTOSignup}>Don't have an account? Sign up</Nav.Link>
                 </div>
@@ -281,8 +327,7 @@ function Homepage({authentication}) {
                     <Card.Body className='vertical-placement'>
                         <img src="/Group 186.png" style={{height:'15vh'}}/>
                         <Card.Text style={{marginTop:'2vh'}}>
-                            Some quick example text to build on the card title and make up the
-                            bulk of the card's content.
+                            Launch your own channel and start sharing your unique perspective with the world.
                         </Card.Text>
                     </Card.Body>
                 </Card>
@@ -290,8 +335,7 @@ function Homepage({authentication}) {
                     <Card.Body className='vertical-placement'>
                         <img src="/Group 187.png" style={{height:'15vh'}}/>
                         <Card.Text style={{marginTop:'2vh'}}>
-                            Some quick example text to build on the card title and make up the
-                            bulk of the card's content.
+                            Get answers to your burning questions—just ask, and our community will respond.
                         </Card.Text>
                     </Card.Body>
                 </Card>
@@ -299,8 +343,7 @@ function Homepage({authentication}) {
                     <Card.Body className='vertical-placement'>
                     <img src="/Group 189.png" style={{height:'15vh'}}/>
                         <Card.Text style={{marginTop:'2vh'}}>
-                            Some quick example text to build on the card title and make up the
-                            bulk of the card's content.
+                            Jump in anytime — your insights are welcome on any post, whenever you're ready.
                         </Card.Text>
                     </Card.Body>
                 </Card>
@@ -308,8 +351,7 @@ function Homepage({authentication}) {
                     <Card.Body className='vertical-placement'>
                         <img src="/Group 188.png" style={{height:'15vh'}}/>
                         <Card.Text style={{marginTop:'2vh'}}>
-                            Some quick example text to build on the card title and make up the
-                            bulk of the card's content.
+                            Easily find what you're looking for by searching for people, channels, or posts.
                         </Card.Text>
                     </Card.Body>
                 </Card>
@@ -331,42 +373,19 @@ function Homepage({authentication}) {
         </Container>
 
 
-
         <div className='full-width-bands vertical-placement'>
             <h5 className='mb-4'>Meet Some of our <span style={{color:"red"}}>Active</span> Members</h5>
             <Container className='horizontal-placement'>
-                <Card>
-                    <Card.Body className='member-card'>
-                        <div horizontal-placement>
-                            <img src="/Group 205.png" style={{height:'5vh'}} /> Username
+                {activeMembers.length > 0 && activeMembers.map(member=>(
+                    <Card>
+                        <Card.Body className='member-card'>
+                            <img src={member.avatar} style={{height:'5vh'}} /> {member.username}
+                            <h6 className="mt-2">{member.name}</h6>
+                            <p style={{fontSize:'1.5vh'}}>⭐⭐⭐⭐</p>  
+                        </Card.Body>
+                    </Card>
 
-                        </div>
-                        
-                        <h6 className="mt-2">name sjhbcjh</h6>
-                        <p style={{fontSize:'1.5vh'}}>⭐⭐⭐⭐</p>
-                        
-                    </Card.Body>
-                </Card>
-                <Card>
-                    <Card.Body className='member-card'>
-                        
-                        <img src="/Group 206.png" style={{height:'5vh'}} /> Username
-                        <h6 className="mt-2">name sjhbcjh</h6>
-                        <p style={{fontSize:'1.5vh'}}>⭐⭐⭐⭐</p>
-                        
-                    </Card.Body>
-                </Card>
-                <Card>
-                    <Card.Body className='member-card'>
-                        
-                        <img src="/Group 200.png" style={{height:'5vh'}} /> Username
-                        <h6 className="mt-2">name sjhbcjh</h6>
-                        <p style={{fontSize:'1.5vh'}}>⭐⭐⭐⭐</p>
-                        
-                    </Card.Body>
-                </Card>
-                
-               
+                ))}
                 <div style={{background:'#1A183F'}} className='vertical-placement'>
                         <h6 style={{color:'white'}}> + 30</h6>
                         <h6 style={{color:'white'}}>Members in our community</h6>    
@@ -378,76 +397,22 @@ function Homepage({authentication}) {
         <Container className='board-container vertical-placement'>
             <h5>Our most popular discussion boards</h5>
             <div>
-                <Stack direction="horizontal" gap={3} className='board-card'>
-                    <div className=' me-auto'>
-                        discussionboard
-                        <p style={{fontSize:'small'}}>Created by xyz</p>
-                    </div>
-                    <div className='vertical-placement'>
-                        Posts
-                        <p style={{fontSize:'small'}}>30</p>
-                    </div>
-                    <div className='vertical-placement' >
-                        Members
-                        <p style={{fontSize:'small'}}>25</p>
-                    </div>
-                </Stack>
-                <Stack direction="horizontal" gap={3} className='board-card'>
-                    <div className=' me-auto'>
-                        discussionboard
-                        <p style={{fontSize:'small'}}>Created by xyz</p>
-                    </div>
-                    <div className='vertical-placement'>
-                        Posts
-                        <p style={{fontSize:'small'}}>30</p>
-                    </div>
-                    <div className='vertical-placement' >
-                        Members
-                        <p style={{fontSize:'small'}}>25</p>
-                    </div>
-                </Stack>
-                <Stack direction="horizontal" gap={3} className='board-card'>
-                    <div className=' me-auto'>
-                        discussionboard
-                        <p style={{fontSize:'small'}}>Created by xyz</p>
-                    </div>
-                    <div className='vertical-placement'>
-                        Posts
-                        <p style={{fontSize:'small'}}>30</p>
-                    </div>
-                    <div className='vertical-placement' >
-                        Members
-                        <p style={{fontSize:'small'}}>25</p>
-                    </div>
-                </Stack>
-                <Stack direction="horizontal" gap={3} className='board-card'>
-                    <div className=' me-auto'>
-                        discussionboard
-                        <p style={{fontSize:'small'}}>Created by xyz</p>
-                    </div>
-                    <div className='vertical-placement'>
-                        Posts
-                        <p style={{fontSize:'small'}}>30</p>
-                    </div>
-                    <div className='vertical-placement' >
-                        Members
-                        <p style={{fontSize:'small'}}>25</p>
-                    </div>
-                </Stack>
-                <Stack direction="horizontal" gap={3} className='board-card'>
-                    <div className=' me-auto'>
-                        discussionboard
-                        <p style={{fontSize:'small'}}>Created by xyz</p>
-                    </div>
-                    <div className='vertical-placement'>
-                        Posts
-                        <p style={{fontSize:'small'}}>30</p>
-                    </div>
-                    <div className='vertical-placement' >
-                        Members
-                        <p style={{fontSize:'small'}}>25</p>
-                    </div>
-                </Stack>
+                {popularChannels.length > 0 && popularChannels.map(channel=>(
+                    <Stack direction="horizontal" gap={3} className='board-card'>
+                        <div className=' me-auto'>
+                            {channel.channel}
+                            <p style={{fontSize:'small'}}>Created by {channel.username}</p>
+                        </div>
+                        <div className='vertical-placement'>
+                            Posts
+                            <p style={{fontSize:'small'}}>{channel.totalposts}</p>
+                        </div>
+                        <div className='vertical-placement' >
+                            Members
+                            <p style={{fontSize:'small'}}>{channel.totalpeople}</p>
+                        </div>
+                    </Stack>
+                ))}
             </div>   
         </Container>
 
@@ -475,8 +440,8 @@ function Homepage({authentication}) {
             </Container>
             <Container className='last-band-content vertical-placement'>
                 <h6>Join Us</h6>
-                <Button variant="danger" className='band-button'>Sign Up</Button>
-                <Button variant="danger" className='band-button'>Log In</Button>
+                <Button variant="danger" className='band-button' onClick={openSignUp}>Sign Up</Button>
+                <Button variant="danger" className='band-button' onClick={openLogin}>Log In</Button>
             </Container>
         </div>   
 

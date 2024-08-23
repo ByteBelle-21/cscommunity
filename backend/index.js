@@ -426,6 +426,32 @@ app.post('/createchannel', (request, response) => {
 
 
 
+app.get('/activeusers',(request,response)=>{
+    database.query(`SELECT * FROM userTable ORDER BY totalPosts DESC LIMIT 4`,(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving active members");
+            return;
+        }
+        response.status(200).json(result);
+    })
+})
+
+
+
+app.get('/popularchannels',(request,response)=>{
+        database.query(`SELECT c.channel AS channel, u.username AS username,  c.totalpeople AS totalpeople, c.totalposts AS totalposts
+        FROM channelsTable c JOIN userTable u ON c.username = u.id 
+        ORDER BY c.totalpeople DESC 
+        LIMIT 6`,(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving popular channels");
+            return;
+        }
+        response.status(200).json(result);
+    })
+})
+
+
 
 
 
