@@ -135,28 +135,53 @@
     border-bottom-right-radius:1vw ; 
 }
 
+
+.close-button{
+    margin-left: auto !important;
+    margin-top: 0 !important;
+  
+}
+
+
+
+
+
 .form-field{
     width:60%;
 }
 
 .carousel{
     width: 100% !important;
+    background-color: white !important;
 }
 .carousel-item.active{
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
+    background-color: white !important;
+}
+
+.carousel-item{
+    background-color: white !important;
 }
 
 .carousel-indicators{
     display: none !important;
 }
 
+.carousel-control-prev{
+    display: none !important;
+}
+
+.carousel-control-next{
+    display: none !important;
+}
+
 
 
 .wrap-container img{
-    height: vw;
+    height:  3.5vw !important;
 }
 
 .wrap-container .btn{
@@ -176,8 +201,10 @@
 
 
 .form-field form{
-    width: 60% !important;
+    width: 70% !important;
 }
+
+
 
 label.form-label{
     margin-bottom: 0 !important;
@@ -196,5 +223,5 @@ label.form-label{
 }
 
 .wrap-container img{
-    height: 4vw;
+    height: 4vw !important;
     margin: 0.5vw;}

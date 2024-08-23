@@ -452,6 +452,17 @@ app.get('/popularchannels',(request,response)=>{
 })
 
 
+app.get('/allchannels',(request,response)=>{
+    database.query(`SELECT c.channel AS channel, u.username AS username, u.avatar as avatar,  c.totalpeople AS totalpeople, c.totalposts AS totalposts
+    FROM channelsTable c JOIN userTable u ON c.username = u.id `,(error, result)=>{
+    if (error){
+        response.status(500).send("Server error during retrieving popular channels");
+        return;
+    }
+    response.status(200).json(result);
+})
+})
+
 
 
 

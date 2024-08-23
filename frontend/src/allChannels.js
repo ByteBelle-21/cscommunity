@@ -13,6 +13,7 @@ import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
 import DirectMessage from './directmessage';
 import axios from 'axios';
+import Alert from 'react-bootstrap/Alert';
 
 
 
@@ -23,6 +24,7 @@ function AllChannels({removeAuthentication}){
         setCreateChannelForm(true)
     }
     const closeCreationForm=()=>{
+        setCreateChannelAlert(false);
         setCreateChannelForm(false)
     }
 
@@ -42,18 +44,26 @@ function AllChannels({removeAuthentication}){
         setUsername(sessionStorage.getItem('auth_user'));
     },[])
 
+    const [fetchAgain, setFetchAgain] = useState(false);
+
+
 
     const [channel, setChannel] = useState('')
-
-
+    const [createChannelAlert,setCreateChannelAlert] = useState(false)
     const handleChannelCreation =async(e)=>{
         e.preventDefault();
+        if(!channel){
+            setCreateChannelAlert(true);
+            return;
+        }
+        closeCreationForm();
         const data = {
             username,channel
         }
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/createchannel', data);
             if (response.status === 200) {
+                setFetchAgain(!fetchAgain);
                 console.log("Successfully created channel")
             } 
             else if(response.status === 401){
@@ -64,6 +74,29 @@ function AllChannels({removeAuthentication}){
         }
       
     }
+
+
+    
+
+    const [allChannels, setAllChannels] = useState([]);
+    useEffect(()=>{
+        const fetchAllChannels= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allchannels');
+                if (response.status === 200) {
+                    setAllChannels(response.data);
+                    console.log("Successfully retrieved all channels");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchAllChannels();  
+    },[fetchAgain]);
 
 
 
@@ -104,96 +137,17 @@ function AllChannels({removeAuthentication}){
                         </Row>
                     </Container>
                     <Container className="channel-list">
-                        <Row  className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>    
-                                <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                        <Row className='channel horizontal-placement' onClick={showchannel}>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
-                    
-                    
-                        <Row className='channel horizontal-placement'>
-                            <Col xs={6} md={6}>
-                            <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>dmhcvjqhvdckw</span>
-                            </Col>
-                            <Col xs={2} md={1}>50</Col>
-                            <Col xs={2} md={1}>30</Col>
-                            <Col xs={2} md={4}><img src="/Group 205.png"  style={{height:'2vw'}}/> Username XX</Col> 
-                        </Row>
+                        {allChannels.length > 0 && allChannels.map(channel=>(
+                            <Row  className='channel horizontal-placement' onClick={showchannel}>
+                                <Col xs={6} md={6}>
+                                <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
+                                </Col>
+                                <Col xs={2} md={1}>{channel.totalposts}</Col>
+                                <Col xs={2} md={1}>{channel.totalpeople}</Col>
+                                <Col xs={2} md={4}><img src={channel.avatar}  style={{height:'2vw'}}/> {channel.username}</Col> 
+                            </Row>
+
+                        ))}
                     </Container>
                 </Container>
                 <Container className='small-grid-container'>  
@@ -280,16 +234,21 @@ function AllChannels({removeAuthentication}){
                     </div>
 
                     
-                    <Modal  show={createChannelform} onHide={closeCreationForm} centered style={{"--bs-modal-border-radius":'1vw'}} >
+                    <Modal show={createChannelform} onHide={closeCreationForm} centered style={{"--bs-modal-border-radius":'1vw'}} >
                         <Modal.Body className='vertical-placement'>
                             <h5>Create your Own Channel</h5>
                             <Form className=' new-channels-form mt-2'>
                                 <Form.Group controlId="signup-username" >
                                     <Form.Label>Enter Channel Name</Form.Label>
-                                    <Form.Control type="text" placeholder="i.e Java discussion channel" className='mb-3' onChange={(e) => setChannel(e.target.value)}/>
+                                    <Form.Control type="text" placeholder="i.e Java discussion channel" className='mb-3' onChange={(e) => {setChannel(e.target.value); setCreateChannelAlert(false);}}/>
                                 </Form.Group>
                             </Form>
-                             <Button type='submit' className='channel-form-button' onClick={handleChannelCreation}>Create</Button>
+                            {createChannelAlert && <Alert variant="danger" > 💡Please fill out all required fields</Alert>}
+                            <Stack direction="horizontal" gap={3}>
+                                <Button type='submit' className='channel-form-button' onClick={closeCreationForm}>Cancle</Button>
+                                <Button type='submit' className='channel-form-button' onClick={handleChannelCreation}>Create</Button>
+                            </Stack>
+                             
                         </Modal.Body>
                     </Modal>                                
                 </Container>

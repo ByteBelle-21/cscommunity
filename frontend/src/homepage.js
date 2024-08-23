@@ -12,6 +12,7 @@ import axios from 'axios';
 import Carousel from 'react-bootstrap/Carousel';
 import { useRef } from 'react';
 import Alert from 'react-bootstrap/Alert';
+import CloseButton from 'react-bootstrap/CloseButton';
 
 
 function Homepage({authentication}) {
@@ -33,11 +34,17 @@ function Homepage({authentication}) {
     const [signupSkills, setSignupSkills] = useState('')
     const [signupAvatar, setSignupAvatar] = useState('')
 
-    const [showAlert, setShowAlert] = useState(false);
+    const [showSignupAlert, setShowSignupAlert] = useState(false);
+    const [showLoginAlert, setShowLoginAlert] = useState(false);
 
     const handleSignup =async(e)=>{
         e.preventDefault();
         const skillsArray = signupSkills.split(',').map(item => item.trim()).join(',');
+        if(skillsArray.length ==0 || !signupUsername || !signupEmail || !signupPassword || !signupName || !signupOccupation || !signupAvatar){
+            setShowSignupAlert(true);
+            return;
+        }
+        openSignUp(false);
         const data = {
             signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skills: skillsArray, signupAvatar
         }
@@ -63,6 +70,11 @@ function Homepage({authentication}) {
 
     const handleLogin =async(e)=>{
         e.preventDefault();
+        if( !loginUsername || !loginPassword){
+            setShowLoginAlert(true);
+            return;
+        }
+        openLogin(false);
         const data = {
             loginUsername, loginPassword
         }
@@ -143,17 +155,22 @@ function Homepage({authentication}) {
 
     const goTOSignup=()=>{
         closeLogin();
+        setShowLoginAlert(false);
+        setShowSignupAlert(false);
         openSignUp();
     }
 
     const goToLogin=()=>{
         closeSignup();
+        setShowLoginAlert(false);
+        setShowSignupAlert(false);
         openLogin();
     }
 
 
     const [avatar, setAvatar] = useState(null)
     const handleAvatarClick=(index,imgNum)=>{
+        setShowSignupAlert(false);
         setAvatar(index);
         setSignupAvatar(`/Group ${imgNum}.png`)
 
@@ -183,7 +200,7 @@ function Homepage({authentication}) {
             <Nav.Link href="#" className="mx-4" onClick={openLogin}>Log In</Nav.Link>
         </Stack>
 
-        <Modal size='lg' show={signupShow} onHide={closeSignup} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
+        <Modal size='lg' backdrop="static" keyboard={false} show={signupShow} onHide={closeSignup} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
             <Modal.Body className='horizontal-placement'>
                 <div className='form-img-text left-img vertical-placement'>
                     <h5 className='mb-0'>Welcome</h5>
@@ -191,27 +208,27 @@ function Homepage({authentication}) {
                     <img src="/Group 196.png"/>
                 </div>
                 <div className='form-field vertical-placement'>
-                    <Carousel slide={false} className='vertical-placement' ref={carouselRef}>
+                    
+                    <Carousel interval={600000} className='vertical-placement' ref={carouselRef}>
                         <Carousel.Item className='vertical-placement'>
                             <h5 className='mb-4'>Sign Up</h5>
                             <Form onSubmit={handleSignup}>
                                 <Form.Group controlId="signup-username" >
                                     <Form.Label>Username</Form.Label>
-                                    <Form.Control required type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setSignupUsername(e.target.value)} />
+                                    <Form.Control type="text" placeholder="Enter username" className='mb-3' onChange={(e) => {setSignupUsername(e.target.value); setShowSignupAlert(false);}} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-email">
                                     <Form.Label>Email address</Form.Label>
-                                    <Form.Control  required   type="email" placeholder="Enter email" className='mb-3' onChange={(e) => setSignupEmail(e.target.value)} />
+                                    <Form.Control type="email" placeholder="Enter email" className='mb-3' onChange={(e) => {setSignupEmail(e.target.value); setShowSignupAlert(false);}} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-password">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control required    type="password" placeholder="Password" className='mb-3' onChange={(e) => setSignupPassword(e.target.value)} />
+                                    <Form.Control type="password" placeholder="Password" className='mb-3' onChange={(e) => {setSignupPassword(e.target.value); setShowSignupAlert(false);}} />
                                 </Form.Group>
-
-                                    
+                                <Stack direction="horizontal" gap={3}>
+                                    <Button  className="btn btn-primary w-100" onClick={closeSignup} >Cancle</Button>
                                     <Button  className="btn btn-primary w-100" onClick={goToNextForm} >Continue</Button>
-                                
-                                
+                                </Stack>   
                             </Form>
                             <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                         </Carousel.Item>
@@ -220,15 +237,15 @@ function Homepage({authentication}) {
                             <Form onSubmit={handleSignup}>
                                 <Form.Group controlId="signup-name" >
                                     <Form.Label>Name</Form.Label>
-                                    <Form.Control required type="text" placeholder="Enter name" className='mb-3' onChange={(e) => setSignupName(e.target.value)} />
+                                    <Form.Control type="text" placeholder="Enter name" className='mb-3' onChange={(e) => {setSignupName(e.target.value) ; setShowSignupAlert(false);}} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-occupation">
                                     <Form.Label>Occupation</Form.Label>
-                                    <Form.Control  required   type="text" placeholder="Enter occupation" className='mb-3' onChange={(e) => setSignupOccupation(e.target.value)} />
+                                    <Form.Control type="text" placeholder="Enter occupation" className='mb-3' onChange={(e) => {setSignupOccupation(e.target.value) ; setShowSignupAlert(false);}} />
                                 </Form.Group>
                                 <Form.Group controlId="signup-skills">
                                     <Form.Label>Skills</Form.Label>
-                                    <Form.Control  required   type="text" placeholder="Enter skills" className='mb-3' onChange={(e) => setSignupSkills(e.target.value)} />
+                                    <Form.Control type="text" placeholder="Enter skills" className='mb-3' onChange={(e) => {setSignupSkills(e.target.value) ; setShowSignupAlert(false);}} />
                                 </Form.Group>
                                 <Stack direction="horizontal" gap={3}>
                                     <Button  className="btn btn-primary w-100" onClick={goToPrevForm} >Go back</Button>
@@ -237,19 +254,20 @@ function Homepage({authentication}) {
                             </Form>
                             <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                         </Carousel.Item>
-                        <Carousel.Item className='vertical-placement'>
+                        <Carousel.Item className='vertical-placement'>  
                             <h5 className='mb-4'>Sign Up</h5>
-                            <Form >
+                            <Form className='from3'>
                                 <Form.Group controlId="signup-avatar">
                                     <Form.Label>Choose your Avatar</Form.Label>
                                         <Container className='wrap-container'>
-                                            {[198, 199, 200, 205, 203, 204, 201, 206].map((imgNum, index) => (
+                                            {[300, 301, 302, 303, 304, 305, 306, 307].map((imgNum, index) => (
                                                     <Button key={index} onClick={() => handleAvatarClick(index,imgNum)} className={avatar === index ? 'active' : ''}>
                                                         <img src={`/Group ${imgNum}.png`} alt={`Avatar ${index + 1}`} />
                                                     </Button>
                                             ))}
                                         </Container>
                                 </Form.Group>
+                                {showSignupAlert && <Alert variant="danger" > 💡Please fill out all required fields</Alert>}
                                 <Stack direction="horizontal" gap={3}>
                                     <Button className="btn btn-primary w-100" onClick={goToPrevForm} >Go back</Button>
                                     <Button className="btn btn-primary w-100" onClick={handleSignup} >Sign Up</Button>
@@ -262,20 +280,24 @@ function Homepage({authentication}) {
             </Modal.Body>
         </Modal>
 
-        <Modal size='lg' show={loginShow} onHide={closeLogin} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
+        <Modal size='lg'  backdrop="static" keyboard={false} show={loginShow} onHide={closeLogin} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
             <Modal.Body className='horizontal-placement'>
                 <div className='form-field vertical-placement'>
                     <h5 className='mb-4'>Log in</h5>
                     <Form  onSubmit={handleLogin}>
                         <Form.Group controlId="signup-username" >
                             <Form.Label>Username</Form.Label>
-                            <Form.Control   required   type="text" placeholder="Enter username" className='mb-3' onChange={(e) => setLoginUsername(e.target.value)}/>
+                            <Form.Control type="text" placeholder="Enter username" className='mb-3' onChange={(e) => {setLoginUsername(e.target.value); setShowLoginAlert(false);}}/>
                         </Form.Group>
                         <Form.Group controlId="signup-password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control  required type="password" placeholder="Password" className='mb-3'onChange={(e) => setLoginPassword(e.target.value)}/>
+                            <Form.Control type="password" placeholder="Password" className='mb-3'onChange={(e) => {setLoginPassword(e.target.value); setShowLoginAlert(false);}}/>
                         </Form.Group>
-                        <Button className="btn btn-primary w-100" >Log in</Button>
+                        {showLoginAlert && <Alert variant="danger" >💡Please fill out all required fields</Alert>}
+                        <Stack direction="horizontal" gap={3}>
+                            <Button  className="btn btn-primary w-100" onClick={closeLogin} >Cancle</Button>
+                            <Button type='submit' className="btn btn-primary w-100" >Log in</Button>
+                        </Stack>  
                     </Form>
                     <Nav.Link style={{fontSize:'small',marginTop:'0.5vw'}} onClick={goTOSignup}>Don't have an account? Sign up</Nav.Link>
                 </div>
@@ -335,7 +357,7 @@ function Homepage({authentication}) {
                     <Card.Body className='vertical-placement'>
                         <img src="/Group 187.png" style={{height:'15vh'}}/>
                         <Card.Text style={{marginTop:'2vh'}}>
-                            Get answers to your burning questions—just ask, and our community will respond.
+                            Get answers to your burning questions — Just ask, and our community will respond.
                         </Card.Text>
                     </Card.Body>
                 </Card>
@@ -343,7 +365,7 @@ function Homepage({authentication}) {
                     <Card.Body className='vertical-placement'>
                     <img src="/Group 189.png" style={{height:'15vh'}}/>
                         <Card.Text style={{marginTop:'2vh'}}>
-                            Jump in anytime — your insights are welcome on any post, whenever you're ready.
+                            Jump in anytime — Your insights are welcome on any post, whenever you're ready.
                         </Card.Text>
                     </Card.Body>
                 </Card>
@@ -351,7 +373,7 @@ function Homepage({authentication}) {
                     <Card.Body className='vertical-placement'>
                         <img src="/Group 188.png" style={{height:'15vh'}}/>
                         <Card.Text style={{marginTop:'2vh'}}>
-                            Easily find what you're looking for by searching for people, channels, or posts.
+                            Easily find what you're looking for — Quickly search for people, channels, or posts.
                         </Card.Text>
                     </Card.Body>
                 </Card>
