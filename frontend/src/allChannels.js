@@ -15,7 +15,7 @@ import DirectMessage from './directmessage';
 
 
 
-function AllChannels(){
+function AllChannels({removeAuthentication}){
     const [createChannelform, setCreateChannelForm] = useState(false)
     const openCreationForm = ()=>{
         setCreateChannelForm(true)
@@ -32,13 +32,16 @@ function AllChannels(){
         navigateTo('/messages')
     }
 
+    const goToHome =()=>{
+        navigateTo('/')
+    }
 
     return(
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
-                <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>Profile</Nav.Link>
-                <Nav.Link href="#" >Log Out</Nav.Link>
+                <Nav.Link className="me-auto" onClick={goToHome}>CScommunity</Nav.Link>
+                <Nav.Link className='horizontal-placement'>{username}</Nav.Link>
+                <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
                 <h6 className='me-auto '>All Channels</h6>

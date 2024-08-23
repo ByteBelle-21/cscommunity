@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useRef } from 'react';
 
 
-function Homepage() {
+function Homepage({authentication}) {
     const navigateTo = useNavigate()
     // To open the sign up form
     const [signupShow, setSignupShow] = useState(false)
@@ -44,6 +44,7 @@ function Homepage() {
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/signup', data);
             if (response.status === 200) {
+                authentication(true,signupUsername)
                 navigateTo('/all-channels')
             } 
             else if(response.status === 401){
@@ -69,6 +70,7 @@ function Homepage() {
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/login', data);
             if (response.status === 200) {
+                authentication(true,loginUsername)
                 navigateTo('/all-channels')
             } 
             else if(response.status === 401){

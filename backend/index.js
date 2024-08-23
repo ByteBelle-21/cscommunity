@@ -132,14 +132,14 @@ function createMessagesTable(){
                                 return;
                             }
                             console.log('Successfully created table messagesTable');
-                            //addForeignkeys();
+                            addForeignkeys();
                         })
 }
 
 
 
 
-/** 
+ 
 function addForeignkeys(){
     database.query(`ALTER TABLE postsTable 
                                 ADD CONSTRAINT fk_replyTo_posttable
@@ -186,7 +186,7 @@ function addForeignkeys(){
 
 
 
-
+/** 
 
 
 

@@ -17,10 +17,15 @@ function DirectMessage () {
     const goToProfile=()=>{
         navigateTo('/profile')
     }
+
+    const goToHome =()=>{
+        navigateTo('/')
+    }
+
     return (
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
-                <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
+                <Nav.Link  className="me-auto">CScommunity</Nav.Link>
                 <Nav.Link className='horizontal-placement'>Profile</Nav.Link>
                 <Nav.Link href="#" >Log Out</Nav.Link>
             </Stack>
