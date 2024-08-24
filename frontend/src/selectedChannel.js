@@ -100,15 +100,33 @@ function SelectedChannel(){
             setInputFiles(prev =>[...prev,...Array.from(inputFiles)])
         }
       };
+
+      const [inputPost, setInputPost] = useState('');
+      const handleInputChange = (e) =>{
+          setInputPost(e.target.value);
+      }
+  
+
+    const textAreaRef = useRef(null);
+    const handleEmojiSelect = (emoji) =>{
+          const cursor = textAreaRef.current.selectionStart;
+          const newInput = inputPost.slice(0,cursor) + emoji.native +inputPost.slice(cursor);
+          setInputPost(newInput);
+          textAreaRef.current.setSelectionRange(cursor + emoji.native.length, cursor + emoji.native.length);
+          textAreaRef.current.focus();
+      }
     
     const emojiPopover = (
         <Popover id="popover-basic">
           <Popover.Body>
-                <Picker data={data} />
+                <Picker data={data} onEmojiSelect={handleEmojiSelect} />
           </Popover.Body>
         </Popover>
       );
 
+
+
+    
     
     return(
         <div className='page-layout'>
@@ -163,7 +181,7 @@ function SelectedChannel(){
                             <OverlayTrigger trigger="click" placement="top" overlay={emojiPopover} >
                                 <Nav.Link><span className="material-icons">add_reaction</span></Nav.Link> 
                             </OverlayTrigger>            
-                            <TextareaAutosize minRows={1.5} maxRows={3} placeholder="Add your post here" className='text-area-formcontrol' />
+                            <TextareaAutosize ref={textAreaRef} minRows={1.5} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
                             <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
                                 <Nav.Link><span className="material-icons">send</span></Nav.Link>
                             </OverlayTrigger>
