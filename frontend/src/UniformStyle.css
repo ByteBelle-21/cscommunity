@@ -49,32 +49,42 @@
     overflow-x: hidden;
     position: fixed;
     width: 100vw;
-    margin-left: 4vh;
-    margin-right: 4vh;
     margin-top: 6vh;
     height: 89vh;   
 }
 
 .large-grid-container{
-
-    width: 75% !important;
+    background-color:#fff7f9 !important;
+    width: 64% !important;
     height: 89vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 !important;
+    padding: 1vw;
 }
 
 
-
-.small-grid-container{
-    width: 25% !important;
+.small-grid-container1{
+    padding: 1vw;
+    width: 16% !important;
     height: 89vh;
     max-height: 89vh;
     margin: 0 !important;
-    padding: 0 !important;
+   
+}
+
+.small-grid-container2{
+    padding: 1vw !important;
+    width: 20% !important;
+    height: 89vh;
+    max-height: 89vh;
+    margin: 0 !important;
+    
 
 }
+
+
 
 
 
@@ -84,6 +94,7 @@
     margin: 0 !important;
     padding: 0 !important;
     overflow-y: auto;
+    overflow-x: hidden;
     margin-bottom:1vw !important;
 }
 
@@ -102,6 +113,4 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.child-blocks:hover{
-    background-color: #C3BEFF;
-}
+

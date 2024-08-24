@@ -381,6 +381,25 @@ app.post('/login', (request, response) => {
 
 
 
+
+app.get('/user',(request,response)=>{
+    const user  = request.query.user;
+    database.query(`SELECT username, name, avatar, totalPosts, likes FROM userTable WHERE username=? `,[user],(error, result)=>{
+    if (error){
+        response.status(500).send("Server error during retrieving current user details");
+        return;
+    }
+    response.status(200).json(result);
+})
+})
+
+
+
+
+
+
+
+
 app.post('/createchannel', (request, response) => {
     const input_username = request.body.username;
     const input_channel = request.body.channel;
@@ -464,7 +483,7 @@ app.get('/allchannels',(request,response)=>{
 })
 
 app.get('/connectedusers',(request,response)=>{
-    const user = request.params.user;
+    const user = request.query.user;
     console.log(user); 
     database.query(`SELECT id FROM userTable WHERE username=?`,[user],(error, result)=>{
         if (error){

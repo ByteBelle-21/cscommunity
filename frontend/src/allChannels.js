@@ -19,7 +19,34 @@ import Alert from 'react-bootstrap/Alert';
 
 function AllChannels({removeAuthentication}){
     const [createChannelform, setCreateChannelForm] = useState(false)
-    const [username, setUsername] = useState('')
+    const [username, setUsername] = useState('');
+    const [userDetails, setUserDetails] = useState([]);
+
+    useEffect(()=>{
+        const current_user = sessionStorage.getItem('auth_user');
+        const fetchUserDetails= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+                    params: {user: current_user}
+                });
+                if (response.status === 200) {
+                    setUserDetails(response.data[0]);
+                    console.log("Successfully retrieved current user details");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchUserDetails();  
+    },[]);
+
+
+
+
     const openCreationForm = ()=>{
         setCreateChannelForm(true)
     }
@@ -74,6 +101,30 @@ function AllChannels({removeAuthentication}){
         }
       
     }
+
+
+    const [suggestedPeople, setSuggestedPeople] = useState([]);
+    useEffect(()=>{
+        const fetchSuggestedPeople= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
+                if (response.status === 200) {
+                    setSuggestedPeople(response.data);
+                    console.log("Successfully retrieved suggested user details");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchSuggestedPeople();  
+    },[]);
+
+    
+
 
 
     
@@ -147,6 +198,36 @@ function AllChannels({removeAuthentication}){
                 </div>       
             </div>
             <div className='page-content horizontal-placement'>
+                <Container className="small-grid-container1">
+                    <Container className=' profile' >
+                        <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
+                        <p style={{fontSize:'0.8vw'}}>{userDetails.username}</p>
+                        <p style={{fontSize:'1vw'}} >{userDetails.name}</p>
+                        <div className='horizontal-placement'>
+                            <div className='mx-2 vertical-placement'>
+                                {userDetails.totalPosts}
+                                <p style={{fontSize:'0.8vw'}}>Posts</p>
+                            </div>
+                            <div className='mx-2 vertical-placement'>
+                                {userDetails.likes}
+                                <p style={{fontSize:'0.8vw'}}>Likes</p>
+                            </div>
+                        </div>
+                        <Button>My Profile</Button>
+                    </Container>
+                    <h6 className='mb-3'> Suggested People</h6>
+                    <Container className='small-grid-container-child'>
+                        {suggestedPeople.length >0 && suggestedPeople.map(person=>(
+                                <Stack direction="horizontal" gap={3} style={{marginBottom:'0.5vw'}}>
+                                    <img src={person.avatar}  style={{height:'2.5vw'}}/>
+                                    <div className=' me-auto'>
+                                        {person.username}
+                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                    </div>   
+                                </Stack>
+                        ))}
+                    </Container>
+                </Container>
                 <Container className='large-grid-container '>
                     <Container className='col-titles'>
                         <Row style={{width:'100%'}} >
@@ -170,10 +251,10 @@ function AllChannels({removeAuthentication}){
                         ))}
                     </Container>
                 </Container>
-                <Container className='small-grid-container'>  
+                <Container className='small-grid-container2'>  
                     <h6>Direct Messages</h6>
-                    <Container className=' direct-messages small-grid-container-child'>
                         {connectedUsers.length >0 && connectedUsers.map(user=>(
+                            <Container className=' direct-messages small-grid-container-child'>
                             <div className='child-blocks'>
                                 <Stack direction="horizontal" gap={3}>
                                     <img src={user.avatar}  style={{height:'2vw'}}/>
@@ -184,8 +265,14 @@ function AllChannels({removeAuthentication}){
                                     <Nav.Link style={{fontSize:'small'}} onClick={showConversation}>View Conversation</Nav.Link>
                                 </Stack>
                             </div>
+                            </Container>
                         ))}
-                    </Container>
+                        {connectedUsers.length === 0 &&
+                            <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                <p style={{opacity:'0.5'}}>No messages </p>
+                            </Container>
+                        }
+                    
                     <div className='create-channel-container small-grid-container-child vertical-placement'>
                         <div className='create-channel-block vertical-placement'>
                             <img src="/Group 209.png" />
