@@ -1,4 +1,5 @@
 import './homepage.css';
+import './allChannels.css';
 import './UniformStyle.css'
 import './selectedChannel.css'
 import Stack from 'react-bootstrap/Stack';
@@ -7,16 +8,66 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/esm/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 
 
 function SelectedChannel(){
+    const [userDetails, setUserDetails] = useState([]);
+
+    useEffect(()=>{
+        const current_user = sessionStorage.getItem('auth_user');
+        const fetchUserDetails= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+                    params: {user: current_user}
+                });
+                if (response.status === 200) {
+                    setUserDetails(response.data[0]);
+                    console.log("Successfully retrieved current user details");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchUserDetails();  
+    },[]);
+
+
+
+
+
+    const [connectedUsers, setConnectedUsers] = useState([]);
+    useEffect(()=>{
+        const current_user = sessionStorage.getItem('auth_user');
+        const fetchConnectedUsers= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+                if (response.status === 200) {
+                    setConnectedUsers(response.data);
+                    console.log("Successfully retrieved all connected users");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchConnectedUsers();  
+    },[]);
    
     return(
         <div className='page-layout'>
             <Stack direction="horizontal" gap={3} className="navbar">
                 <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>Profile</Nav.Link>
+                <Nav.Link className='horizontal-placement'>{userDetails.username}</Nav.Link>
                 <Nav.Link href="#" >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
@@ -34,139 +85,24 @@ function SelectedChannel(){
                 </div>       
             </div>
             <div className='page-content horizontal-placement'>
-                <Container className='small-grid-container' >  
-                <h6>Direct Messages</h6>
-                   <Container className='small-grid-container-child'> 
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
+                <Container className='small-grid-container1'>
+                    <Container className=' profile' >
+                        <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
+                        <p style={{fontSize:'0.8vw'}}>{userDetails.username}</p>
+                        <p style={{fontSize:'1vw'}} >{userDetails.name}</p>
+                        <div className='horizontal-placement'>
+                            <div className='mx-2 vertical-placement'>
+                                {userDetails.totalPosts}
+                                <p style={{fontSize:'0.8vw'}}>Posts</p>
+                            </div>
+                            <div className='mx-2 vertical-placement'>
+                                {userDetails.likes}
+                                <p style={{fontSize:'0.8vw'}}>Likes</p>
+                            </div>
                         </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                <div className=' me-auto'>
-                                    Username
-                                    <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                            </Stack>
-                        </div>
-                   </Container>
-                   <h6>Suggested Channels for you</h6>
-                   <Container className='small-grid-container-child'>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <div className=' me-auto'>
-                                    Channel name
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >Go to Channel</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <div className=' me-auto'>
-                                    Channel name
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >Go to Channel</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <div className=' me-auto'>
-                                    Channel name
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >Go to Channel</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                            <Stack direction="horizontal" gap={3}>
-                                <div className=' me-auto'>
-                                    Channel name
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >Go to Channel</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                        <Stack direction="horizontal" gap={3}>
-                                <div className=' me-auto'>
-                                    Channel name
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >Go to Channel</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                        <Stack direction="horizontal" gap={3}>
-                                <div className=' me-auto'>
-                                    Channel name
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >Go to Channel</Nav.Link>
-                            </Stack>
-                        </div>
-                        <div className='child-blocks'>
-                        <Stack direction="horizontal" gap={3}>
-                                <div className=' me-auto'>
-                                    Channel name
-                                </div>
-                                <Nav.Link style={{fontSize:'small'}} >Go to Channel</Nav.Link>
-                            </Stack>
-                        </div>
-                   </Container>       
+                        <Button>My Profile</Button>
+                    </Container>
+                    
                 </Container>
                 <Container className='large-grid-container'>
                     <Container className='all-posts'>
@@ -178,6 +114,34 @@ function SelectedChannel(){
                         </Form.Group>
                     </Form>
                 </Container>
+                <Container className='small-grid-container2' >  
+                <h6>Direct Messages</h6>
+                {connectedUsers.length >0 && connectedUsers.map(user=>(
+                            <Container className=' direct-messages small-grid-container-child'>
+                            <div className='child-blocks'>
+                                <Stack direction="horizontal" gap={3}>
+                                    <img src={user.avatar}  style={{height:'2vw'}}/>
+                                    <div className=' me-auto'>
+                                        {user.username}
+                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                    </div>
+                                    <Nav.Link style={{fontSize:'small'}} onClick={showConversation}>View Conversation</Nav.Link>
+                                </Stack>
+                            </div>
+                            </Container>
+                        ))}
+                        {connectedUsers.length === 0 &&
+                            <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                <p style={{opacity:'0.5'}}>No messages </p>
+                            </Container>
+                        }
+                   <h6>Suggested Channels for you</h6>
+                   <Container className='small-grid-container-child'>
+                        
+                   </Container>       
+                </Container>
+               
+                
             </div>
         </div>
 

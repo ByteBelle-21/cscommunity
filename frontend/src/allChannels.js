@@ -241,7 +241,7 @@ function AllChannels({removeAuthentication}){
                         {allChannels.length > 0 && allChannels.map(channel=>(
                             <Row  className='channel horizontal-placement' onClick={showchannel}>
                                 <Col xs={6} md={6}>
-                                <img src="/Group 210.png"  style={{height:'3vw'}}/> <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
+                                 <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
                                 </Col>
                                 <Col xs={2} md={1}>{channel.totalposts}</Col>
                                 <Col xs={2} md={1}>{channel.totalpeople}</Col>

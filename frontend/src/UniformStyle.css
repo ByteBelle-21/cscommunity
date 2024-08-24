@@ -55,7 +55,7 @@
 
 .large-grid-container{
     background-color:#fff7f9 !important;
-    width: 64% !important;
+    width: 57% !important;
     height: 89vh;
     display: flex;
     flex-direction: column;
@@ -67,7 +67,7 @@
 
 .small-grid-container1{
     padding: 1vw;
-    width: 16% !important;
+    width: 18% !important;
     height: 89vh;
     max-height: 89vh;
     margin: 0 !important;
@@ -76,7 +76,7 @@
 
 .small-grid-container2{
     padding: 1vw !important;
-    width: 20% !important;
+    width: 25% !important;
     height: 89vh;
     max-height: 89vh;
     margin: 0 !important;
