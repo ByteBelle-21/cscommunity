@@ -6,10 +6,14 @@ import Stack from 'react-bootstrap/Stack';
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/esm/Container';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import { useRef } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
+
 
 
 
@@ -62,7 +66,58 @@ function SelectedChannel(){
         }
         fetchConnectedUsers();  
     },[]);
-   
+
+
+    const showFileTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props} className='tooltip'>
+          Upload file
+        </Tooltip>
+      );
+
+    const showSendTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props} className='tooltip'>
+          Send
+        </Tooltip>
+      );
+
+    const showEmojiTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props} className='tooltip'>
+          Add reaction
+        </Tooltip>
+      );
+
+    const fileRef = useRef(null);
+    const handleButtonClick = () => {
+        fileRef.current.click(); 
+      };
+
+    const [inputFiles, setInputFiles] = useState([]);
+    const handleFileInput = (event) => {
+        const inputFiles = event.target.files[0];
+        if (inputFiles) {
+            setInputFiles(prev =>[...prev,...Array.from(inputFiles)])
+        }
+      };
+    
+
+    const textAreaRef = useRef(null);
+    const adjustHeight = ()=>{
+        const textarea = textAreaRef.current;
+        if (textarea){
+            textarea.style.height = 'auto';
+            const maxHeight =window.innerWidth * (5 / 100);
+            const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+            textarea.style.height = `${newHeight}px`;
+        }
+
+    }
+    useEffect(() => {
+        adjustHeight(); // Initial adjustment
+        window.addEventListener('resize', adjustHeight); // Adjust on resize
+        return () => window.removeEventListener('resize', adjustHeight); // Cleanup
+    }, []);
+
+    
     return(
         <div className='page-layout'>
             <Stack direction="horizontal" gap={3} className="navbar">
@@ -104,14 +159,25 @@ function SelectedChannel(){
                     </Container>
                     
                 </Container>
-                <Container className='large-grid-container'>
+                <Container className='large-grid-container middle-container '>
                     <Container className='all-posts'>
                         wkjnrfgjehrfvbkwjhefkjwnhbdcjabfjnhdnfvjwb
                     </Container>   
-                    <Form className='text-area'>
-                        <Form.Group  controlId="post">
-                            <Form.Control as="textarea" rows={3} style={{height:'2vw'}}/>
-                        </Form.Group>
+                    <Form className='text-area horizontal-placement'>
+                            <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={handleFileInput}/>
+                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
+                                <Nav.Link><span className="material-icons" onClick={handleButtonClick}>add_circle</span></Nav.Link> 
+                            </OverlayTrigger>
+                            
+                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showEmojiTooltip}>
+                                <Nav.Link><span className="material-icons">add_reaction</span></Nav.Link> 
+                            </OverlayTrigger>
+                            
+                            <TextareaAutosize minRows={1.5} maxRows={3} placeholder="Add your post here" className='text-area-formcontrol' />
+                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
+                                <Nav.Link><span className="material-icons">send</span></Nav.Link>
+                            </OverlayTrigger>
+                             
                     </Form>
                 </Container>
                 <Container className='small-grid-container2' >  
