@@ -11,9 +11,11 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Popover from 'react-bootstrap/Popover';
 import { useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 
 
@@ -99,23 +101,13 @@ function SelectedChannel(){
         }
       };
     
-
-    const textAreaRef = useRef(null);
-    const adjustHeight = ()=>{
-        const textarea = textAreaRef.current;
-        if (textarea){
-            textarea.style.height = 'auto';
-            const maxHeight =window.innerWidth * (5 / 100);
-            const newHeight = Math.min(textarea.scrollHeight, maxHeight);
-            textarea.style.height = `${newHeight}px`;
-        }
-
-    }
-    useEffect(() => {
-        adjustHeight(); // Initial adjustment
-        window.addEventListener('resize', adjustHeight); // Adjust on resize
-        return () => window.removeEventListener('resize', adjustHeight); // Cleanup
-    }, []);
+    const emojiPopover = (
+        <Popover id="popover-basic">
+          <Popover.Body>
+                <Picker data={data} />
+          </Popover.Body>
+        </Popover>
+      );
 
     
     return(
@@ -168,11 +160,9 @@ function SelectedChannel(){
                             <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
                                 <Nav.Link><span className="material-icons" onClick={handleButtonClick}>add_circle</span></Nav.Link> 
                             </OverlayTrigger>
-                            
-                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showEmojiTooltip}>
+                            <OverlayTrigger trigger="click" placement="top" overlay={emojiPopover} >
                                 <Nav.Link><span className="material-icons">add_reaction</span></Nav.Link> 
-                            </OverlayTrigger>
-                            
+                            </OverlayTrigger>            
                             <TextareaAutosize minRows={1.5} maxRows={3} placeholder="Add your post here" className='text-area-formcontrol' />
                             <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
                                 <Nav.Link><span className="material-icons">send</span></Nav.Link>
