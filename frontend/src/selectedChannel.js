@@ -140,14 +140,17 @@ function SelectedChannel(){
     
     const handleSendPost =async(e)=>{
         e.preventDefault();
+        const current_user = sessionStorage.getItem('auth_user');
+        const channel = decodeURIComponent(channelName);
         const data = {
-            inputPost, inputFiles
+            current_user,
+            inputPost,
+            channel
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/login', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/post', data);
             if (response.status === 200) {
-                authentication(true,loginUsername)
-                navigateTo('/all-channels')
+                console.log("Uploaded post succesfully")  
             } 
             else if(response.status === 401){
                 console.log(response.message)

@@ -11,6 +11,9 @@ app.use(bodyParser.json());
 const mysql = require('mysql2');
 
 
+const storage = multer.memoryStorage(); 
+const upload = multer({ storage: storage });
+
 var database = mysql.createConnection({
   host: 'mysql-image',
   user: 'root',
@@ -89,9 +92,6 @@ function createPostsTable(){
                         username INT,
                         datetime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
                         post VARCHAR(1000) NOT NULL, 
-                        filename VARCHAR(255) NULL,
-                        filetype VARCHAR(50) NULL,
-                        filedata LONGBLOB NULL,
                         channel INT)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table postsTable: ',error);
@@ -111,12 +111,26 @@ function createFilesTable(){
                         postId INT,
                         messageId INT)`,(error,result)=>{
                             if (error){
-                                console.error('Error while creating the table postsTable: ',error);
+                                console.error('Error while creating the table filesTable: ',error);
                                 return;
                             }
-                            console.log('Successfully created table postsTable');
+                            console.log('Successfully created table filesTable');
                         })
 }
+
+
+app.post('/file', (request, response) => {
+    const { filename, filetype, filedata, post} = request.body;
+    database.query(`INSERT INTO filesTable (filename,filetype,filedata,postId,messageId) VALUES ( ?, ?, ?, ?, ?)`,
+    [ filename, filetype, filedata, post, NULL],(error,result)=>{
+        if(error){
+            response.status(500).send("Server error during uploading the file",filename);
+            return;
+        }
+        response.status(200).json(result[0]);
+                
+    })
+});
 
 
 
@@ -548,6 +562,29 @@ app.get('/connectedusers',(request,response)=>{
     })
     
 })
+
+
+
+app.post('/post', (request, response) => {
+    const input_post = request.body.inputPost;
+    const input_channel = request.body.channel;
+    const input_user = request.body.current_user;
+    database.query(`INSERT INTO postsTable (replyTo,username,post,filename,filetype,filedata,channel) VALUES ( ?, ?, ?, ?, ?, ?, ?)`,
+    [0, input_user,input_post, NULL, NULL,NULL,input_channel],(error,result)=>{
+        if(error){
+            response.status(500).send("Server error during uploading the post");
+            return;
+        }
+        response.status(200).json({ postId: result.insertId });
+                
+    })
+});
+
+
+
+
+
+
 
 
 

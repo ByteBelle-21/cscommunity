@@ -37,7 +37,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Homepage authentication={authentication} />} />
                 <Route path="/all-channels" element={hasAuthentication ? <AllChannels removeAuthentication={removeAuthentication}/> : <Navigate to="/" />}/>
-                <Route path="/channel" element={hasAuthentication ? <SelectedChannel /> : <Navigate to="/" />}/>
+                <Route path="/channel/:channelName" element={hasAuthentication ? <SelectedChannel /> : <Navigate to="/" />}/>
                 <Route path="/messages" element={hasAuthentication ? <DirectMessage /> : <Navigate to="/" />} />
                 <Route path="/profile" element={hasAuthentication ? <Profile /> : <Navigate to="/" />}/>
             </Routes>
