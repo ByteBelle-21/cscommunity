@@ -94,12 +94,22 @@ function SelectedChannel(){
       };
 
     const [inputFiles, setInputFiles] = useState([]);
+    const [gotFile, setGotFiles] = useState(false);
+
     const handleFileInput = (event) => {
-        const inputFiles = event.target.files[0];
-        if (inputFiles) {
-            setInputFiles(prev =>[...prev,...Array.from(inputFiles)])
+        const files = event.target.files;
+        if (files) {
+            setGotFiles(true);
+            setInputFiles(prev =>[...prev,...Array.from(files)]);
         }
       };
+
+    const handleFileDelete=(filename)=>{
+        setInputFiles((prev) => prev.filter((file) => file.name !== filename));
+        if(inputFiles.length===0){
+            setGotFiles(false);
+        }
+    }
 
       const [inputPost, setInputPost] = useState('');
       const handleInputChange = (e) =>{
@@ -170,22 +180,33 @@ function SelectedChannel(){
                     
                 </Container>
                 <Container className='large-grid-container middle-container '>
-                    <Container className='all-posts'>
-                        wkjnrfgjehrfvbkwjhefkjwnhbdcjabfjnhdnfvjwb
+                    <Container className='all-posts vertical-placement'>
+                        <p style={{fontSize:'0.9vw',opacity:0.5}}>No posts yet in this channel</p>
                     </Container>   
                     <Form className='text-area horizontal-placement'>
-                            <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={handleFileInput}/>
-                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
-                                <Nav.Link><span className="material-icons" onClick={handleButtonClick}>add_circle</span></Nav.Link> 
-                            </OverlayTrigger>
-                            <OverlayTrigger trigger="click" placement="top" overlay={emojiPopover} >
-                                <Nav.Link><span className="material-icons">add_reaction</span></Nav.Link> 
-                            </OverlayTrigger>            
-                            <TextareaAutosize ref={textAreaRef} minRows={1.5} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
-                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
-                                <Nav.Link><span className="material-icons">send</span></Nav.Link>
-                            </OverlayTrigger>
-                             
+                        <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={handleFileInput}/>
+                        <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
+                            <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleButtonClick}>attach_file</span></Nav.Link> 
+                        </OverlayTrigger>
+                        <OverlayTrigger trigger="click" placement="top" overlay={emojiPopover} >
+                            <Nav.Link className='textarea-icons'><span className="material-icons">add_reaction</span></Nav.Link> 
+                        </OverlayTrigger>
+                        <div className='content-holder vertical-placement'>
+                            {gotFile && <div className='filePlaceholders'>
+                                {inputFiles.map(file =>(
+                                <Stack direction="horizontal" gap={1} className="file-card">
+                                    <span className="material-icons" >description</span>
+                                    <div className='me-auto' style={{fontSize:'0.9vw'}}>{file.name}</div>
+                                    <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >delete</span></Nav.Link>
+                                </Stack>))}
+                            </div>}
+                            <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
+                        </div>  
+                        <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
+                            <Nav.Link className='textarea-icons'><span className="material-icons">send</span></Nav.Link>
+                        </OverlayTrigger>
+
+                            
                     </Form>
                 </Container>
                 <Container className='small-grid-container2' >  
