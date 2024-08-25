@@ -53,6 +53,7 @@ function useDatabase(){
         console.log('Successfully accessed database Cscommunity');
         createUserTable();
         createPostsTable();
+        createFilesTable();
         createChannelsTable();
         createMessagesTable();
         createMessagesTable();
@@ -101,6 +102,25 @@ function createPostsTable(){
 }
 
 
+function createFilesTable(){
+    database.query(`CREATE TABLE IF NOT EXISTS filesTable 
+                        (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                        filename VARCHAR(255) NULL,
+                        filetype VARCHAR(50) NULL,
+                        filedata LONGBLOB NULL,
+                        postId INT,
+                        messageId INT)`,(error,result)=>{
+                            if (error){
+                                console.error('Error while creating the table postsTable: ',error);
+                                return;
+                            }
+                            console.log('Successfully created table postsTable');
+                        })
+}
+
+
+
+
 function createChannelsTable(){
     database.query(`CREATE TABLE IF NOT EXISTS channelsTable 
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -123,10 +143,7 @@ function createMessagesTable(){
                         sender INT, 
                         reciever INT, 
                         datetime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                        message VARCHAR(1000) NOT NULL,
-                        filename VARCHAR(255) NULL,
-                        filetype VARCHAR(50) NULL,
-                        filedata LONGBLOB NULL)`,(error,result)=>{
+                        message VARCHAR(1000) NOT NULL)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table messagesTable: ',error);
                                 return;
@@ -153,6 +170,19 @@ function addForeignkeys(){
                                         return;
                                     }
                                     console.log('Successfully added foreign key to table postsTable');
+                                    
+                                });
+    
+    database.query(`ALTER TABLE filesTable 
+                                ADD CONSTRAINT fk_postId_filesTable
+                                FOREIGN KEY (postId) REFERENCES postsTable(id) ON DELETE SET NULL,
+                                ADD CONSTRAINT fk_messageId_filesTable
+                                FOREIGN KEY (messageId) REFERENCES messagesTable(id) ON DELETE SET NULL`,(error, result)=>{
+                                    if (error){
+                                        console.error('Error while adding foreign key to table filesTable: ',error);
+                                        return;
+                                    }
+                                    console.log('Successfully added foreign key to table filesTable');
                                     
                                 });
 

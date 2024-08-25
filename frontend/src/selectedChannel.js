@@ -136,6 +136,30 @@ function SelectedChannel(){
 
 
 
+
+    
+    const handleSendPost =async(e)=>{
+        e.preventDefault();
+        const data = {
+            inputPost, inputFiles
+        }
+        try {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/login', data);
+            if (response.status === 200) {
+                authentication(true,loginUsername)
+                navigateTo('/all-channels')
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+      
+    }
+
+
+
     
     
     return(
@@ -203,7 +227,7 @@ function SelectedChannel(){
                             <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
                         </div>  
                         <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
-                            <Nav.Link className='textarea-icons'><span className="material-icons">send</span></Nav.Link>
+                            <Nav.Link className='textarea-icons' onClick={()=>handleSendPost}><span className="material-icons">send</span></Nav.Link>
                         </OverlayTrigger>
 
                             
