@@ -140,21 +140,29 @@ function SelectedChannel(){
 
 
 
-    
+    const [replyTo, setReplyTo] = useState(0);
+
+    const handleReplyClick = (Id) =>{
+        setReplyTo(Id);
+    }
+
+
     const handleSendPost =async(e)=>{
         e.preventDefault();
         const current_user = sessionStorage.getItem('auth_user');
         const channel = decodeURIComponent(channelName);
-        console.log(channel);
+        console.log(replyTo);
         const data = {
             current_user,
             inputPost,
-            channel
+            channel,
+            replyTo
         }
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/post', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
+                setReplyTo(0);
                 setInputPost(''); 
             } 
             else if(response.status === 401){
@@ -165,6 +173,30 @@ function SelectedChannel(){
         }
       
     }
+
+    
+    const[allPosts, setAllPosts] = useState([])
+    useEffect(()=>{
+        const fetchAllPosts= async()=>{
+            const channel_name = decodeURIComponent(channelName);
+            console.log("channel name is : ",channel_name);
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allPosts',
+                { params: {current_channel:channel_name}});
+                if (response.status === 200) {
+                    setAllPosts(response.data);
+                    console.log("Successfully retrieved all posts for channel",channelName);
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchAllPosts();  
+    },[]);
 
 
 
@@ -178,7 +210,7 @@ function SelectedChannel(){
                 <Nav.Link href="#" >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
-                <h6 className='me-auto'>Selected Channel</h6>
+                <h6 className='me-auto'>{channelName}</h6>
                 <div className='search-container horizontal-placement'>
                     <span className="material-icons">search</span> Search  
                     <Form className='horizontal-placement ms-4'> 
@@ -212,9 +244,34 @@ function SelectedChannel(){
                     
                 </Container>
                 <Container className='large-grid-container middle-container '>
-                    <Container className='all-posts vertical-placement'>
-                        <p style={{fontSize:'0.9vw',opacity:0.5}}>No posts yet in this channel</p>
-                    </Container>   
+                    {allPosts.length ===0 && 
+                        <Container className='all-posts vertical-placement'>
+                            <p style={{fontSize:'0.9vw',opacity:0.5}}>No posts yet in this channel</p>
+                        </Container>   
+                    }
+                    {allPosts.length> 0 && 
+                        <Container className='all-posts '>
+                            {allPosts.map(post=>(
+                            <div className="post-div" style={{paddingLeft:`${post.level * 2.5}vw`}}>
+                                <div className='post-sender'>
+                                    <Nav.Link >
+                                        <img src={post.avatar} style={{height:'1.5vw'}}></img>
+                                        <strong style={{fontSize:'0.8vw', marginLeft:'1vw',opacity:'0.7'}}>{post.username}</strong>    
+                                    </Nav.Link >
+                                    <span style={{fontSize:'0.7vw',  marginLeft:'1vw'}}>{post.datetime}</span>
+                                </div>
+                                <div className='post-text' style={{paddingLeft:'2.5vw',fontSize:'0.87vw'}}>
+                                    <span>{post.post}</span>
+                                    <Stack direction="horizontal" gap={3} style={{ alignItems:'center',marginTop:'0.1vw'}}>
+                                        <Nav.Link ><span className="material-icons" style={{fontSize:'0.85vw', color:'green'}} >thumb_up</span> Like</Nav.Link>
+                                        <Nav.Link><span className="material-icons" style={{fontSize:'0.85vw', color:'red'}}  >thumb_down</span> Dislike</Nav.Link>
+                                        <Nav.Link><span className="material-icons" style={{fontSize:'0.9vw', color:'blue'}} onClick={()=>handleReplyClick(post.id)}  >reply</span> Reply</Nav.Link>
+                                    </Stack>
+                                </div>
+                            </div>
+                        
+                     ))}
+                     </Container>}
                     <Form className='text-area horizontal-placement'>
                         <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={handleFileInput}/>
                         <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  

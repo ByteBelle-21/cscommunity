@@ -6,10 +6,24 @@
     display: flex;
     flex-direction: column;
     margin: 0 !important;
-    padding: 4vh !important;
+    padding: 0.3vw !important;
+    padding-top: 0 !important;
     height: 85vh;
     width: 100%;
     overflow-y: auto !important;
+}
+
+.post-div{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1vw;
+    width: 100%;
+}
+
+.post-sender{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .all-posts::-webkit-scrollbar{

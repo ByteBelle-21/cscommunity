@@ -89,7 +89,7 @@ function createPostsTable(){
                         replyTo INT ,
                         username INT,
                         datetime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
-                        post VARCHAR(1000) NOT NULL, 
+                        post VARCHAR(1000) NOT NULL,
                         channel INT)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table postsTable: ',error);
@@ -115,22 +115,6 @@ function createFilesTable(){
                             console.log('Successfully created table filesTable');
                         })
 }
-
-
-app.post('/file', (request, response) => {
-    const { filename, filetype, filedata, post} = request.body;
-    database.query(`INSERT INTO filesTable (filename,filetype,filedata,postId,messageId) VALUES ( ?, ?, ?, ?, ?)`,
-    [ filename, filetype, filedata, post, NULL],(error,result)=>{
-        if(error){
-            response.status(500).send("Server error during uploading the file",filename);
-            return;
-        }
-        response.status(200).json(result[0]);
-                
-    })
-});
-
-
 
 
 function createChannelsTable(){
@@ -161,13 +145,13 @@ function createMessagesTable(){
                                 return;
                             }
                             console.log('Successfully created table messagesTable');
-                            addForeignkeys();
+                            //addForeignkeys();
                         })
 }
 
 
 
-
+/** 
  
 function addForeignkeys(){
     database.query(`ALTER TABLE postsTable 
@@ -228,7 +212,7 @@ function addForeignkeys(){
 
 
 
-/** 
+
 
 
 
@@ -526,7 +510,6 @@ app.get('/allchannels',(request,response)=>{
 
 app.get('/connectedusers',(request,response)=>{
     const user = request.query.user;
-    console.log(user); 
     database.query(`SELECT id FROM userTable WHERE username=?`,[user],(error, result)=>{
         if (error){
             response.status(500).send("Server error during retrieving user id for direct messages");
@@ -567,6 +550,7 @@ app.post('/post', (request, response) => {
     const input_post = request.body.inputPost;
     const input_channel = request.body.channel;
     const input_user = request.body.current_user;
+    const input_reply_to = request.body.replyTo;
     database.query(`SELECT id FROM userTable WHERE username=?`,[input_user],(error, userId_result)=>{
         if (error){
             response.status(500).send("Server error during retrieving user id for uploading post");
@@ -589,8 +573,8 @@ app.post('/post', (request, response) => {
                         }
                         else{
                             const channelId = channelId_result[0].id;
-                            database.query(`INSERT INTO postsTable (username,post,channel) VALUES ( ?, ?, ?)`,
-                            [userId,input_post,channelId],(error,result)=>{
+                            database.query(`INSERT INTO postsTable (replyTo, username, post, channel) VALUES (?, ?, ?, ?)`,
+                            [input_reply_to, userId, input_post, channelId],(error,result)=>{
                                 if(error){
                                     response.status(500).send("Server error during uploading the post");
                                     return;
@@ -603,15 +587,73 @@ app.post('/post', (request, response) => {
                 });
             }
         }
+    });   
 });
 
 
+app.get('/allPosts',(request,response)=>{
+    console.log("i am here at back all post");
+    const channel = request.query.current_channel;
+    console.log(channel);
+    database.query(`SELECT id FROM channelsTable WHERE channel=?`,[channel],(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving channel id while retriving all posts");
+            return;
+        }
+        else{
+            if(result.length===0){
+                response.status(401).send("channel id doesn't exists for current channel");
+            }
+            else{
+                const channelId = result[0].id; 
+                console.log(channelId);
+                database.query(`WITH RECURSIVE postTree AS(
+                    SELECT p.id,
+                           p.replyTo,
+                           u.username,
+                           u.avatar,
+                           p.datetime,
+                           p.post,
+                           0 AS level
+                    FROM  postsTable p
+                    JOIN userTable u ON p.username = u.id
+                    WHERE p.replyTo IS NULL AND p.channel = ?
+                    UNION ALL
+                    SELECT p.id,
+                           p.replyTo,
+                           u.username,
+                           u.avatar,
+                           p.datetime,
+                           p.post,
+                           pT.level + 1 AS level
+                    FROM postsTable p
+                    JOIN userTable u ON p.username = u.id
+                    INNER JOIN postTree pT ON p.replyTo = pT.id
+                    WHERE p.channel = ?)
+                    SELECT id,
+                           replyTo,
+                           username,
+                           avatar,
+                           datetime,
+                           post,
+                           level 
+                    FROM postTree
+                    ORDER BY datetime`,[channelId,channelId],(error, result)=>{
+                                            if (error){
+                                                console.log(error);
+                                                response.status(500).send("Server error during retrieving postTree");
+                                                return;
+                                            }
+                                            console.log("it is success")
+                                            response.status(200).json(result);
+                    
+                })
 
+            }
+        } 
+    })
     
-});
-
-
-
+})
 
 
 
@@ -628,3 +670,7 @@ app.post('/post', (request, response) => {
 app.listen(PORT, () => {
     console.log('server is running on port ' + PORT + ".");
 });
+
+
+
+
