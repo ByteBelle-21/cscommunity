@@ -239,7 +239,7 @@ function AllChannels({removeAuthentication}){
                     </Container>
                     <Container className="channel-list">
                         {allChannels.length > 0 && allChannels.map(channel=>(
-                            <Row  className='channel horizontal-placement' onClick={showchannel(channel.channel)}>
+                            <Row  className='channel horizontal-placement' onClick={()=>showchannel(channel.channel)}>
                                 <Col xs={6} md={6}>
                                  <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
                                 </Col>

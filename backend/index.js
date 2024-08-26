@@ -11,8 +11,6 @@ app.use(bodyParser.json());
 const mysql = require('mysql2');
 
 
-const storage = multer.memoryStorage(); 
-const upload = multer({ storage: storage });
 
 var database = mysql.createConnection({
   host: 'mysql-image',
@@ -569,15 +567,47 @@ app.post('/post', (request, response) => {
     const input_post = request.body.inputPost;
     const input_channel = request.body.channel;
     const input_user = request.body.current_user;
-    database.query(`INSERT INTO postsTable (replyTo,username,post,filename,filetype,filedata,channel) VALUES ( ?, ?, ?, ?, ?, ?, ?)`,
-    [0, input_user,input_post, NULL, NULL,NULL,input_channel],(error,result)=>{
-        if(error){
-            response.status(500).send("Server error during uploading the post");
+    database.query(`SELECT id FROM userTable WHERE username=?`,[input_user],(error, userId_result)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving user id for uploading post");
             return;
         }
-        response.status(200).json({ postId: result.insertId });
-                
-    })
+        else{
+            if(userId_result.length===0){
+                response.status(401).send("user id doesn't exists for current user in upload post ");
+            }
+            else{
+                const userId = userId_result[0].id;
+                database.query(`SELECT id FROM channelsTable WHERE channel=?`,[input_channel],(error, channelId_result)=>{
+                    if(error){
+                        response.status(500).send("Server error during retrieving channel id for uploading post");
+                        return;
+                    }
+                    else{
+                        if(channelId_result.length===0){
+                            response.status(401).send("channel id doesn't exists for current channel in upload post ");
+                        }
+                        else{
+                            const channelId = channelId_result[0].id;
+                            database.query(`INSERT INTO postsTable (username,post,channel) VALUES ( ?, ?, ?)`,
+                            [userId,input_post,channelId],(error,result)=>{
+                                if(error){
+                                    response.status(500).send("Server error during uploading the post");
+                                    return;
+                                }
+                                response.status(200).json({ postId: result.insertId });          
+                            });
+
+                        }
+                    }
+                });
+            }
+        }
+});
+
+
+
+    
 });
 
 

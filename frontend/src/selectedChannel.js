@@ -16,10 +16,13 @@ import { useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
+import { useParams } from 'react-router-dom';
 
 
 
 function SelectedChannel(){
+    const {channelName} = useParams();
+
     const [userDetails, setUserDetails] = useState([]);
 
     useEffect(()=>{
@@ -142,6 +145,7 @@ function SelectedChannel(){
         e.preventDefault();
         const current_user = sessionStorage.getItem('auth_user');
         const channel = decodeURIComponent(channelName);
+        console.log(channel);
         const data = {
             current_user,
             inputPost,
@@ -150,7 +154,8 @@ function SelectedChannel(){
         try {
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/post', data);
             if (response.status === 200) {
-                console.log("Uploaded post succesfully")  
+                console.log("Uploaded post succesfully");
+                setInputPost(''); 
             } 
             else if(response.status === 401){
                 console.log(response.message)
@@ -230,7 +235,7 @@ function SelectedChannel(){
                             <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
                         </div>  
                         <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
-                            <Nav.Link className='textarea-icons' onClick={()=>handleSendPost}><span className="material-icons">send</span></Nav.Link>
+                            <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleSendPost}>send</span></Nav.Link>
                         </OverlayTrigger>
 
                             
