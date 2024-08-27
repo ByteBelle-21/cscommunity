@@ -25,7 +25,7 @@ function OtherUserProfile({removeAuthentication}){
     const [suggestedPeople, setSuggestedPeople] = useState([]);
     useEffect(()=>{
         fetchSuggestedPeople();
-        fetchUserDetails();
+        fetchSelectedUserDetails();
     });
         const fetchSuggestedPeople= async()=>{
             try {
@@ -51,16 +51,15 @@ function OtherUserProfile({removeAuthentication}){
     }
 
 
-    const [userDetails, setUserDetails] = useState([]);
+    const [selectedUserDetails, setSelectedUserDetails] = useState([]);
     const the_user = userName;
-    const fetchUserDetails= async()=>{
+    const fetchSelectedUserDetails= async()=>{
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/selected-user',{
                 params: {user: the_user}
             });
             if (response.status === 200) {
-                setUserDetails(response.data[0]);
-                console.log(response.data[0]);
+                setSelectedUserDetails(response.data);
                 console.log("Successfully retrieved selected user details");
             } 
             else if(response.status === 401){
@@ -100,11 +99,35 @@ function OtherUserProfile({removeAuthentication}){
                 </Container>
                 <Container className='user-profile'>
                     <div className='profile-background'></div>
-                    <img  src={userDetails.avatar} className='user-img'/> 
+                    <img  src={selectedUserDetails.avatar} className='user-img'/> 
                     <div className='user-details'>
-                        <h5> Hello 👋 I am {userDetails.name} !</h5>
-                        <p><span style={{fontWeight:'bold'}}>{userDetails.username}</span><span style={{marginLeft:'1vw'}}><span className="material-icons" style={{fontSize:'1vw', color:'blue'}}  >work</span> {userDetails.occupation}</span></p>
                         <Button >Send Message</Button>
+                        <h5> Hello 👋 I am {selectedUserDetails.name} !</h5>
+                        <p>
+                            <span style={{fontWeight:'bold'}}>{selectedUserDetails.username}</span>
+                            <span style={{marginLeft:'1vw'}}><span className="material-icons" style={{fontSize:'1vw', color:'blue'}}  >work</span> {selectedUserDetails.occupation}</span>
+                            <span style={{marginLeft:'1vw'}}>{selectedUserDetails.totalPosts} Posts</span>
+                        </p>
+                        <h6 className='mt-3'>Skills</h6>
+                        <hr style={{width:'70%'}}/>
+                        <div className='all-skills'>
+                            
+                            {selectedUserDetails.skills ? 
+                                (selectedUserDetails.skills.split(',').map((skill) => (
+                                    <div className='each-skill'>{skill.trim()}</div>
+                                )))
+                                : <div>No skils avaialable</div>}
+                        </div>
+                        <h6 className='mt-5'>Activities</h6>
+                        <div className='all-skills'>
+                            {selectedUserDetails.posts ? (selectedUserDetails.map(post=>(
+                                (<div>
+                                    <h6>post.</h6>
+                                </div>)
+                            )))
+                            : <div>No activities yet</div>}
+                        </div>
+                        <hr style={{width:'70%'}}/>
                     </div>
                     
                 </Container>

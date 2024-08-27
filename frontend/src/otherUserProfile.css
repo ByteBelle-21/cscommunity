@@ -34,8 +34,28 @@
 }
 
 .user-details .btn{
+    position: absolute;
+    right: 1vw !important;
+    top: 11vw !important;
     background-color: black !important;
     border-color: black !important;
     color: white !important;
 
+}
+
+.all-skills{
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.each-skill{
+    margin-right: 1vw;
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    padding-top: 0.2vw;
+    padding-bottom: 0.2vw;
+    background-color: #d7d9d7;
+    border-radius: 0.2vw;
 }

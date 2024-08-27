@@ -57,7 +57,7 @@ function useDatabase(){
         createFilesTable();
         createChannelsTable();
         createMessagesTable();
-        createMessagesTable();
+       
     })
 }
 
@@ -145,13 +145,13 @@ function createMessagesTable(){
                                 return;
                             }
                             console.log('Successfully created table messagesTable');
-                            //addForeignkeys();
+                            addForeignkeys();
                         })
 }
 
 
 
-/** 
+ 
  
 function addForeignkeys(){
     database.query(`ALTER TABLE postsTable 
@@ -215,7 +215,7 @@ function addForeignkeys(){
 
 
 
-
+/**
 function addForeignkeys(){
     database.query(`ALTER TABLE postsTable 
         DROP FOREIGN KEY fk_replyTo_posttable`,(error,result)=>{
@@ -701,6 +701,30 @@ app.get('/allPosts',(request,response)=>{
         } 
     })
     
+})
+
+
+
+app.get('/selected-user',(request,response)=>{
+    const user  = request.query.user;
+    database.query(`SELECT * FROM userTable WHERE username=? `,[user],(error, userResult)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving current user details");
+            return;
+        }
+        else{
+            const userDetails = userResult[0];
+            const userId = userDetails.id;
+            database.query(`SELECT * FROM postsTable WHERE username=? `,[userId],(error, postsResult)=>{
+                if (error){
+                    response.status(500).send("Server error during retrieving current user details");
+                    return;
+                }
+                const resposeData = {...userDetails, posts:postsResult[0] }
+                response.status(200).json(resposeData);
+            })
+        }
+    })
 })
 
 
