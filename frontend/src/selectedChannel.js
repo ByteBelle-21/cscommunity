@@ -141,9 +141,17 @@ function SelectedChannel(){
 
 
     const [replyTo, setReplyTo] = useState(null);
-
-    const handleReplyClick = (Id) =>{
+    const [replyToUser, setReplyToUser] = useState('');
+    const [replyToPost, setReplyToPost] = useState('');
+    const handleReplyClick = (Id, user, post) =>{
         setReplyTo(Id);
+        setReplyToUser(user);
+        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "......";
+        setReplyToPost(postPreview);
+    }
+
+    const handleCancelReply = ()=>{
+        setReplyToUser('');
     }
 
 
@@ -164,6 +172,7 @@ function SelectedChannel(){
                 console.log("Uploaded post succesfully");
                 fetchAllPosts();
                 setReplyTo(null);
+                setReplyToUser('');
                 setInputPost(''); 
             } 
             else if(response.status === 401){
@@ -202,7 +211,7 @@ function SelectedChannel(){
             fetchAllPosts();
         }, []);
 
-
+        
     
     
     return(
@@ -268,7 +277,7 @@ function SelectedChannel(){
                                     <Stack direction="horizontal" gap={3} style={{ alignItems:'center',marginTop:'0.1vw'}}>
                                         <Nav.Link ><span className="material-icons" style={{fontSize:'0.85vw', color:'green'}} >thumb_up</span> Like</Nav.Link>
                                         <Nav.Link><span className="material-icons" style={{fontSize:'0.85vw', color:'red'}}  >thumb_down</span> Dislike</Nav.Link>
-                                        <Nav.Link onClick={()=>handleReplyClick(post.id)} ><span className="material-icons" style={{fontSize:'0.9vw', color:'blue'}} >reply</span> Reply</Nav.Link>
+                                        <Nav.Link onClick={()=>handleReplyClick(post.id,post.username, post.post)} ><span className="material-icons" style={{fontSize:'0.9vw', color:'blue'}} >reply</span> Reply</Nav.Link>
                                     </Stack>
                                 </div>
                             </div>
@@ -291,6 +300,9 @@ function SelectedChannel(){
                                     <div className='me-auto' style={{fontSize:'0.9vw'}}>{file.name}</div>
                                     <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >delete</span></Nav.Link>
                                 </Stack>))}
+                            </div>}
+                            {replyToUser && <div className='replyto-holder'>
+                                <Nav.Link ><span className="material-icons reply-cancel" onClick={()=>handleCancelReply}>close</span></Nav.Link>Reply to @{replyToUser}<span style={{marginLeft:'1vw'}}>{replyToPost}</span>
                             </div>}
                             <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
                         </div>  

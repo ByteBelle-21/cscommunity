@@ -96,6 +96,31 @@
 
 }
 
+.replyto-holder{
+    width: 100% !important;
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0.3vw;
+    opacity: 0.7;
+    font-size: 0.8vw;
+}
+
+
+
+.reply-cancel{
+    font-size: 1.05vw;
+    margin-right: 0.5vw;
+}
+
+.reply-cancel:hover{
+    color: black !important;
+    opacity: 1 !important;
+    font-weight: bold !important;
+    transform: scale(1.05);
+}
+
+
+
 .text-area-formcontrol:focus {
     outline: none; 
     border: none; 
