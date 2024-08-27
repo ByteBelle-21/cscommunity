@@ -146,12 +146,14 @@ function SelectedChannel(){
     const handleReplyClick = (Id, user, post) =>{
         setReplyTo(Id);
         setReplyToUser(user);
-        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "......";
+        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "..........";
         setReplyToPost(postPreview);
     }
 
     const handleCancelReply = ()=>{
         setReplyToUser('');
+        setReplyTo(null);
+        setReplyToPost('');
     }
 
 
@@ -284,6 +286,9 @@ function SelectedChannel(){
                         
                      ))}
                      </Container>}
+                     {replyToUser && <div className='replyto-holder'>
+                                <Nav.Link ><span className="material-icons reply-cancel" onClick={handleCancelReply}>close</span></Nav.Link>Reply to @{replyToUser}<span style={{marginLeft:'1vw'}}>{replyToPost}</span>
+                    </div>}
                     <Form className='text-area horizontal-placement'>
                         <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={handleFileInput}/>
                         <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
@@ -300,9 +305,6 @@ function SelectedChannel(){
                                     <div className='me-auto' style={{fontSize:'0.9vw'}}>{file.name}</div>
                                     <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >delete</span></Nav.Link>
                                 </Stack>))}
-                            </div>}
-                            {replyToUser && <div className='replyto-holder'>
-                                <Nav.Link ><span className="material-icons reply-cancel" onClick={()=>handleCancelReply}>close</span></Nav.Link>Reply to @{replyToUser}<span style={{marginLeft:'1vw'}}>{replyToPost}</span>
                             </div>}
                             <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
                         </div>  
