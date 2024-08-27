@@ -145,13 +145,13 @@ function createMessagesTable(){
                                 return;
                             }
                             console.log('Successfully created table messagesTable');
-                            addForeignkeys();
+                            //addForeignkeys();
                         })
 }
 
 
 
-
+/** 
  
 function addForeignkeys(){
     database.query(`ALTER TABLE postsTable 
@@ -213,7 +213,7 @@ function addForeignkeys(){
 
 
 
-/** 
+
 
 
 function addForeignkeys(){
@@ -609,7 +609,23 @@ function afterPostUpload(user,channel){
         }
         console.log("Successfully updated total posts in userTable");
     });
+    database.query(`SELECT COUNT(DISTINCT(username)) AS total_people FROM postsTable WHERE channel=?`,[channel],(error,result)=>{
+        if(error){
+            console.error("Server error during counting total people in channelsTable");
+            return;
+        }
+        const total_people = result[0].total_people;
+        database.query(` UPDATE channelsTable SET totalpeople = ? WHERE id = ?`,[total_people,channel],(error,result)=>{
+            if(error){
+                console.error("Server error during updating total people in channelsTable");
+                return;
+            }
+            console.log("Successfully updated total people in channelsTable");
+        })
+    });
 }
+
+
 
 
 app.get('/allPosts',(request,response)=>{

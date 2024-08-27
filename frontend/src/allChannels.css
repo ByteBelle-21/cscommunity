@@ -68,8 +68,9 @@
 
 
 .col-titles{
+    margin-top: 1vw;
     width: 95% !important;
-    margin-bottom: 3vw;
+    margin-bottom: 1vw;
 }
 
 .channel{

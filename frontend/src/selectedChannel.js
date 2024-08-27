@@ -20,93 +20,96 @@ import { useParams } from 'react-router-dom';
 
 
 
-function SelectedChannel(){
+function SelectedChannel({removeAuthentication}){
     const {channelName} = useParams();
-
-    const [userDetails, setUserDetails] = useState([]);
+    const current_user = sessionStorage.getItem('auth_user');
 
     useEffect(()=>{
-        const current_user = sessionStorage.getItem('auth_user');
-        const fetchUserDetails= async()=>{
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
-                    params: {user: current_user}
-                });
-                if (response.status === 200) {
-                    setUserDetails(response.data[0]);
-                    console.log("Successfully retrieved current user details");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
-
-        }
-        fetchUserDetails();  
+        fetchUserDetails();
+        fetchConnectedUsers();
+        fetchAllPosts();  
     },[]);
 
 
-
+    const [userDetails, setUserDetails] = useState([]);
+    const fetchUserDetails= async()=>{
+        try {
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+                params: {user: current_user}
+            });
+            if (response.status === 200) {
+                setUserDetails(response.data[0]);
+                console.log("Successfully retrieved current user details");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
 
 
     const [connectedUsers, setConnectedUsers] = useState([]);
-    useEffect(()=>{
-        const current_user = sessionStorage.getItem('auth_user');
-        const fetchConnectedUsers= async()=>{
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
-                if (response.status === 200) {
-                    setConnectedUsers(response.data);
-                    console.log("Successfully retrieved all connected users");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
+    const fetchConnectedUsers= async()=>{
+        try {
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+            if (response.status === 200) {
+                setConnectedUsers(response.data);
+                console.log("Successfully retrieved all connected users");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
             }
-
+        } catch (error) {
+            console.error("Catched axios error: ",error);
         }
-        fetchConnectedUsers();  
-    },[]);
 
+    }
+
+
+
+    const[allPosts, setAllPosts] = useState([])
+    const fetchAllPosts= async()=>{
+        const channel_name = decodeURIComponent(channelName);
+        console.log("channel name is : ",channel_name);
+        try {
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allPosts',
+            { params: {current_channel:channel_name}});
+            if (response.status === 200) {
+                setAllPosts(response.data);
+                console.log("All posts: ",response.data);
+                console.log("Successfully retrieved all posts for channel",channelName);
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+
+    }
+
+    
 
     const showFileTooltip = (props) => (
         <Tooltip id="button-tooltip" {...props} className='tooltip'>
           Upload file
         </Tooltip>
-      );
-
-    const showSendTooltip = (props) => (
-        <Tooltip id="button-tooltip" {...props} className='tooltip'>
-          Send
-        </Tooltip>
-      );
-
-    const showEmojiTooltip = (props) => (
-        <Tooltip id="button-tooltip" {...props} className='tooltip'>
-          Add reaction
-        </Tooltip>
-      );
-
+    );
     const fileRef = useRef(null);
     const handleButtonClick = () => {
         fileRef.current.click(); 
       };
-
     const [inputFiles, setInputFiles] = useState([]);
     const [gotFile, setGotFiles] = useState(false);
-
     const handleFileInput = (event) => {
         const files = event.target.files;
         if (files) {
             setGotFiles(true);
             setInputFiles(prev =>[...prev,...Array.from(files)]);
         }
-      };
-
+    };
     const handleFileDelete=(filename)=>{
         setInputFiles((prev) => prev.filter((file) => file.name !== filename));
         if(inputFiles.length===0){
@@ -114,12 +117,13 @@ function SelectedChannel(){
         }
     }
 
-      const [inputPost, setInputPost] = useState('');
-      const handleInputChange = (e) =>{
-          setInputPost(e.target.value);
-      }
-  
 
+
+    const showEmojiTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props} className='tooltip'>
+          Add reaction
+        </Tooltip>
+    );
     const textAreaRef = useRef(null);
     const handleEmojiSelect = (emoji) =>{
           const cursor = textAreaRef.current.selectionStart;
@@ -127,36 +131,28 @@ function SelectedChannel(){
           setInputPost(newInput);
           textAreaRef.current.setSelectionRange(cursor + emoji.native.length, cursor + emoji.native.length);
           textAreaRef.current.focus();
-      }
-    
+    }
     const emojiPopover = (
         <Popover id="popover-basic">
           <Popover.Body>
                 <Picker data={data} onEmojiSelect={handleEmojiSelect} />
           </Popover.Body>
         </Popover>
+    );
+    
+
+
+
+    
+    const showSendTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props} className='tooltip'>
+          Send
+        </Tooltip>
       );
-
-
-
-
-    const [replyTo, setReplyTo] = useState(null);
-    const [replyToUser, setReplyToUser] = useState('');
-    const [replyToPost, setReplyToPost] = useState('');
-    const handleReplyClick = (Id, user, post) =>{
-        setReplyTo(Id);
-        setReplyToUser(user);
-        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "..........";
-        setReplyToPost(postPreview);
+    const [inputPost, setInputPost] = useState('');
+    const handleInputChange = (e) =>{
+        setInputPost(e.target.value);
     }
-
-    const handleCancelReply = ()=>{
-        setReplyToUser('');
-        setReplyTo(null);
-        setReplyToPost('');
-    }
-
-
     const handleSendPost =async(e)=>{
         e.preventDefault();
         const current_user = sessionStorage.getItem('auth_user');
@@ -172,6 +168,7 @@ function SelectedChannel(){
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/post', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
+                fetchUserDetails();
                 fetchAllPosts();
                 setReplyTo(null);
                 setReplyToUser('');
@@ -185,43 +182,34 @@ function SelectedChannel(){
         }
       
     }
+  
 
-    
-    const[allPosts, setAllPosts] = useState([])
-    
-        const fetchAllPosts= async()=>{
-            const channel_name = decodeURIComponent(channelName);
-            console.log("channel name is : ",channel_name);
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allPosts',
-                { params: {current_channel:channel_name}});
-                if (response.status === 200) {
-                    setAllPosts(response.data);
-                    console.log("All posts: ",response.data);
-                    console.log("Successfully retrieved all posts for channel",channelName);
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
 
-        }
 
-        useEffect(() => {
-            fetchAllPosts();
-        }, []);
+    const [replyTo, setReplyTo] = useState(null);
+    const [replyToUser, setReplyToUser] = useState('');
+    const [replyToPost, setReplyToPost] = useState('');
+    const handleReplyClick = (Id, user, post) =>{
+        setReplyTo(Id);
+        setReplyToUser(user);
+        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "..........";
+        setReplyToPost(postPreview);
+    }
+    const handleCancelReply = ()=>{
+        setReplyToUser('');
+        setReplyTo(null);
+        setReplyToPost('');
+    }
 
-        
-    
+
+     
     
     return(
         <div className='page-layout'>
             <Stack direction="horizontal" gap={3} className="navbar">
                 <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
                 <Nav.Link className='horizontal-placement'>{userDetails.username}</Nav.Link>
-                <Nav.Link href="#" >Log Out</Nav.Link>
+                <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
                 <h6 className='me-auto'>{channelName}</h6>
