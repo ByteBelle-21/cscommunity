@@ -1,0 +1,41 @@
+.user-profile{
+    background-color:#fff7f9 !important;
+    height: 89vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 75% !important;
+    font-size: 0.9vw !important;
+    
+}
+
+.profile-background{
+    position: relative;
+    width: 100%;
+    height: 10vw;
+    background: linear-gradient(to bottom right, #e7be43, #b5ccf3);
+
+}
+
+.user-img{
+    position: absolute;
+    height: 8vw !important;
+    top: 6vw;
+    margin-left:1vw;
+    z-index: 10;
+}
+
+.user-details{
+    width: 100%;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 5vw;
+}
+
+.user-details .btn{
+    background-color: black !important;
+    border-color: black !important;
+    color: white !important;
+
+}

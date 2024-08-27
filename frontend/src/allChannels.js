@@ -17,6 +17,7 @@ import Alert from 'react-bootstrap/Alert';
 
 
 
+
 function AllChannels({removeAuthentication}){
     const [createChannelform, setCreateChannelForm] = useState(false)
     const [username, setUsername] = useState('');
@@ -62,6 +63,11 @@ function AllChannels({removeAuthentication}){
     const showConversation = () =>{
         navigateTo('/messages')
     }
+
+    const showProfile=(userName)=>{
+        navigateTo(`/user-profile/${encodeURIComponent(userName)}`)
+    }
+    
 
     const goToHome =()=>{
         navigateTo('/')
@@ -222,7 +228,7 @@ function AllChannels({removeAuthentication}){
                                     <img src={person.avatar}  style={{height:'2.5vw'}}/>
                                     <div className=' me-auto'>
                                         {person.username}
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                        <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
                                     </div>   
                                 </Stack>
                         ))}

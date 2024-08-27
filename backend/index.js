@@ -410,7 +410,7 @@ app.post('/login', (request, response) => {
 
 app.get('/user',(request,response)=>{
     const user  = request.query.user;
-    database.query(`SELECT username, name, avatar, totalPosts, likes FROM userTable WHERE username=? `,[user],(error, result)=>{
+    database.query(`SELECT * FROM userTable WHERE username=? `,[user],(error, result)=>{
     if (error){
         response.status(500).send("Server error during retrieving current user details");
         return;
@@ -693,7 +693,6 @@ app.get('/allPosts',(request,response)=>{
                                                 response.status(500).send("Server error during retrieving postTree");
                                                 return;
                                             }
-                                            console.log(result);
                                             response.status(200).json(result);
                     
                 })

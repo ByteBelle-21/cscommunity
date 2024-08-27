@@ -4,9 +4,11 @@ import Homepage from './homepage';
 import AllChannels from './allChannels';
 import SelectedChannel from './selectedChannel';
 import DirectMessage from './directmessage';
+import OtherUserProfile from './otherUserProfile';
 import Profile from './profile';
 import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+
 
 function App() {
     const [hasAuthentication, setHasAuthentication] = useState(false)
@@ -38,6 +40,7 @@ function App() {
                 <Route path="/" element={<Homepage authentication={authentication} />} />
                 <Route path="/all-channels" element={hasAuthentication ? <AllChannels removeAuthentication={removeAuthentication}/> : <Navigate to="/" />}/>
                 <Route path="/channel/:channelName" element={hasAuthentication ? <SelectedChannel removeAuthentication={removeAuthentication}/> : <Navigate to="/" />}/>
+                <Route path="/user-profile/:userName" element={hasAuthentication ? <OtherUserProfile removeAuthentication={removeAuthentication}/> : <Navigate to="/" />}/>
                 <Route path="/messages" element={hasAuthentication ? <DirectMessage /> : <Navigate to="/" />} />
                 <Route path="/profile" element={hasAuthentication ? <Profile /> : <Navigate to="/" />}/>
             </Routes>
