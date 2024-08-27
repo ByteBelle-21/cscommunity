@@ -61,7 +61,7 @@
     flex-direction: column;
     align-items: center;
     margin: 0 !important;
-    padding: 1vw;
+    padding: 0 !important;
 }
 
 

@@ -140,7 +140,7 @@ function SelectedChannel(){
 
 
 
-    const [replyTo, setReplyTo] = useState(0);
+    const [replyTo, setReplyTo] = useState(null);
 
     const handleReplyClick = (Id) =>{
         setReplyTo(Id);
@@ -162,7 +162,8 @@ function SelectedChannel(){
             const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/post', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
-                setReplyTo(0);
+                fetchAllPosts();
+                setReplyTo(null);
                 setInputPost(''); 
             } 
             else if(response.status === 401){
@@ -176,7 +177,7 @@ function SelectedChannel(){
 
     
     const[allPosts, setAllPosts] = useState([])
-    useEffect(()=>{
+    
         const fetchAllPosts= async()=>{
             const channel_name = decodeURIComponent(channelName);
             console.log("channel name is : ",channel_name);
@@ -185,6 +186,7 @@ function SelectedChannel(){
                 { params: {current_channel:channel_name}});
                 if (response.status === 200) {
                     setAllPosts(response.data);
+                    console.log("All posts: ",response.data);
                     console.log("Successfully retrieved all posts for channel",channelName);
                 } 
                 else if(response.status === 401){
@@ -195,9 +197,10 @@ function SelectedChannel(){
             }
 
         }
-        fetchAllPosts();  
-    },[]);
 
+        useEffect(() => {
+            fetchAllPosts();
+        }, []);
 
 
     
@@ -249,7 +252,7 @@ function SelectedChannel(){
                             <p style={{fontSize:'0.9vw',opacity:0.5}}>No posts yet in this channel</p>
                         </Container>   
                     }
-                    {allPosts.length> 0 && 
+                    {allPosts.length > 0 && 
                         <Container className='all-posts '>
                             {allPosts.map(post=>(
                             <div className="post-div" style={{paddingLeft:`${post.level * 2.5}vw`}}>
@@ -265,7 +268,7 @@ function SelectedChannel(){
                                     <Stack direction="horizontal" gap={3} style={{ alignItems:'center',marginTop:'0.1vw'}}>
                                         <Nav.Link ><span className="material-icons" style={{fontSize:'0.85vw', color:'green'}} >thumb_up</span> Like</Nav.Link>
                                         <Nav.Link><span className="material-icons" style={{fontSize:'0.85vw', color:'red'}}  >thumb_down</span> Dislike</Nav.Link>
-                                        <Nav.Link><span className="material-icons" style={{fontSize:'0.9vw', color:'blue'}} onClick={()=>handleReplyClick(post.id)}  >reply</span> Reply</Nav.Link>
+                                        <Nav.Link onClick={()=>handleReplyClick(post.id)} ><span className="material-icons" style={{fontSize:'0.9vw', color:'blue'}} >reply</span> Reply</Nav.Link>
                                     </Stack>
                                 </div>
                             </div>

@@ -145,13 +145,13 @@ function createMessagesTable(){
                                 return;
                             }
                             console.log('Successfully created table messagesTable');
-                            //addForeignkeys();
+                            addForeignkeys();
                         })
 }
 
 
 
-/** 
+
  
 function addForeignkeys(){
     database.query(`ALTER TABLE postsTable 
@@ -213,7 +213,7 @@ function addForeignkeys(){
 
 
 
-
+/** 
 
 
 function addForeignkeys(){
@@ -579,6 +579,7 @@ app.post('/post', (request, response) => {
                                     response.status(500).send("Server error during uploading the post");
                                     return;
                                 }
+                                afterPostUpload(userId,channelId);
                                 response.status(200).json({ postId: result.insertId });          
                             });
 
@@ -589,6 +590,26 @@ app.post('/post', (request, response) => {
         }
     });   
 });
+
+
+
+
+function afterPostUpload(user,channel){
+    database.query(` UPDATE channelsTable SET totalposts = IFNULL(totalposts, 0) + 1 WHERE id = ?`,[channel],(error,result)=>{
+        if(error){
+            console.error("Server error during updating total posts in channelsTable");
+            return;
+        }
+        console.log("Successfully updated total posts in channelstable");
+    });
+    database.query(` UPDATE userTable SET totalPosts = IFNULL(totalPosts, 0) + 1 WHERE id = ?`,[user],(error,result)=>{
+        if(error){
+            console.error("Server error during updating total posts in channelsTable");
+            return;
+        }
+        console.log("Successfully updated total posts in userTable");
+    });
+}
 
 
 app.get('/allPosts',(request,response)=>{
@@ -607,44 +628,56 @@ app.get('/allPosts',(request,response)=>{
             else{
                 const channelId = result[0].id; 
                 console.log(channelId);
-                database.query(`WITH RECURSIVE postTree AS(
-                    SELECT p.id,
-                           p.replyTo,
-                           u.username,
-                           u.avatar,
-                           p.datetime,
-                           p.post,
-                           0 AS level
-                    FROM  postsTable p
+                database.query(`WITH RECURSIVE postTree AS (
+                    SELECT 
+                        p.id,
+                        p.replyTo,
+                        u.username,
+                        u.avatar,
+                        p.datetime,
+                        p.post,
+                        0 AS level,
+                        p.id AS root_id,
+                        p.datetime AS root_datetime,
+                        CAST(LPAD(p.id, 10, '0') AS CHAR(255)) AS path
+                    FROM postsTable p
                     JOIN userTable u ON p.username = u.id
                     WHERE p.replyTo IS NULL AND p.channel = ?
+                    
                     UNION ALL
-                    SELECT p.id,
-                           p.replyTo,
-                           u.username,
-                           u.avatar,
-                           p.datetime,
-                           p.post,
-                           pT.level + 1 AS level
+                    
+                    SELECT 
+                        p.id,
+                        p.replyTo,
+                        u.username,
+                        u.avatar,
+                        p.datetime,
+                        p.post,
+                        pT.level + 1 AS level,
+                        pT.root_id AS root_id,
+                        pT.root_datetime AS root_datetime,
+                        CONCAT(pT.path, '-', LPAD(p.id, 10, '0')) AS path
                     FROM postsTable p
                     JOIN userTable u ON p.username = u.id
                     INNER JOIN postTree pT ON p.replyTo = pT.id
-                    WHERE p.channel = ?)
-                    SELECT id,
-                           replyTo,
-                           username,
-                           avatar,
-                           datetime,
-                           post,
-                           level 
-                    FROM postTree
-                    ORDER BY datetime`,[channelId,channelId],(error, result)=>{
+                    WHERE p.channel = ?
+                )
+                SELECT 
+                    id,
+                    replyTo,
+                    username,
+                    avatar,
+                    datetime,
+                    post,
+                    level
+                FROM postTree
+                ORDER BY path ASC`,[channelId,channelId],(error, result)=>{
                                             if (error){
                                                 console.log(error);
                                                 response.status(500).send("Server error during retrieving postTree");
                                                 return;
                                             }
-                                            console.log("it is success")
+                                            console.log(result);
                                             response.status(200).json(result);
                     
                 })
