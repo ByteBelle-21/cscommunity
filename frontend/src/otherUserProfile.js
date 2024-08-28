@@ -60,6 +60,7 @@ function OtherUserProfile({removeAuthentication}){
             });
             if (response.status === 200) {
                 setSelectedUserDetails(response.data);
+                console.log(response.data);
                 console.log("Successfully retrieved selected user details");
             } 
             else if(response.status === 401){
@@ -68,6 +69,12 @@ function OtherUserProfile({removeAuthentication}){
         } catch (error) {
             console.error("Catched axios error: ",error);
         }
+    }
+
+
+    const showPreview =(text, num)=>{
+        const words = text.split(' ');
+        return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
     return(
@@ -101,7 +108,7 @@ function OtherUserProfile({removeAuthentication}){
                     <div className='profile-background'></div>
                     <img  src={selectedUserDetails.avatar} className='user-img'/> 
                     <div className='user-details'>
-                        <Button >Send Message</Button>
+                        <Button onClick={()=>navigateTo('/messages')}>Send Message</Button>
                         <h5> Hello 👋 I am {selectedUserDetails.name} !</h5>
                         <p>
                             <span style={{fontWeight:'bold'}}>{selectedUserDetails.username}</span>
@@ -119,15 +126,19 @@ function OtherUserProfile({removeAuthentication}){
                                 : <div>No skils avaialable</div>}
                         </div>
                         <h6 className='mt-5'>Activities</h6>
+                        <hr style={{width:'70%'}}/>
                         <div className='all-skills'>
-                            {selectedUserDetails.posts ? (selectedUserDetails.map(post=>(
-                                (<div>
-                                    <h6>post.</h6>
-                                </div>)
+                            {selectedUserDetails.posts ? (selectedUserDetails.posts.map(post =>(
+                                <div className='activity-post'>
+                                    <strong>{post.channel}</strong>
+                                    <p>{showPreview(post.post,10)}</p>
+                                </div>
                             )))
+                                
+                            
                             : <div>No activities yet</div>}
                         </div>
-                        <hr style={{width:'70%'}}/>
+                       
                     </div>
                     
                 </Container>

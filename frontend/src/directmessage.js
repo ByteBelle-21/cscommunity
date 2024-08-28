@@ -1,6 +1,6 @@
-
+import './homepage.css';
+import './allChannels.css';
 import './UniformStyle.css';
-import './directmessage.css';
 import Stack from 'react-bootstrap/Stack';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/esm/Container';
@@ -8,9 +8,11 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/esm/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Alert from 'react-bootstrap/Alert';
 
 function DirectMessage () {
     const navigateTo = useNavigate()
@@ -18,9 +20,26 @@ function DirectMessage () {
         navigateTo('/profile')
     }
 
-    const goToHome =()=>{
-        navigateTo('/')
-    }
+    const [connectedUsers, setConnectedUsers] = useState([]);
+    useEffect(()=>{
+        const current_user = sessionStorage.getItem('auth_user');
+        const fetchConnectedUsers= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+                if (response.status === 200) {
+                    setConnectedUsers(response.data);
+                    console.log("Successfully retrieved all connected users");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchConnectedUsers();  
+    },[]);
 
     return (
         <div className="page-layout">
@@ -45,86 +64,35 @@ function DirectMessage () {
                 </div>       
             </div>
             <div className='page-content horizontal-placement'>
-                <Container className='left-sidebar small-grid-container'>
+                <Container className='small-grid-container2'>
                     <h6>Direct Messages</h6>
-                        <Container className='all-conversations small-grid-container-child'>
+                    {connectedUsers.length >0 && connectedUsers.map(user=>(
+                            <Container className=' direct-messages small-grid-container-child'>
                             <div className='child-blocks'>
                                 <Stack direction="horizontal" gap={3}>
-                                    <img src="/Group 205.png"  style={{height:'2vw'}}/>
+                                    <img src={user.avatar}  style={{height:'2vw'}}/>
                                     <div className=' me-auto'>
-                                        Username
+                                        {user.username}
                                         <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
                                     </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
+                                    <Nav.Link style={{fontSize:'small'}} onClick={showConversation}>View Conversation</Nav.Link>
                                 </Stack>
                             </div>
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        Username
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        Username
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        Username
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        Username
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        Username
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-        
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src="/Group 205.png"  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        Username
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-                        </Container>
+                            </Container>
+                        ))}
+                        {connectedUsers.length === 0 &&
+                            <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                <p style={{opacity:'0.5'}}>No messages </p>
+                            </Container>
+                        }
+                            
+                            
+                       
                 </Container>
                 <Container className='middle-sidebar large-grid-container'>
                         knhcfre
                 </Container>
-                <Container className='right-sidebar small-grid-container'>
+                <Container className=' small-grid-container1'>
                     <img src="/Group 205.png"  style={{height:'7vw'}}/>
                     <h6>Username</h6>
                     <Container className='user-info'>

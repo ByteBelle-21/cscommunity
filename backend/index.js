@@ -709,19 +709,22 @@ app.get('/selected-user',(request,response)=>{
     const user  = request.query.user;
     database.query(`SELECT * FROM userTable WHERE username=? `,[user],(error, userResult)=>{
         if (error){
-            response.status(500).send("Server error during retrieving current user details");
+            response.status(500).send("Server error during retrieving selected user details");
             return;
         }
         else{
             const userDetails = userResult[0];
             const userId = userDetails.id;
-            database.query(`SELECT * FROM postsTable WHERE username=? `,[userId],(error, postsResult)=>{
+            database.query(`SELECT p.post AS post, c.channel AS channel 
+                            FROM postsTable p JOIN channelsTable c 
+                            ON p.channel = c.id   
+                            WHERE p.username=? `,[userId],(error, postsResult)=>{
                 if (error){
-                    response.status(500).send("Server error during retrieving current user details");
+                    response.status(500).send("Server error during retrieving selected user details");
                     return;
                 }
-                const resposeData = {...userDetails, posts:postsResult[0] }
-                response.status(200).json(resposeData);
+                const responseData = {...userDetails, posts:postsResult }
+                response.status(200).json(responseData);
             })
         }
     })
