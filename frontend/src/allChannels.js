@@ -259,25 +259,25 @@ function AllChannels({removeAuthentication}){
                 </Container>
                 <Container className='small-grid-container2'>  
                     <h6>Direct Messages</h6>
+                        <Container className=' direct-messages small-grid-container-child'>
                         {connectedUsers.length >0 && connectedUsers.map(user=>(
-                            <Container className=' direct-messages small-grid-container-child'>
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src={user.avatar}  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        {user.username}
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} onClick={showConversation}>View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-                            </Container>
-                        ))}
-                        {connectedUsers.length === 0 &&
-                            <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                <div className='child-blocks'>
+                                    <Stack direction="horizontal" gap={3}>
+                                        <img src={user.avatar}  style={{height:'2vw'}}/>
+                                        <div className=' me-auto'>
+                                            {user.username}
+                                            <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                        </div>
+                                        <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
+                                    </Stack>
+                                </div>
+                            ))}
+                            {connectedUsers.length === 0 &&
+                           
                                 <p style={{opacity:'0.5'}}>No messages </p>
-                            </Container>
-                        }
+                      
+                            }
+                     </Container> 
                     
                     <div className='create-channel-container small-grid-container-child vertical-placement'>
                         <div className='create-channel-block vertical-placement'>

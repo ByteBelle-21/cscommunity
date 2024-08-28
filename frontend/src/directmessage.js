@@ -24,7 +24,7 @@ import data from '@emoji-mart/data';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import TextareaAutosize from 'react-textarea-autosize';
 
-function DirectMessage () {
+function DirectMessage ({removeAuthentication}) {
     const navigateTo = useNavigate()
     const {selectedUser} = useParams();
     
@@ -138,8 +138,8 @@ function DirectMessage () {
     const textAreaRef = useRef(null);
     const handleEmojiSelect = (emoji) =>{
           const cursor = textAreaRef.current.selectionStart;
-          const newInput = inputPost.slice(0,cursor) + emoji.native +inputPost.slice(cursor);
-          setInputPost(newInput);
+          const newInput = inputMessage.slice(0,cursor) + emoji.native +inputMessage.slice(cursor);
+          setInputMessage(newInput);
           textAreaRef.current.setSelectionRange(cursor + emoji.native.length, cursor + emoji.native.length);
           textAreaRef.current.focus();
     }
@@ -160,30 +160,28 @@ function DirectMessage () {
           Send
         </Tooltip>
       );
-    const [inputPost, setInputPost] = useState('');
+
+
+    const [inputMessage, setInputMessage] = useState('');
     const handleInputChange = (e) =>{
-        setInputPost(e.target.value);
+        setInputMessage(e.target.value);
     }
-    const handleSendPost =async(e)=>{
+    const handleSendMessage =async(e)=>{
         e.preventDefault();
-        const current_user = sessionStorage.getItem('auth_user');
-        const channel = decodeURIComponent(channelName);
-        console.log(replyTo);
+        const you = sessionStorage.getItem('auth_user');
+        const reciever = selectedUser;
         const data = {
-            current_user,
-            inputPost,
-            channel,
-            replyTo
+            you,
+            reciever,
+            inputMessage
+            
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/post', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/message', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
-                fetchUserDetails();
-                fetchAllPosts();
-                setReplyTo(null);
-                setReplyToUser('');
-                setInputPost(''); 
+                fetchAllMessages();
+                setInputMessage(''); 
             } 
             else if(response.status === 401){
                 console.log(response.message)
@@ -209,6 +207,7 @@ function DirectMessage () {
             { params: {loggedIn :you , connected:reciever }});
             if (response.status === 200) {
                 setAllMessages(response.data);
+                console.log(response.data);
                 console.log("Successfully retrieved all messages");
             } 
             else if(response.status === 401){
@@ -230,8 +229,8 @@ function DirectMessage () {
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
                 <Nav.Link  className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>Profile</Nav.Link>
-                <Nav.Link href="#" >Log Out</Nav.Link>
+                <Nav.Link className='horizontal-placement'>{loggedInUserDetails.username}</Nav.Link>
+                <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
                 <h6 className='me-auto '>Direct messages to {selectedUser}</h6>    
@@ -239,49 +238,53 @@ function DirectMessage () {
             <div className='page-content horizontal-placement'>
                 <Container className='small-grid-container2'>
                     <h6>Direct Messages</h6>
-                    {connectedUsers.length >0 && connectedUsers.map(user=>(
-                            <Container className=' direct-messages small-grid-container-child'>
-                            <div className='child-blocks'>
-                                <Stack direction="horizontal" gap={3}>
-                                    <img src={user.avatar}  style={{height:'2vw'}}/>
-                                    <div className=' me-auto'>
-                                        {user.username}
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                    </div>
-                                    <Nav.Link style={{fontSize:'small'}} onClick={showConversation}>View Conversation</Nav.Link>
-                                </Stack>
-                            </div>
-                            </Container>
-                        ))}
-                        {connectedUsers.length === 0 &&
-                            <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                    <Container className=' direct-messages small-grid-container-child'>
+                        {connectedUsers.length >0 && connectedUsers.map(user=>(
+                                <div className='child-blocks'>
+                                    <Stack direction="horizontal" gap={3}>
+                                        <img src={user.avatar}  style={{height:'2vw'}}/>
+                                        <div className=' me-auto'>
+                                            {user.username}
+                                            <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                        </div>
+                                        <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
+                                    </Stack>
+                                </div>
+                            ))}
+                            {connectedUsers.length === 0 &&
+                           
                                 <p style={{opacity:'0.5'}}>No messages </p>
-                            </Container>
-                        }
-                            
-                            
-                       
+                      
+                            }
+                     </Container>    
                 </Container>
                 <Container className='large-grid-container'>
                     <div className='all-posts '>
-                        <div className='sent-message'>
-                            <Nav.Link >
-                                <strong style={{fontSize:'0.8vw', marginRight:'1vw',opacity:'0.7'}}>You</strong> 
-                                <img src={loggedInUserDetails.avatar} style={{height:'1.5vw'}}></img>   
-                            </Nav.Link >
-                            <div className='message' >
-                                hwfd jhwbjfhwjhefjwhefxnhfjehfj rfhejhf jehfj jhfejhf vejhfvehveh fjeh vfjhfjhhf jh jw hfjhwfjk wjh wkfjwh fjhf jhfj grjh fjhf jrh fjh jhjh jh jhbr jfhekjhfb fkjebfmfj hwjebfhcgjwehfjwhebjf
-                            </div>
-                        </div>
-                        <div className='recieved-message'>
-                            <Nav.Link >
-                                <img src={selectedUserDetails.avatar} style={{height:'1.5vw'}}></img>
-                                <strong style={{fontSize:'0.8vw', marginLeft:'1vw',opacity:'0.7'}}>{selectedUserDetails.username}</strong>    
-                            </Nav.Link >
-                            <div className='message' >
-                                hwfd jhwbjfhwjhefjwhefxnhfjehfj rfhejhf jehfj jhfejhf vejhfvehveh fjeh vfjhfjhhf jh jw hfjhwfjk wjh wkfjwh fjhf jhfj grjh fjhf jrh fjh jhjh jh jhbr jfhekjhfb fkjebfmfj hwjebfhcgjwehfjwhebjf
-                            </div>
-                        </div>
+                    {allMessages.length > 0 && allMessages.map(message=>(
+                            message.reciever === loggedInUserDetails.id ?
+                                (<div className='recieved-message'>
+                                    <Nav.Link >
+                                        <img src={selectedUserDetails.avatar} style={{height:'1.5vw'}}></img>
+                                        <strong style={{fontSize:'0.8vw', marginLeft:'1vw',opacity:'0.7'}}>{selectedUserDetails.username}</strong>    
+                                    </Nav.Link >
+                                    <div className='message' >
+                                       {message.message}
+                                    </div>
+                                </div>  
+                                ) 
+                            :
+                                (<div className='sent-message'>
+                                    <Nav.Link >
+                                        <strong style={{fontSize:'0.8vw', marginRight:'1vw',opacity:'0.7'}}>You</strong> 
+                                        <img src={loggedInUserDetails.avatar} style={{height:'1.5vw'}}></img>   
+                                    </Nav.Link >
+                                    <div className='message' >
+                                        {message.message}
+                                    </div>
+                                </div>)
+                            
+
+                            ))}
                         
                     </div>
 
@@ -303,10 +306,10 @@ function DirectMessage () {
                                         <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >delete</span></Nav.Link>
                                     </Stack>))}
                                 </div>}
-                                <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your message here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
+                                <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your message here" value={inputMessage} className='text-area-formcontrol' onChange={handleInputChange}/>
                             </div>  
                             <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
-                                <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleSendPost}>send</span></Nav.Link>
+                                <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleSendMessage}>send</span></Nav.Link>
                             </OverlayTrigger>
 
                                 

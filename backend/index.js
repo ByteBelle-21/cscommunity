@@ -521,7 +521,8 @@ app.get('/connectedusers',(request,response)=>{
             }
             else{
                 const userId = result[0].id;
-                database.query(`SELECT  CASE WHEN m.sender=? THEN u_reciever.avatar 
+                database.query(`SELECT DISTINCT
+                                        CASE WHEN m.sender=? THEN u_reciever.avatar 
                                             WHEN m.reciever=? THEN u_sender.avatar 
                                         END AS avatar,
                                         CASE WHEN m.sender=? THEN u_reciever.username 
@@ -737,41 +738,94 @@ app.get('/selected-user',(request,response)=>{
 app.get('/allMessages',(request,response)=>{
     const you = request.query.loggedIn;
     const connectedUser = request.query.connected;
-    database.query(`SELECT id FROM userTable WHERE username=?`,[user],(error, result)=>{
+    database.query(`SELECT id FROM userTable WHERE username=?`,[you],(error, firstIdResult)=>{
         if (error){
-            response.status(500).send("Server error during retrieving user id for direct messages");
+            response.status(500).send("Server error during retrieving id  logged in user for direct messages");
             return;
         }
         else{
-            if(result.length===0){
-                response.status(401).send("user id doesn't exists for current user");
+            if(firstIdResult.length===0){
+                response.status(401).send("user id doesn't exists for logged in  user");
             }
             else{
-                const userId = result[0].id;
-                database.query(`SELECT  CASE WHEN m.sender=? THEN u_reciever.avatar 
-                                            WHEN m.reciever=? THEN u_sender.avatar 
-                                        END AS avatar,
-                                        CASE WHEN m.sender=? THEN u_reciever.username 
-                                            WHEN m.reciever=? THEN u_sender.username 
-                                        END AS username
-                                        FROM messagesTable m
-                                        JOIN userTable u_reciever ON m.reciever = u_reciever.id 
-                                        JOIN userTable u_sender ON m.sender = u_sender.id `,[userId,userId,userId,userId],(error, result)=>{
+                const you_id = firstIdResult[0].id;
+                console.log(you_id);
+                database.query(`SELECT id FROM userTable WHERE username=?`,[connectedUser],(error, secondIdResult)=>{
+                    if (error){
+                        response.status(500).send("Server error during retrieving id  logged in user for direct messages");
+                        return;
+                    }
+                    else{
+                        if(secondIdResult.length===0){
+                            response.status(401).send("user id doesn't exists for logged in  user");
+                        }
+                        else{
+                            const connected_user_id = secondIdResult[0].id;
+                            console.log(connected_user_id);
+                            database.query(`SELECT * FROM  messagesTable
+                                            WHERE (sender=? AND reciever=?) OR (sender=? AND reciever=?) `,[you_id,connected_user_id,connected_user_id,you_id],(error, result)=>{
                                             if (error){
                                                 response.status(500).send("Server error during retrieving direct messages");
                                                 return;
                                             }
+                                            console.log(result);
                                             response.status(200).json(result)
-                    
+
+                            })
+                        }
+
+                    }
                 })
-
             }
-        } 
+        }
     })
-    
-})
+});
 
 
+
+
+app.post('/message', (request, response) => {
+    const sender = request.body.you;
+    const reciever = request.body.reciever;
+    const message = request.body.inputMessage;
+    database.query(`SELECT id FROM userTable WHERE username=?`,[sender],(error, userId_result)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving logged in user  id for uploading message");
+            return;
+        }
+        else{
+            if(userId_result.length===0){
+                response.status(401).send("user id doesn't exists for current user in upload message ");
+            }
+            else{
+                const loggedIn_user_Id = userId_result[0].id;
+                database.query(`SELECT id FROM userTable WHERE username=?`,[reciever],(error, recieverId_result)=>{
+                    if(error){
+                        response.status(500).send("Server error during retrieving reciever id for uploading message");
+                        return;
+                    }
+                    else{
+                        if(recieverId_result.length===0){
+                            response.status(401).send("channel id doesn't exists for reciever in upload message ");
+                        }
+                        else{
+                            const recieverId = recieverId_result[0].id;
+                            database.query(`INSERT INTO messagesTable (sender, reciever, message) VALUES (?, ?, ?)`,
+                            [loggedIn_user_Id, recieverId, message],(error,result)=>{
+                                if(error){
+                                    response.status(500).send("Server error during uploading the message");
+                                    return;
+                                }
+                                response.status(200).send("Successfully uploaded message ");         
+                            });
+
+                        }
+                    }
+                });
+            }
+        }
+    });   
+});
 
 
 
