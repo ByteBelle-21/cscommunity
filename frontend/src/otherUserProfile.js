@@ -77,6 +77,10 @@ function OtherUserProfile({removeAuthentication}){
         return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
+    const handleSendMessage=(selectedUser)=>{
+        navigateTo(`/messages/${encodeURIComponent(selectedUser)}`);
+    }
+
     return(
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
@@ -108,7 +112,7 @@ function OtherUserProfile({removeAuthentication}){
                     <div className='profile-background'></div>
                     <img  src={selectedUserDetails.avatar} className='user-img'/> 
                     <div className='user-details'>
-                        <Button onClick={()=>navigateTo('/messages')}>Send Message</Button>
+                        <Button onClick={()=>handleSendMessage(selectedUserDetails.username)}>Send Message</Button>
                         <h5> Hello 👋 I am {selectedUserDetails.name} !</h5>
                         <p>
                             <span style={{fontWeight:'bold'}}>{selectedUserDetails.username}</span>
