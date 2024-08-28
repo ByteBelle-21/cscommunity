@@ -219,7 +219,7 @@ function AllChannels({removeAuthentication}){
                                 <p style={{fontSize:'0.8vw'}}>Likes</p>
                             </div>
                         </div>
-                        <Button>My Profile</Button>
+                        <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
                     </Container>
                     <h6 className='mb-3'> Suggested People</h6>
                     <Container className='small-grid-container-child'>

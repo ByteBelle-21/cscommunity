@@ -42,7 +42,7 @@ function App() {
                 <Route path="/channel/:channelName" element={hasAuthentication ? <SelectedChannel removeAuthentication={removeAuthentication}/> : <Navigate to="/" />}/>
                 <Route path="/user-profile/:userName" element={hasAuthentication ? <OtherUserProfile removeAuthentication={removeAuthentication}/> : <Navigate to="/" />}/>
                 <Route path="/messages/:selectedUser" element={hasAuthentication ? <DirectMessage  removeAuthentication={removeAuthentication}/> : <Navigate to="/" />} />
-                <Route path="/profile" element={hasAuthentication ? <Profile /> : <Navigate to="/" />}/>
+                <Route path="/profile" element={hasAuthentication ? <Profile  removeAuthentication={removeAuthentication}/> : <Navigate to="/" />}/>
             </Routes>
     );
 }
