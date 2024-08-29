@@ -5,24 +5,25 @@
 }
 
 .current-user-img{
-    position: absolute;
     height: 10vw !important;
-    top: 5vw;
-    margin-left:1vw;
-    z-index: 10;
+    margin-left:1vw; 
 }
 
-.user-details-col1{
-    padding-top: 6vw;
+.user-details-col1{ 
     width: 20% !important;
+    height: 89vh !important ;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    padding: 1vw;
 }
 
 .user-details-col2{
     width: 60% !important;
+    height: 89vh !important ;
     display: flex;
     flex-direction: column;
+    padding: 1vw;
 }
 
 .user-details-col1 .form-control{
@@ -34,4 +35,37 @@
 .mini-info-bar{
     width: 100%;
 
+}
+
+
+.basic-information, .activities{
+    width: 100%;
+    background-color: white;
+    margin-bottom: 2vw;
+}
+
+.activities{
+    padding: 1vw;
+}
+
+.each-info{
+    display: flex;
+    flex-direction: column;
+    
+   
+}
+
+.user-details-col2 .row{
+    margin: 1vw;
+}
+
+
+.edit-icon{
+    border-radius: 50%;
+    padding: 0.5vw;
+    background-color: aqua;
+}
+
+.edit-icon:hover{
+    cursor: pointer;
 }

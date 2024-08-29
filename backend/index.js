@@ -829,6 +829,55 @@ app.post('/message', (request, response) => {
 
 
 
+app.put('/saveChanges', (request, response) => {
+    const input_username = request.body.username;
+    const input_email = request.body.email;
+    const id = request.body.userId;
+    const input_name = request.body.name;
+    const input_occupation = request.body.occupation;
+    const input_skills = request.body.skills;
+    const input_avatar = request.body.avatar;
+    database.query(`SELECT * FROM userTable WHERE email=? AND id != ?`,[input_email,id],(error,result)=>{
+        if(error){
+            response.status(500).send("Server error during sign up1");
+            return;
+        }
+        else{
+            if(result.length!==0){
+                response.status(401).send("Provided email is already associated with other account");
+                
+            }
+            else{
+                database.query(`SELECT * FROM userTable WHERE username=? AND id != ?`,[input_username,id],(error,result)=>{
+                    if(error){
+                        response.status(500).send("Server error during sign up2");
+                        return;
+                    }
+                    else{
+                        if(result.length!==0){
+                            response.status(401).send("Provided username is already associated with someone's account. Try other username");
+                            
+                        }
+                        else{
+                            database.query(`UPDATE userTable SET username=?, email=?, name=?, occupation=?, skills=?, avatar=? WHERE id=?`,[input_username, input_email,input_name, input_occupation, input_skills,input_avatar,id],(error,result)=>{
+                                if(error){
+                                    response.status(500).send("Server error during saving changes");
+                                    return;
+                                }
+                                else{
+                                    response.status(200).send("Successfully saved changes")
+                                }
+                            })
+                        }
+
+                    }
+                })
+            }
+        }
+    })
+
+});
+
 
 
 
