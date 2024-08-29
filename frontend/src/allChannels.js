@@ -8,17 +8,19 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/esm/Button';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
 import DirectMessage from './directmessage';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 
 
 
 function AllChannels({removeAuthentication}){
+    const formControlRef = useRef(null);
     const [createChannelform, setCreateChannelForm] = useState(false)
     const [username, setUsername] = useState('');
     const [userDetails, setUserDetails] = useState([]);
@@ -179,7 +181,15 @@ function AllChannels({removeAuthentication}){
     },[]);
 
 
-  
+    const handleSendMessage=(selectedUser)=>{
+        navigateTo(`/messages/${encodeURIComponent(selectedUser)}`);
+    }
+
+
+    const [showDropdown, setShowDropdown] = useState(false);
+    const handleDropdown = () => {
+        setShowDropdown(!showDropdown);
+    }
 
     return(
         <div className="page-layout">
@@ -191,7 +201,6 @@ function AllChannels({removeAuthentication}){
             <div className='sub-navbar horizontal-placement'>
                 <h6 className='me-auto '>All Channels</h6>
                 <div className='search-container horizontal-placement '>
-                    <span className="material-icons">search</span> Search  
                     <Form className='horizontal-placement ms-4'> 
                         <Form.Select aria-label="Search by" className='search-bar'>
                             <option >Search by</option>
@@ -199,13 +208,22 @@ function AllChannels({removeAuthentication}){
                             <option value="people">People</option>
                             <option value="post">Post</option>
                         </Form.Select>   
-                        <Form.Control placeholder="Channel or people or post" className='search-bar'/>
-                    </Form> 
+                        <Form.Control placeholder="Channel or people or post" 
+                                      ref={formControlRef}
+                                      className='search-bar2'
+                                      onClick={handleDropdown}
+                                      onBlur={() => setShowDropdown(false)}
+                                      aria-controls="dropdown-menu" />
+                                    
+                    </Form>
+                   <Nav.Link style={{marginLeft:'1vw'}}>Search</Nav.Link>
                 </div>       
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className="small-grid-container1">
+                {userDetails ? (
                     <Container className=' profile' >
+                       
                         <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
                         <p style={{fontSize:'0.8vw'}}>{userDetails.username}</p>
                         <p style={{fontSize:'1vw'}} >{userDetails.name}</p>
@@ -220,17 +238,21 @@ function AllChannels({removeAuthentication}){
                             </div>
                         </div>
                         <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
-                    </Container>
+                    </Container>) :""}
                     <h6 className='mb-3'> Suggested People</h6>
                     <Container className='small-grid-container-child'>
-                        {suggestedPeople.length >0 && suggestedPeople.map(person=>(
-                                <Stack direction="horizontal" gap={3} style={{marginBottom:'0.5vw'}}>
+                        {suggestedPeople.length >0 &&  suggestedPeople.map(person=>(
+                                (person.id !== userDetails.id && 
+                                    <Stack direction="horizontal" gap={3} style={{marginBottom:'0.5vw'}}>
                                     <img src={person.avatar}  style={{height:'2.5vw'}}/>
                                     <div className=' me-auto'>
                                         {person.username}
                                         <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
                                     </div>   
                                 </Stack>
+
+                                )
+                                
                         ))}
                     </Container>
                 </Container>
@@ -266,9 +288,9 @@ function AllChannels({removeAuthentication}){
                                         <img src={user.avatar}  style={{height:'2vw'}}/>
                                         <div className=' me-auto'>
                                             {user.username}
-                                            <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                            <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
                                         </div>
-                                        <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
+                                        <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} >View Conversation</Nav.Link>
                                     </Stack>
                                 </div>
                             ))}

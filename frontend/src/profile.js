@@ -34,6 +34,10 @@ function Profile({removeAuthentication}){
     const [skills, setSkills] = useState('');
     const [avatar, setAvatar] = useState(''); 
     useEffect(()=>{
+        fetchUserDetails();
+    },[]);
+
+
     const fetchUserDetails= async()=>{
         const current_user = sessionStorage.getItem('auth_user');
         try {
@@ -60,9 +64,7 @@ function Profile({removeAuthentication}){
        
 
     }
-    fetchUserDetails();
-},[])
-
+    
 
     const [connectedUsers, setConnectedUsers] = useState([]);
     useEffect(()=>{

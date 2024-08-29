@@ -314,7 +314,7 @@ function SelectedChannel({removeAuthentication}){
                                         {user.username}
                                         <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
                                     </div>
-                                    <Nav.Link style={{fontSize:'small'}} onClick={showConversation}>View Conversation</Nav.Link>
+                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
                                 </Stack>
                             </div>
                             </Container>
