@@ -482,6 +482,17 @@ app.get('/activeusers',(request,response)=>{
 })
 
 
+app.get('/totalUsers',(request,response)=>{
+    database.query(`SELECT COUNT(id) AS count FROM userTable`,(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during retrieving total numbers of users");
+            return;
+        }
+        response.status(200).json(result[0].count);
+    })
+})
+
+
 
 app.get('/popularchannels',(request,response)=>{
         database.query(`SELECT c.channel AS channel, u.username AS username,  c.totalpeople AS totalpeople, c.totalposts AS totalposts
