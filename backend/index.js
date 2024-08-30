@@ -913,7 +913,8 @@ app.get('/searchPost',(request,response)=>{
     database.query(`SELECT c.channel AS channel, 
                            u.username AS username, 
                            u.avatar AS avatar,
-                           p.post AS post
+                           p.post AS post,
+                           p.id AS id
                            FROM postsTable p 
                            JOIN userTable u ON p.username = u.id
                            JOIN channelsTable c ON p.channel = c.id

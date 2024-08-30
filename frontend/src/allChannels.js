@@ -255,6 +255,16 @@ function AllChannels({removeAuthentication}){
         handleSearch();  
     },[searchText]);
 
+
+
+    const goToPost = (channel,postId) =>{
+        const channelName = channel;
+        navigateTo(`/channel/${encodeURIComponent(channelName)}?postId=${postId}`)
+    }
+
+
+
+
     return(
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
@@ -309,7 +319,7 @@ function AllChannels({removeAuthentication}){
                             }
                             {searchChannelResult.length > 0 ?
                                 searchChannelResult.map((channel)=>(
-                                    <div className='channel-result-block'>
+                                    <div className='channel-result-block' onClick={()=>showchannel(channel.channel)}>
                                        { channel.channel}
                                         <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>Created by<img src={channel.avatar} style={{height:'1vw', marginLeft:'0.7vw'}}/><span> {channel.username}</span></p>
                                     </div>  
@@ -318,7 +328,14 @@ function AllChannels({removeAuthentication}){
                             } 
                             {searchPeopleResult.length > 0 ?
                                 searchPeopleResult.map((person)=>(
-                                    <div className='result-block'>
+                                    <div className='result-block' 
+                                         onClick={()=> {
+                                            if(person.username=== userDetails.username){
+                                                navigateTo('/profile');
+                                            }else{
+                                                showProfile(person.username)
+                                            }
+                                        }}>
                                         <img src={person.avatar} style={{height:'2vw'}}/><span> {person.username}</span>  
                                     </div>  
                                 ))   
@@ -326,7 +343,7 @@ function AllChannels({removeAuthentication}){
                             } 
                             {searchPostResult.length > 0 ?
                                 searchPostResult.map((post)=>(
-                                    <div className='result-block'>
+                                    <div className='result-block' onClick={()=>goToPost(post.channel,post.id)}>
                                         <strong>{post.channel}</strong> <br></br>
                                         <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
                                         <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>

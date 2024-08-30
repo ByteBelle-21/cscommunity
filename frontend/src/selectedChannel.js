@@ -16,13 +16,25 @@ import { useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
-import { useParams } from 'react-router-dom';
-
+import { useParams,useLocation } from 'react-router-dom';
 
 
 function SelectedChannel({removeAuthentication}){
     const {channelName} = useParams();
     const current_user = sessionStorage.getItem('auth_user');
+
+    const location = useLocation();
+    const urlParams = new URLSearchParams(location.search);
+    const postId = urlParams.get('postId');
+
+    useEffect(()=>{
+        if(postId){
+            const searchedPost = document.getElementById(postId);
+            if(searchedPost){
+                searchedPost.scrollIntoView({behavior:'smooth'});
+            }
+        }
+    })
 
     useEffect(()=>{
         fetchUserDetails();
@@ -254,7 +266,7 @@ function SelectedChannel({removeAuthentication}){
                     {allPosts.length > 0 && 
                         <Container className='all-posts '>
                             {allPosts.map(post=>(
-                            <div className="post-div" style={{paddingLeft:`${post.level * 2.5}vw`}}>
+                            <div id={post.id} className="post-div" style={{paddingLeft:`${post.level * 2.5}vw`}}>
                                 <div className='post-sender'>
                                     <Nav.Link >
                                         <img src={post.avatar} style={{height:'1.5vw'}}></img>
