@@ -891,6 +891,58 @@ app.put('/saveChanges', (request, response) => {
 
 
 
+app.get('/searchChannel',(request,response)=>{
+    const channel = request.query.search_input;
+    database.query(`SELECT c.channel AS channel,
+                           u.username AS username,
+                           u.avatar AS avatar
+                    FROM channelsTable c 
+                    JOIN userTable u ON c.username = u.id
+                    WHERE c.channel LIKE ?`,[`%${channel}%`],(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during search for channel");
+            return;
+        }
+        response.status(200).json(result);
+    })
+})
+
+
+app.get('/searchPost',(request,response)=>{
+    const post = request.query.search_input;
+    database.query(`SELECT c.channel AS channel, 
+                           u.username AS username, 
+                           u.avatar AS avatar,
+                           p.post AS post
+                           FROM postsTable p 
+                           JOIN userTable u ON p.username = u.id
+                           JOIN channelsTable c ON p.channel = c.id
+                           WHERE p.post LIKE ?`,[`%${post}%`],(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during search for post");
+            return;
+        }
+        response.status(200).json(result);
+    })
+})
+
+
+
+app.get('/searchPeople',(request,response)=>{
+    const person = request.query.search_input;
+    database.query(`SELECT * FROM userTable WHERE username LIKE ? OR name LIKE ?`,[`%${person}%`,`%${person}%`],(error, result)=>{
+        if (error){
+            response.status(500).send("Server error during search for person");
+            return;
+        }
+        response.status(200).json(result);
+    })
+})
+
+
+
+
+
 
 
 

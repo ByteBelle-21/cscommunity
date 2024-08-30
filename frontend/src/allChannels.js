@@ -186,10 +186,74 @@ function AllChannels({removeAuthentication}){
     }
 
 
-    const [showDropdown, setShowDropdown] = useState(false);
-    const handleDropdown = () => {
-        setShowDropdown(!showDropdown);
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const openSearchModal = () => {
+        setShowSearchModal(true);
     }
+
+    const closeSearchModal =()=>{
+        setShowSearchModal(false);
+    }
+
+    const [searchText, setSearchText] = useState('');
+    const [searchSelect, setSearchSelect] = useState('');
+    const [showSearchError, setShowSearchError] = useState(false);
+    const [searchChannelResult, setSearchChannelResult] = useState([]);
+    const [searchPostResult, setSearchPostResult] = useState([]);
+    const [searchPeopleResult, setSearchPeopleResult] = useState([]);
+    
+    
+    useEffect(()=>{
+        const handleSearch= async()=>{
+            if (searchSelect === ''){
+                setShowSearchError(true);
+                return;
+            }else if (searchSelect === 'channel'){
+                try {
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchChannel',
+                        {params:{search_input :searchText}} );
+                    if (response.status === 200) {
+                        setSearchChannelResult(response.data);
+                        console.log("Successfully retrieved search result for channels");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }else if (searchSelect === 'post'){
+                if(searchText.length < 3){
+                    return;
+                }
+                try {
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPost',
+                    {params:{search_input :searchText}});
+                    if (response.status === 200) {
+                        setSearchPostResult(response.data);
+                        console.log("Successfully retrieved search result for posts");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }else if (searchSelect === 'people'){
+                try {
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPeople',
+                    {params:{search_input :searchText}});
+                    if (response.status === 200) {
+                        setSearchPeopleResult(response.data);
+                        console.log(response.data);
+                        console.log("Successfully retrieved search result for people");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }
+            
+
+        }
+        handleSearch();  
+    },[searchText]);
 
     return(
         <div className="page-layout">
@@ -200,24 +264,81 @@ function AllChannels({removeAuthentication}){
             </Stack>
             <div className='sub-navbar horizontal-placement'>
                 <h6 className='me-auto '>All Channels</h6>
-                <div className='search-container horizontal-placement '>
-                    <Form className='horizontal-placement ms-4'> 
-                        <Form.Select aria-label="Search by" className='search-bar'>
-                            <option >Search by</option>
-                            <option value="channel">Channel</option>
-                            <option value="people">People</option>
-                            <option value="post">Post</option>
-                        </Form.Select>   
-                        <Form.Control placeholder="Channel or people or post" 
-                                      ref={formControlRef}
+                
+                    <Form className='horizontal-placement ms-4'>   
+                        <Form.Control placeholder="Search" 
+                                      className='search-bar'
+                                      onClick={openSearchModal}
+                    />
+                    <Modal
+                        size="md"
+                        keyboard={false} 
+                        show={showSearchModal} 
+                        onHide={closeSearchModal} 
+                        centered 
+                        style={ {width:'100%'}}
+                        >
+                        <Modal.Header className='vertical-placement' >
+                            <Form style={{ width: '100%' }}>
+                                <Form.Select 
+                                className='search-bar1'
+                                value= {searchSelect}
+                                onChange={(e) => {setSearchSelect(e.target.value);setShowSearchError(false)}} 
+                             >
+                                    <option >Search by</option>
+                                    <option value="channel">Channel</option>
+                                    <option value="people">People</option>
+                                    <option value="post">Post</option>
+                                </Form.Select>
+                                 <Form.Control placeholder="Search" 
+                                      size="lg"
                                       className='search-bar2'
-                                      onClick={handleDropdown}
-                                      onBlur={() => setShowDropdown(false)}
-                                      aria-controls="dropdown-menu" />
+                                      type="text" 
+                                      value = {searchText}
+                                      onChange={(e) => {setSearchText(e.target.value)}}       
+                                />
+                            </Form>
+                            
+                        </Modal.Header>
+                        <Modal.Body style={{fontSize:'0.9vw', height:'25vw', overflowY:'auto'}} className={showSearchError ? 'vertical-placement' : 'search-result-block'}>
+                            {showSearchError && 
+                                <div style={{display:'flex',flexWrap:'wrap', opacity:'0.5'}}>Please select an option from the dropdown menu to continue.</div>
+                            }
+                            {(!showSearchError && searchChannelResult.length === 0 && searchPeopleResult.length === 0 && searchPostResult.length ===0) &&
+                                <div style={{display:'flex',flexWrap:'wrap', opacity:'0.5', fontSize:'1vw'}}>No Search Result</div> 
+                            }
+                            {searchChannelResult.length > 0 ?
+                                searchChannelResult.map((channel)=>(
+                                    <div className='channel-result-block'>
+                                       { channel.channel}
+                                        <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>Created by<img src={channel.avatar} style={{height:'1vw', marginLeft:'0.7vw'}}/><span> {channel.username}</span></p>
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                            {searchPeopleResult.length > 0 ?
+                                searchPeopleResult.map((person)=>(
+                                    <div className='result-block'>
+                                        <img src={person.avatar} style={{height:'2vw'}}/><span> {person.username}</span>  
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                            {searchPostResult.length > 0 ?
+                                searchPostResult.map((post)=>(
+                                    <div className='result-block'>
+                                        <strong>{post.channel}</strong> <br></br>
+                                        <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
+                                        <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                        </Modal.Body>
+                    </Modal>
                                     
                     </Form>
-                   <Nav.Link style={{marginLeft:'1vw'}}>Search</Nav.Link>
-                </div>       
+                    
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className="small-grid-container1">

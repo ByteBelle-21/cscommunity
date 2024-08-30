@@ -1,30 +1,75 @@
 
-.search-container{
-    height: 5vh;
-    background-color: #C3BEFF;
-    padding-left:1vw;
-    padding-right: 0.3vw;
-    
-}
-
-
 .search-bar{
-    width: 15vw !important;
+    width: 100% !important;
     height: 4.5vh !important;
     font-size: small !important;
     border-radius: 3vw !important;
+    margin-bottom: 0.2vw;
+}
+
+.search-bar1{
+    width: 100% !important;
+    height: 4.5vh !important;
+    font-size: small !important;
+    margin-bottom: 0.5vw;
 }
 
 
 .search-bar2{
-    width: 25vw !important;
+    width: 100% !important;
     height: 4.5vh !important;
     font-size: small !important;
-    border-radius: 3vw !important;
+    
+}
+
+.search-bar2:hover{
+    cursor: pointer;
+}
+
+.search-result-block{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
+.channel-result-block{
+    width: 95%;
+    padding-left: 0.5vw;
+    border: solid 0.1vw grey;
+    font-size: 0.9vw;
+    margin-bottom: 1vw;
+}
 
+.result-block{
+    padding: 0.5vw;
+    width: 95%;
+    border: solid 0.1vw grey;
+    font-size: 0.9vw;
+    margin-bottom: 1vw;
+}
+
+.result-block:hover , .channel-result-block:hover {
+    cursor: pointer;
+    background-color: #C3BEFF;
+    border-color: #C3BEFF;
+    transform: scale(1.05);
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 0.5vw;
+    
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: #C3BEFF !important;
+    
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background-color: rgb(227, 227, 227) !important;
+    
+}
 
 
 .profile{
