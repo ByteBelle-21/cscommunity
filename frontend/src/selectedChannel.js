@@ -121,6 +121,7 @@ function SelectedChannel({removeAuthentication}){
             setGotFiles(true);
             setInputFiles(prev =>[...prev,...Array.from(files)]);
         }
+        console.log(inputFiles.length);
     };
     const handleFileDelete=(filename)=>{
         setInputFiles((prev) => prev.filter((file) => file.name !== filename));
@@ -128,6 +129,29 @@ function SelectedChannel({removeAuthentication}){
             setGotFiles(false);
         }
     }
+
+    const handleUploadFile = async (post) =>{
+        const formData = new FormData();
+        formData.append('postId',post)
+        inputFiles.forEach((file)=>{
+            formData.append('allFiles',file)
+        });
+        try {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 200) {
+                setGotFiles(false);
+                setInputFiles([]);
+                console.log("Files uploaded successfully");
+            }
+        } catch (error) {
+            console.error("Error while uploading files:", error);
+        }
+    }
+    
 
 
 
@@ -184,7 +208,9 @@ function SelectedChannel({removeAuthentication}){
                 fetchAllPosts();
                 setReplyTo(null);
                 setReplyToUser('');
-                setInputPost(''); 
+                setInputPost('');
+                handleUploadFile(response.data.postId); 
+               
             } 
             else if(response.status === 401){
                 console.log(response.message)

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const multer = require('multer');
 const PORT = 4000;
 
 const app = express();
@@ -9,7 +10,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 const mysql = require('mysql2');
-
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 var database = mysql.createConnection({
@@ -637,6 +638,57 @@ function afterPostUpload(user,channel){
     });
 }
 
+
+
+app.post('/fileupload',upload.array('allFiles'),(request,response)=>{
+    const postId = request.body.postId;
+    const messageId = request.body.messageId;
+    const files = request.files;
+    if (!messageId){
+        const promises = files.map((file)=>{
+            return new Promise((resolve, reject)=>{
+                database.query(`INSERT INTO filesTable (filename, filetype, filedata, postId) VALUES (?,?,?,?)`,
+                                [file.originalname,file.mimetype,file.buffer,postId ],(error,result)=>{
+                                    if(error){
+                                        reject(error);
+                                    }else{
+                                        resolve(result);
+                                    }
+
+                                })
+            })
+        })
+        Promise.all(promises).then(()=>{
+            response.status(200).send("files saved successdully");
+        })
+        .catch(error => {
+            console.error('Error while saving files to database:', error);
+            res.status(500).send('Server error while saving files to database');
+        });
+    }
+    else if (!postId){
+        const promises = files.map((file)=>{
+            return new Promise((resolve, reject)=>{
+                database.query(`INSERT INTO filesTable (filename, filetype, filedata, messageId) VALUES (?,?,?,?)`,
+                                [file.originalname,file.mimetype,file.buffer,messageId ],(error,result)=>{
+                                    if(error){
+                                        reject(error);
+                                    }else{
+                                        resolve(result);
+                                    }
+
+                                })
+            })
+        })
+        Promise.all(promises).then(()=>{
+            response.status(200).send("files saved successdully");
+        })
+        .catch(error => {
+            console.error('Error while saving files to database:', error);
+            res.status(500).send('Server error while saving files to database');
+        });
+    }
+})
 
 
 
