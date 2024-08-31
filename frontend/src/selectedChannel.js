@@ -102,6 +102,29 @@ function SelectedChannel({removeAuthentication}){
 
     }
 
+    const [allFiles, setAllFiles] = useState([]);
+    useEffect(()=>{
+        const createURL = (fileData, fileType) =>{
+            const processedData = new Uint8Array(fileData.data);
+            const blob = new Blob([processedData], { type: fileType });
+            
+            return URL.createObjectURL(blob);
+        }
+        allPosts.forEach((post)=>{
+            if (post.files && post.files.length > 0) {
+                post.files.forEach(file => {
+                    const fileURL = createURL(file.filedata, file.filetype);
+                    console.log('File URL:', fileURL);
+                    setAllFiles(prevFiles => ({
+                        ...prevFiles,
+                        [file.filename]: fileURL
+                    }));
+                });
+            }
+        })
+
+    },[allPosts]);
+
     
 
     const showFileTooltip = (props) => (
@@ -131,6 +154,9 @@ function SelectedChannel({removeAuthentication}){
     }
 
     const handleUploadFile = async (post) =>{
+        if (inputFiles.length === 0){
+            return;
+        }
         const formData = new FormData();
         formData.append('postId',post)
         inputFiles.forEach((file)=>{
@@ -302,6 +328,17 @@ function SelectedChannel({removeAuthentication}){
                                 </div>
                                 <div className='post-text' style={{paddingLeft:'2.5vw',fontSize:'0.87vw'}}>
                                     <span>{post.post}</span>
+                                    {post.files && post.files.length > 0 && ( 
+                                        <div className='file-list'> 
+                                            {post.files.map(file => (
+                                               
+                                            <Stack direction="horizontal" gap={1} className="post-file-card">
+                                                <span className="material-icons" >description</span>
+                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
+                                            </Stack>
+                                            ))}
+                                        </div>
+                                    )}
                                     <Stack direction="horizontal" gap={3} style={{ alignItems:'center',marginTop:'0.1vw'}}>
                                         <Nav.Link ><span className="material-icons" style={{fontSize:'0.85vw', color:'green'}} >thumb_up</span> Like</Nav.Link>
                                         <Nav.Link><span className="material-icons" style={{fontSize:'0.85vw', color:'red'}}  >thumb_down</span> Dislike</Nav.Link>

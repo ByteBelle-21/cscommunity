@@ -74,6 +74,24 @@
     padding: 0 !important;
 }
 
+.file-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap:2;
+    width: 100%;
+}
+
+
+.post-file-card{
+    border: dotted 0.1vw grey;
+    border-radius: 0.2vw ;
+    padding: 0.1vw;
+    margin: 0.1vw ;
+}
+
+
+
+
 .file-card{
     width: 10vw;
     border: dotted 0.1vw grey;

@@ -751,13 +751,32 @@ app.get('/allPosts',(request,response)=>{
                     post,
                     level
                 FROM postTree
-                ORDER BY path ASC`,[channelId,channelId],(error, result)=>{
+                ORDER BY path ASC`,[channelId,channelId],(error, postResult)=>{
                                             if (error){
                                                 console.log(error);
                                                 response.status(500).send("Server error during retrieving postTree");
                                                 return;
                                             }
-                                            response.status(200).json(result);
+                    
+                                            const postPromises = postResult.map((post) => {
+                                                return new Promise((resolve, reject) => {
+                                                    database.query(`SELECT filename, filetype, filedata FROM filesTable WHERE postId=?`, [post.id], (error, fileResult) => {
+                                                        if (error) {
+                                                            reject("Server error during retrieving files");
+                                                        } else {
+                                                            resolve({ ...post, files: fileResult.length > 0 ? fileResult : [] });
+                                                        }
+                                                    });
+                                                });
+                                            });
+                                            Promise.all(postPromises)
+                                            .then(allPostsWithFiles => {
+                                                response.status(200).json(allPostsWithFiles);
+                                            })
+                                            .catch((error) => {
+                                                console.error(error);
+                                                response.status(500).send(error);
+                                            });
                     
                 })
 
@@ -766,6 +785,20 @@ app.get('/allPosts',(request,response)=>{
     })
     
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
