@@ -492,7 +492,7 @@ function Homepage({authentication}) {
             <div className='full-width-bands vertical-placement'>
                 <h5 className='mt-2 headline-text'>Meet Some of our <span style={{color:"red"}}>Active</span> Members</h5>
                 <Container className='member-card-container'>
-                    {activeMembers.length > 0 && activeMembers.map(member=>(
+                    {activeMembers.length > 0 && activeMembers.slice(0,3).map(member=>(
                         <Card>
                             <Card.Body className='member-card'>
                                 <img src={member.avatar} /><span>  {member.username}</span> 

@@ -473,7 +473,7 @@ app.post('/createchannel', (request, response) => {
 
 
 app.get('/activeusers',(request,response)=>{
-    database.query(`SELECT * FROM userTable ORDER BY totalPosts DESC LIMIT 4`,(error, result)=>{
+    database.query(`SELECT * FROM userTable ORDER BY totalPosts DESC`,(error, result)=>{
         if (error){
             response.status(500).send("Server error during retrieving active members");
             return;
@@ -539,10 +539,12 @@ app.get('/connectedusers',(request,response)=>{
                                         END AS avatar,
                                         CASE WHEN m.sender=? THEN u_reciever.username 
                                             WHEN m.reciever=? THEN u_sender.username 
-                                        END AS username
+                                        END AS username,
+                                        m.datetime
                                         FROM messagesTable m
                                         JOIN userTable u_reciever ON m.reciever = u_reciever.id 
-                                        JOIN userTable u_sender ON m.sender = u_sender.id `,[userId,userId,userId,userId],(error, result)=>{
+                                        JOIN userTable u_sender ON m.sender = u_sender.id 
+                                        ORDER BY m.datetime DESC`,[userId,userId,userId,userId],(error, result)=>{
                                             if (error){
                                                 response.status(500).send("Server error during retrieving direct messages");
                                                 return;

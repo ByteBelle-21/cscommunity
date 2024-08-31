@@ -276,7 +276,7 @@ function AllChannels({removeAuthentication}){
                 <h6 className='me-auto '>All Channels</h6>
                 
                     <Form className='horizontal-placement ms-4'>   
-                        <Form.Control placeholder="Search" 
+                        <Form.Control placeholder="🔍 Search" 
                                       className='search-bar'
                                       onClick={openSearchModal}
                     />
@@ -289,19 +289,19 @@ function AllChannels({removeAuthentication}){
                         style={ {width:'100%'}}
                         >
                         <Modal.Header className='vertical-placement' >
+                            <h6 style={{color:'rgb(6, 110, 200)'}}>Search</h6>
                             <Form style={{ width: '100%' }}>
                                 <Form.Select 
-                                className='search-bar1'
+                                className='search-bar1 mb-1'
                                 value= {searchSelect}
-                                onChange={(e) => {setSearchSelect(e.target.value);setShowSearchError(false)}} 
-                             >
+                                onChange={(e) => {setSearchSelect(e.target.value);setShowSearchError(false)}} >
+                             
                                     <option >Search by</option>
                                     <option value="channel">Channel</option>
                                     <option value="people">People</option>
                                     <option value="post">Post</option>
                                 </Form.Select>
                                  <Form.Control placeholder="Search" 
-                                      size="lg"
                                       className='search-bar2'
                                       type="text" 
                                       value = {searchText}
@@ -379,14 +379,14 @@ function AllChannels({removeAuthentication}){
                     </Container>) :""}
                     <h6 className='mb-3'> Suggested People</h6>
                     <Container className='small-grid-container-child'>
-                        {suggestedPeople.length >0 &&  suggestedPeople.map(person=>(
+                        {suggestedPeople.length >0 &&  suggestedPeople.slice(0,5).map(person=>(
                                 (person.id !== userDetails.id && 
-                                    <Stack direction="horizontal" gap={3} style={{marginBottom:'0.5vw'}}>
-                                    <img src={person.avatar}  style={{height:'2.5vw'}}/>
-                                    <div className=' me-auto'>
-                                        {person.username}
-                                        <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
-                                    </div>   
+                                    <Stack direction="horizontal" gap={3} style={{marginBottom:'1vw'}}>
+                                        <img src={person.avatar}  style={{height:'2.5vw'}}/>
+                                        <div className=' me-auto'>
+                                            {person.username}
+                                            <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
+                                        </div>   
                                 </Stack>
 
                                 )
@@ -418,26 +418,29 @@ function AllChannels({removeAuthentication}){
                     </Container>
                 </Container>
                 <Container className='small-grid-container2'>  
-                    <h6>Direct Messages</h6>
-                        <Container className=' direct-messages small-grid-container-child'>
-                        {connectedUsers.length >0 && connectedUsers.map(user=>(
-                                <div className='child-blocks'>
-                                    <Stack direction="horizontal" gap={3}>
-                                        <img src={user.avatar}  style={{height:'2vw'}}/>
-                                        <div className=' me-auto'>
-                                            {user.username}
-                                            <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
+                    <h6>Recent Direct Messages</h6>
+                        <Container className=' direct-messages small-grid-container-child '>
+                            {connectedUsers.length > 0 && 
+                                    connectedUsers.slice(0,5).map(user =>(
+                                        <div className='child-blocks'>
+                                            <Stack direction="horizontal" gap={3}>
+                                                <img src={user.avatar}  style={{height:'2vw'}}/>
+                                                <div className=' me-auto'>
+                                                    {user.username}
+                                                    <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
+                                                </div>
+                                                <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} className='view-conversation' >View Conversation</Nav.Link>
+                                            </Stack>
                                         </div>
-                                        <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} >View Conversation</Nav.Link>
-                                    </Stack>
-                                </div>
-                            ))}
+                                    ))}
+                            
                             {connectedUsers.length === 0 &&
-                           
-                                <p style={{opacity:'0.5'}}>No messages </p>
-                      
+                                <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                    <p style={{opacity:'0.5', alignSelf:'center'}}>No messages </p> 
+                                </Container>                            
                             }
-                     </Container> 
+                        </Container> 
+                     
                     
                     <div className='create-channel-container small-grid-container-child vertical-placement'>
                         <div className='create-channel-block vertical-placement'>

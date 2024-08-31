@@ -1,186 +1,200 @@
+@media (min-width: 1280px){
+    .search-bar{
+        width: 100% !important;
+        height: 4.5vh !important;
+        font-size: small !important;
+        border-radius: 3vw !important;
+        background-color: rgb(232, 242, 251) !important;
+    }
 
-.search-bar{
-    width: 100% !important;
-    height: 4.5vh !important;
-    font-size: small !important;
-    border-radius: 3vw !important;
-    margin-bottom: 0.2vw;
+    .search-bar::placeholder{
+        font-weight: bold;
+    }
+
+   
+    .search-bar:hover{
+        cursor: pointer;
+    }
+
+    .search-result-block{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+    .channel-result-block{
+        width: 100%;
+        padding: 0.7vw;
+        border: solid 0.1vw rgb(195, 223, 247);
+        background-color:rgb(195, 223, 247);
+        font-size: 0.9vw;
+        margin-bottom: 0.5vw;
+    }
+
+    .result-block{
+        padding: 0.5vw;
+        width: 100%;
+        border: solid 0.1vw rgb(195, 223, 247);
+        background-color: rgb(195, 223, 247);
+        font-size: 0.9vw;
+        margin-bottom: 0.5vw;
+    }
+
+    .result-block:hover , .channel-result-block:hover {
+        cursor: pointer;
+        background-color: rgb(135, 193, 243);
+        border-color:rgb(135, 193, 243);
+        transform: scale(1.05);
+    }
+
+    .modal-body::-webkit-scrollbar {
+        width: 0.5vw;
+        
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background-color: #C3BEFF !important;
+        
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background-color: rgb(227, 227, 227) !important;
+        
+    }
+
+
+    .profile{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: black;
+        margin: 0 !important;
+        width: 100%;
+        height: 50%;
+        padding: 1vw;
+        background-color: rgb(232, 242, 251);
+        border-radius: 1vw;
+        margin-bottom: 1vw !important;
+    }
+
+    .profile .btn{
+        font-size: 1vw !important;
+        height: 2.5vw;
+        width: 10vw;
+        
+    }
+
+    .profile .btn:hover{
+        transform: scale(1.05);
+    }
+
+    .channel-list{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 85vh;
+        width: 100%;
+        overflow-y: auto !important;
+    }
+
+    .channel-list::-webkit-scrollbar{
+        width: 0.3vw;
+        background-color: #C3BEFF;
+        border-radius: 1vw;
+    }
+
+
+
+    .row {
+        flex-shrink: 0 !important;
+    }
+
+
+    .col-titles{
+        margin-top: 1vw;
+        width: 95% !important;
+        margin-bottom: 1vw;
+        font-weight:500;
+    }
+
+    .channel{
+        width: 95%;
+        height: 7vw;
+        background-color: white;
+        margin-bottom: 1vw;
+        border-radius: 0.5vw;
+        border: solid 0.1vw #dfdfdf;
+    }
+
+    .channel:hover{
+        cursor: pointer;
+        transform: scale(1.03);
+        background-color: rgb(232, 242, 251);
+    }
+
+
+    .direct-messages{
+        height:50% !important;
+    }
+
+    .view-conversation{
+        padding: 0.1vw !important;
+        padding-left: 0.5vw !important;
+        padding-right: 0.5vw !important;
+        background-color: rgb(232, 242, 251) !important;
+        color: rgb(6, 110, 200) !important ;
+        border-radius: 1vw !important;
+        font-weight: semi-bold !important;
+        border: solid 0.1vw rgb(170, 211, 247) !important ;
+    }
+
+    .view-conversation:hover{
+        background-color: rgb(6, 110, 200) !important;
+        color: rgb(232, 242, 251) !important ;
+        border-color:rgb(6, 110, 200) !important;
+    }
+
+    .create-channel-container{
+        height:40% !important;
+        border-radius: 1vw;
+        background-color: rgb(232, 242, 251);
+    }
+
+    .create-channel-block{
+        width: 90%;
+        height: 100% ;
+        background-color: rgb(232, 242, 251);
+        border-radius: 1vw;
+    }
+
+    .create-channel-btn{
+        background-color: black !important;
+        border-color: black !important;
+        color: white !important;  
+    }
+
+    .create-channel-btn:hover{
+        transform: scale(1.05);
+    }
+
+    .create-channel-block img{
+        height: 50% !important;
+        margin-bottom: 1vw;
+    }
+
+    .new-channels-form {
+        width: 60%;
+    }
+
+    .channel-form-button{
+        width: 60% !important;
+        background-color: #6C63FF !important ;
+        border-color: #6C63FF !important ;
+    }
+
+
 }
-
-.search-bar1{
-    width: 100% !important;
-    height: 4.5vh !important;
-    font-size: small !important;
-    margin-bottom: 0.5vw;
-}
-
-
-.search-bar2{
-    width: 100% !important;
-    height: 4.5vh !important;
-    font-size: small !important;
-    
-}
-
-.search-bar2:hover{
-    cursor: pointer;
-}
-
-.search-result-block{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-.channel-result-block{
-    width: 95%;
-    padding-left: 0.5vw;
-    border: solid 0.1vw grey;
-    font-size: 0.9vw;
-    margin-bottom: 1vw;
-}
-
-.result-block{
-    padding: 0.5vw;
-    width: 95%;
-    border: solid 0.1vw grey;
-    font-size: 0.9vw;
-    margin-bottom: 1vw;
-}
-
-.result-block:hover , .channel-result-block:hover {
-    cursor: pointer;
-    background-color: #C3BEFF;
-    border-color: #C3BEFF;
-    transform: scale(1.05);
-}
-
-.modal-body::-webkit-scrollbar {
-    width: 0.5vw;
-    
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background-color: #C3BEFF !important;
-    
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background-color: rgb(227, 227, 227) !important;
-    
-}
-
-
-.profile{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: black;
-    margin: 0 !important;
-    width: 100%;
-    height: 50%;
-    padding: 1vw;
-    background-color: white;
-    margin-bottom: 1vw !important;
-}
-
-.profile .btn{
-    font-size: 1vw !important;
-    height: 2.5vw;
-    width: 10vw;
-    
-}
-
-.profile .btn:hover{
-    transform: scale(1.05);
-}
-
-.channel-list{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 85vh;
-    width: 100%;
-    overflow-y: auto !important;
-}
-
-.channel-list::-webkit-scrollbar{
-    width: 0.3vw;
-    background-color: #C3BEFF;
-    border-radius: 1vw;
-}
-
-
-
-.row {
-    flex-shrink: 0 !important;
-}
-
-
-.col-titles{
-    margin-top: 1vw;
-    width: 95% !important;
-    margin-bottom: 1vw;
-}
-
-.channel{
-    width: 95%;
-    height: 7vw;
-    background-color: white;
-    margin-bottom: 1vw;
-    border: solid 0.1vw #dfdfdf;
-}
-
-.channel:hover{
-    cursor: pointer;
-    transform: scale(1.05);
-    background-color: #C3BEFF;
-}
-
-
-.direct-messages{
-    height:50% !important;
-}
-
-.create-channel-container{
-    height:40% !important;
-}
-
-.create-channel-block{
-    width: 90%;
-    height: 100% ;
-    background-color:white;
-    border-radius: 1vw;
-}
-
-.create-channel-btn{
-    background-color: black !important;
-    border-color: black !important;
-    color: white !important;  
-}
-
-.create-channel-btn:hover{
-    transform: scale(1.05);
-}
-
-.create-channel-block img{
-    height: 50% !important;
-    margin-bottom: 1vw;
-}
-
-.new-channels-form {
-    width: 60%;
-}
-
-.channel-form-button{
-    width: 60% !important;
-    background-color: #6C63FF !important ;
-    border-color: #6C63FF !important ;
-}
-
-
-
 
