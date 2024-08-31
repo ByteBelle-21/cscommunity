@@ -859,14 +859,32 @@ app.get('/allMessages',(request,response)=>{
                             const connected_user_id = secondIdResult[0].id;
                             console.log(connected_user_id);
                             database.query(`SELECT * FROM  messagesTable
-                                            WHERE (sender=? AND reciever=?) OR (sender=? AND reciever=?) `,[you_id,connected_user_id,connected_user_id,you_id],(error, result)=>{
+                                            WHERE (sender=? AND reciever=?) OR (sender=? AND reciever=?) `,[you_id,connected_user_id,connected_user_id,you_id],(error, messageResult)=>{
                                             if (error){
-                                                response.status(500).send("Server error during retrieving direct messages");
+                                                console.log(error);
+                                                response.status(500).send("Server error during retrieving messages");
                                                 return;
                                             }
-                                            console.log(result);
-                                            response.status(200).json(result)
-
+                    
+                                            const messagePromises = messageResult.map((message) => {
+                                                return new Promise((resolve, reject) => {
+                                                    database.query(`SELECT filename, filetype, filedata FROM filesTable WHERE postId=?`, [message.id], (error, fileResult) => {
+                                                        if (error) {
+                                                            reject("Server error during retrieving files");
+                                                        } else {
+                                                            resolve({ ...message, files: fileResult.length > 0 ? fileResult : [] });
+                                                        }
+                                                    });
+                                                });
+                                            });
+                                            Promise.all(messagePromises)
+                                            .then(allMessagesWithFiles => {
+                                                response.status(200).json(allMessagesWithFiles);
+                                            })
+                                            .catch((error) => {
+                                                console.error(error);
+                                                response.status(500).send(error);
+                                            });
                             })
                         }
 
@@ -912,7 +930,7 @@ app.post('/message', (request, response) => {
                                     response.status(500).send("Server error during uploading the message");
                                     return;
                                 }
-                                response.status(200).send("Successfully uploaded message ");         
+                                response.status(200).send({ messageId: result.insertId });         
                             });
 
                         }

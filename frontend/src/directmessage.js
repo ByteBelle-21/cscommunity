@@ -127,6 +127,31 @@ function DirectMessage ({removeAuthentication}) {
             setGotFiles(false);
         }
     }
+    const handleUploadFile = async (message) =>{
+        if (inputFiles.length === 0){
+            return;
+        }
+        const formData = new FormData();
+        formData.append('messageId',message)
+        inputFiles.forEach((file)=>{
+            formData.append('allFiles',file)
+        });
+        try {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 200) {
+                setGotFiles(false);
+                setInputFiles([]);
+                console.log("Files uploaded successfully");
+            }
+        } catch (error) {
+            console.error("Error while uploading files:", error);
+        }
+    }
+    
 
 
 
@@ -181,7 +206,8 @@ function DirectMessage ({removeAuthentication}) {
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
                 fetchAllMessages();
-                setInputMessage(''); 
+                setInputMessage('');
+                handleUploadFile(response.data.messageId); 
             } 
             else if(response.status === 401){
                 console.log(response.message)
@@ -195,7 +221,7 @@ function DirectMessage ({removeAuthentication}) {
 
     useEffect(()=>{
         fetchAllMessages();
-    })
+    },[]);
 
 
     const [allMessages, setAllMessages] = useState([]);
@@ -218,6 +244,29 @@ function DirectMessage ({removeAuthentication}) {
         }
 
     }
+
+    const [allFiles, setAllFiles] = useState([]);
+    useEffect(()=>{
+        const createURL = (fileData, fileType) =>{
+            const processedData = new Uint8Array(fileData.data);
+            const blob = new Blob([processedData], { type: fileType });
+            
+            return URL.createObjectURL(blob);
+        }
+        allMessages.forEach((message)=>{
+            if (message.files && message.files.length > 0) {
+                message.files.forEach(file => {
+                    const fileURL = createURL(file.filedata, file.filetype);
+                    console.log('File URL:', fileURL);
+                    setAllFiles(prevFiles => ({
+                        ...prevFiles,
+                        [file.filename]: fileURL
+                    }));
+                });
+            }
+        })
+
+    },[allMessages]);
 
 
 
@@ -270,6 +319,17 @@ function DirectMessage ({removeAuthentication}) {
                                     <div className='message' >
                                        {message.message}
                                     </div>
+                                    {message.files && message.files.length > 0 && ( 
+                                        <div className='file-list'> 
+                                            {message.files.map(file => (
+                                               
+                                            <Stack direction="horizontal" gap={1} className="post-file-card">
+                                                <span className="material-icons" >description</span>
+                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
+                                            </Stack>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>  
                                 ) 
                             :
@@ -281,6 +341,17 @@ function DirectMessage ({removeAuthentication}) {
                                     <div className='message' >
                                         {message.message}
                                     </div>
+                                    {message.files && message.files.length > 0 && ( 
+                                        <div className='file-list'> 
+                                            {message.files.map(file => (
+                                               
+                                            <Stack direction="horizontal" gap={1} className="post-file-card">
+                                                <span className="material-icons" >description</span>
+                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
+                                            </Stack>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>)
                             
 
