@@ -35,6 +35,14 @@
     padding-right:  4vw !important;
     font-size: 4vw;
   }
+  .page-layout::-webkit-scrollbar{
+    display: none !important;
+    }
+    .page-layout{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
 
 
@@ -42,16 +50,39 @@
 
 /* Tablets */
 @media (min-width: 768px) and (max-width: 1279px) {
-  .page-layout {
-    background-color: #c2a2e2 !important;
-  }
+    .navbar{
+        height: 6vw !important;
+        padding-left: 3vw !important ;
+        padding-right:  3vw !important;
+        font-size: 2vw;
+      }
+      .page-layout::-webkit-scrollbar{
+        display: none !important;
+    }
+    .page-layout{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
+
+
 
 /* Laptops, Desktops, TVs, and Large Screens */
 @media (min-width: 1280px) {
     .navbar{
-        height: 10vw;
-      }
+        padding-left: 2vw !important;
+        padding-right: 2vw !important;
+    }
+    .page-layout::-webkit-scrollbar{
+        display: none !important;
+    }
+    .page-layout{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
 }
 
 
@@ -60,10 +91,11 @@
 
 
 .page-layout{
-    width: 100vw;
+    width: 100vw !important;
     height: 100vh;
     overflow-x:hidden;
 }
+
 
 .navbar{
     width: 100vw;

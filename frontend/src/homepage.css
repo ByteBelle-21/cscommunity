@@ -69,6 +69,15 @@
         height: 40vw;
     }
 
+    .text-img-card-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center ;
+        margin-top: 15vw;
+    }
+
     .card-container{
         display: flex;
         flex-direction: column;
@@ -114,7 +123,7 @@
 
     .member-card-container{
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Creates two equal-width columns */
+        grid-template-columns: repeat(2, 1fr); 
         gap: 20px; 
         padding-bottom: 3vw;
     }
@@ -154,9 +163,8 @@
     }
     
     .band-button{
-        margin: 0.5vw;
+        margin: 2vw;
         font-size:4vw !important;
-        width:50% !important;
     }
 
     .board-container{
@@ -171,14 +179,229 @@
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         font-size: 3.5vw; 
     }
+
+    .button-container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
    
 
 }
 
 /* Tablets */
 @media (min-width: 768px) and (max-width: 1279px) {
- 
+    .modal-body{
+        display: flex;
+        flex-direction: row;
+        
+    }
+
+    .form-img-text{
+        width: 40%;
+        height: 35vw;
+        background-color: pink; 
+    }
+    
+    
+    .left-img{
+        border-top-left-radius: 1vw; 
+        border-bottom-left-radius:1vw ; 
+    }
+    
+    .right-img{
+        border-top-right-radius: 1vw; 
+        border-bottom-right-radius:1vw ; 
+    }
+
+    .carousel-item{
+        background-color: white !important;
+    }
+    
+
+    .form-field{
+        width:60%;
+    }
+
+    .wrap-container img{
+        height: 5vw !important;
+        margin: 0.5vw;
+    }
+
+    .welcome-board{
+        height: 40vw ;
+    }
+
+
+    .title{
+        height: 20vw;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100%;        
+    }
+
+    .people-group{
+        height: 20vw;
+    }
+
+    .people-group img{
+        height: 19vw;
+        margin-top: auto;
+    }
+
+    .sitting-boy{
+        height: 13vw !important;
+    }
+
+
+    .text-img-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin: 10vw !important;
+        padding: 0;
+    }
+
+
+    .working-boy img{
+        height: 20vw;
+        margin-left: auto;
+    }
+
+    .text-img-card-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 10vw !important;
+        padding: 0;
+    }
+
+   
+    .card-container{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .info-card-body{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+    }
+
+    .info-card-body img{
+        height: 10vw;
+    }
+
+    .info-card{
+        height: 35vw !important;
+        width:50%;
+        margin: 1vw;
+    }
+
+    
+    .working-team img{
+        height: 25vw;
+    }
+
+    .member-card{
+        padding: 0 !important;
+        height: 9vw;
+        width: 15vw;
+        background-color: white;
+        margin: 1vw;
+    }
+    
+    
+    .member-card img{
+        height: 2.5vw !important;
+    }
+    
+    .member-card-container{
+        display:flex;
+        flex-direction: row;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .member-card-text{
+        color: white !important;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+
+    .board-card{
+        width: 80vw !important;
+        height: 10vw;
+        margin: 2vw;
+        padding-left: 2vw;
+        padding-right: 2vw;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+    }
+
+    .greeting-people{
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    
+    .greeting-people img{
+        height: 20vw;
+        margin-left: auto !important;
+    }
+
+    .last-band{
+        display: flex;
+        flex-direction: column;
+
+    }
+
+    
+    .last-band-content{
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        margin-top: 3vw;
+    }
+
+    .band-button{
+        margin: 0.5vw;
+        width: 10vw;
+    }
+
+    .board-container{
+        padding-top: 10vw;
+    }
+    
+    
+    .card{
+        margin: 1vw;
+    }
+
+    .button-container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 2vw;
+    }
+
 }
+
+
+
+
+
+
+
+
+
 
 /* Laptops, Desktops, TVs, and Large Screens */
 @media (min-width: 1280px) {
@@ -187,6 +410,28 @@
         flex-direction: row;
         
     }
+
+    .form-img-text{
+        width: 40%;
+        height: 35vw;
+        background-color: pink; 
+    }
+    
+    
+    .left-img{
+        border-top-left-radius: 1vw; 
+        border-bottom-left-radius:1vw ; 
+    }
+    
+    .right-img{
+        border-top-right-radius: 1vw; 
+        border-bottom-right-radius:1vw ; 
+    }
+
+    .carousel-item{
+        background-color: white !important;
+    }
+    
 
     .form-field{
         width:60%;
@@ -197,8 +442,20 @@
         margin: 0.5vw;
     }
 
+    .welcome-board{
+        height: 25vw;
+    }
+
+
+    .title{
+        height: 10vw;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100%;        
+    }
+
     .people-group{
-    height: 20vw;
+        height: 15vw;
     }
 
     .people-group img{
@@ -206,22 +463,36 @@
         margin-top: auto;
     }
 
+    .sitting-boy{
+        height: 11vw !important;
+    }
+
+
     .text-img-container{
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
         margin: 10vw !important;
+        padding: 0;
     }
+
+
     .working-boy img{
         height: 15vw;
         margin-left: auto;
     }
 
-    .sitting-boy img{
-        height: 10vw !important;
+    .text-img-card-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 10vw !important;
+        padding: 0;
     }
 
+   
     .card-container{
         display: flex;
         flex-direction: row;
@@ -234,6 +505,10 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+    }
+
+    .info-card-body img{
+        height: 7vw;
     }
 
     .info-card{
@@ -267,6 +542,23 @@
         align-items:center;
     }
 
+    .member-card-text{
+        color: white !important;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+
+    .board-card{
+        width: 55vw;
+        height: 5vw;
+        margin: 2vw;
+        padding-left: 2vw;
+        padding-right: 2vw;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+    }
+
     .greeting-people{
         display: flex;
         justify-content: flex-end;
@@ -274,7 +566,7 @@
     
     
     .greeting-people img{
-        height: 15vw;
+        height: 17vw;
         margin-left: auto !important;
     }
 
@@ -300,16 +592,16 @@
         padding-top: 10vw;
     }
     
-    .board-card{
-        width: 50vw;
-        height: 5vw;
-        margin: 2vw;
-        padding-left: 2vw;
-        padding-right: 2vw;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
-    }
+    
     .card{
         margin: 1vw;
+    }
+
+    .button-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -324,22 +616,7 @@
 }
 
 
-.form-img-text{
-    width: 40%;
-    height: 35vw;
-    background-color: pink; 
-}
 
-
-.left-img{
-    border-top-left-radius: 1vw; 
-    border-bottom-left-radius:1vw ; 
-}
-
-.right-img{
-    border-top-right-radius: 1vw; 
-    border-bottom-right-radius:1vw ; 
-}
 
 
 
@@ -358,9 +635,6 @@
     background-color: white !important;
 }
 
-.carousel-item{
-    background-color: white !important;
-}
 
 .carousel-indicators{
     display: none !important;

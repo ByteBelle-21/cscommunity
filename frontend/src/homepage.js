@@ -245,8 +245,11 @@ function Homepage({authentication}) {
     useEffect(() => {
         const updateScreenSize = () => {
             const width = window.innerWidth;
-            if(width >= '767px'){
+            if(width <= 767){
                 setIsMobile(true);
+            }
+            else{
+                setIsMobile(false);
             }
 
         };
@@ -261,22 +264,24 @@ function Homepage({authentication}) {
  
     return (
         <div className='page-layout'>
-            <Stack direction="horizontal" gap={3} className="navbar">
+            <Stack direction="horizontal" gap={4} className="navbar">
                 <Nav.Link className="me-auto">CScommunity</Nav.Link>
                 <Nav.Link onClick={openSignUp}>Sign Up</Nav.Link>
                 <Nav.Link onClick={openLogin}>Log In</Nav.Link>
             </Stack>
             <Modal size='lg' backdrop="static" keyboard={false} show={signupShow} onHide={closeSignup} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
                 <Modal.Body className='modal-body'>
-                    {isMobile && <div className='form-img-text left-img vertical-placement'>
-                        <h5 className='mb-0'>Welcome</h5>
-                        <p>Engage, Explore, and Share</p>
-                        <img src="/Group 196.png"/>
-                    </div>}
+                    {!isMobile && 
+                        <div className='form-img-text left-img vertical-placement'>
+                            <h5 className='mb-0'>Welcome</h5>
+                            <p>Engage, Explore, and Share</p>
+                            <img src="/Group 196.png"/>
+                        </div>
+                    }
                     <div className='form-field vertical-placement'> 
                         <Carousel interval={600000} className='vertical-placement' ref={carouselRef}>
                             <Carousel.Item className='vertical-placement'>
-                                <h6 className='mb-4 headline-text'>Sign Up</h6>
+                                <h5 className='mb-4 headline-text'>Sign Up</h5>
                                 <Form onSubmit={handleSignup}>
                                     <Form.Group controlId="signup-username" >
                                         <Form.Label>Username</Form.Label>
@@ -298,7 +303,7 @@ function Homepage({authentication}) {
                                 <Nav.Link className='modal-question' onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                             </Carousel.Item>
                             <Carousel.Item className='vertical-placement'>
-                            <h6 className='mb-4 headline-text'>Sign Up</h6>
+                                <h5 className='mb-4 headline-text'>Sign Up</h5>
                                 <Form onSubmit={handleSignup}>
                                     <Form.Group controlId="signup-name" >
                                         <Form.Label>Name</Form.Label>
@@ -320,7 +325,7 @@ function Homepage({authentication}) {
                                 <Nav.Link className='modal-question'  onClick={goToLogin}>Already have an account? Log In</Nav.Link>
                             </Carousel.Item>
                             <Carousel.Item className='vertical-placement'>  
-                            <h6 className='mb-4 headline-text'>Sign Up</h6>
+                                <h5 className='mb-4 headline-text'>Sign Up</h5>
                                 <Form className='from3'>
                                     <Form.Group controlId="signup-avatar">
                                         <Form.Label>Choose your Avatar</Form.Label>
@@ -348,7 +353,7 @@ function Homepage({authentication}) {
             <Modal size='lg'  backdrop="static" keyboard={false} show={loginShow} onHide={closeLogin} centered style={{"--bs-modal-border-radius":'1vw', '--bs-modal-padding':'0'}} >
                 <Modal.Body className='horizontal-placement'>
                     <div className='form-field vertical-placement'>
-                        <h6 className='mb-4 headline-text'>Log in</h6>
+                        <h5 className='mb-4 headline-text'>Log in</h5>
                         <Form  onSubmit={handleLogin}>
                             <Form.Group controlId="signup-username" >
                                 <Form.Label>Username</Form.Label>
@@ -368,7 +373,7 @@ function Homepage({authentication}) {
                         <Nav.Link className='modal-question' onClick={goTOSignup}>Don't have an account? Sign up</Nav.Link>
                     </div>
 
-                    {isMobile && <div className='form-img-text right-img vertical-placement'>
+                    {!isMobile && <div className='form-img-text right-img vertical-placement'>
                         <h5 className='mb-0'>Welcome Back</h5>
                         <p>Engage, Explore, and Share</p>
                         <img src="/Group 196.png"/>
@@ -376,11 +381,11 @@ function Homepage({authentication}) {
                 </Modal.Body>
             </Modal>
             <div className='welcome-board vertical-placement'>
-                <Container className='title vertical-placement'>
-                    <h4 className='mb-0  headline-text'>Welcome to our Community</h4>
+                <Container className='title'>
+                    <h5 className='mb-0  headline-text'>Welcome to our Community</h5>
                     <p className='mb-0  subheadline-text'>Every question sparks a new idea, and every answer brings us closer to a solution.</p>
                 </Container>
-                { !isMobile ?
+                { isMobile ?
                     <Container className='people-group horizontal-placement'>
                          <img src="/Group 174.png"  />
                          <img src="Desktop - 15.png"/>
@@ -404,7 +409,7 @@ function Homepage({authentication}) {
             </div>
             <Container className='text-img-container'>
                 <Container>
-                    <h4 className='mb-0  headline-text'>Feeling stuck and can’t find solutions ? <br/>Just ask our community !</h4>
+                    <h5 className='headline-text'>Feeling stuck and can’t find solutions ? <br/>Just ask our community !</h5>
                     <p className='mb-0  subheadline-text'>Post your question and let our community guide you to the answer
                         We're here to help, one solution at a time! Whether you're seeking 
                         advice, troubleshooting an issue, or just curious about something,
@@ -418,8 +423,8 @@ function Homepage({authentication}) {
             </Container>
 
 
-            <Container className="text-img-container">
-                <h6 className='headline-text'>Engage, Explore, and Share</h6>
+            <Container className="text-img-card-container">
+                <h5 className='headline-text'>Engage, Explore, and Share</h5>
                 <Container className='card-container'>
                     <Card className='info-card' style={{background:"#FFDFDF"}}> 
                         <Card.Body className='info-card-body'>
@@ -455,23 +460,37 @@ function Homepage({authentication}) {
                     </Card>
                 </Container>
             </Container>
+            
 
-            <Container className='text-img-container'>
-                <Container >
-                    <h6 className='headline-text'>Enhance Your Posts: Upload Images, Files, and Code</h6>
-                    <p className='subheadline-text'>Make your posts more engaging by easily uploading images, 
-                        files, and code snippets. Share your ideas in full detail 
-                        and connect with others through rich, multimedia content.
-                    </p>
-                </Container>
-                <Container className='working-team'>
-                    <img src="/Group 191.png" />
-                </Container>
-            </Container>
+            {isMobile ? <Container className='text-img-container'>
+                            <Container >
+                                <h6 className='headline-text'>Enhance Your Posts: Upload Images, Files, and Code</h6>
+                                <p className='subheadline-text'>Make your posts more engaging by easily uploading images, 
+                                    files, and code snippets. Share your ideas in full detail 
+                                    and connect with others through rich, multimedia content.
+                                </p>
+                            </Container>
+                            <Container className='working-team'>
+                                <img src="/Group 191.png" />
+                            </Container>
+                        </Container>
+                        :<Container className='text-img-container'>
+                            <Container className='working-team'>
+                                <img src="/Group 191.png" />
+                            </Container>
+                            <Container >
+                                <h5 className='headline-text'>Enhance Your Posts: Upload Images, Files, and Code</h5>
+                                <p className='subheadline-text'>Make your posts more engaging by easily uploading images, 
+                                    files, and code snippets. Share your ideas in full detail 
+                                    and connect with others through rich, multimedia content.
+                                </p>
+                            </Container>
+                        </Container>}
+            
 
 
             <div className='full-width-bands vertical-placement'>
-                <h6 className='mt-2 headline-text'>Meet Some of our <span style={{color:"red"}}>Active</span> Members</h6>
+                <h5 className='mt-2 headline-text'>Meet Some of our <span style={{color:"red"}}>Active</span> Members</h5>
                 <Container className='member-card-container'>
                     {activeMembers.length > 0 && activeMembers.map(member=>(
                         <Card>
@@ -493,7 +512,7 @@ function Homepage({authentication}) {
             </div>
 
             <Container className='board-container vertical-placement'>
-                <h6 className='mt-2 headline-text'>Our most <span style={{color:"red"}}>popular</span> discussion boards</h6>
+                <h5 className='mt-2 headline-text'>Our most <span style={{color:"red"}}>popular</span> discussion boards</h5>
                 <div>
                     {popularChannels.length > 0 && popularChannels.map(channel=>(
                         <Stack direction="horizontal" gap={3} className='board-card'>
@@ -516,7 +535,7 @@ function Homepage({authentication}) {
 
             <Container className='text-img-container'>
                     <Container>
-                        <h6 className='mt-2 headline-text'>Connect Directly: Message and Network with Ease</h6>
+                        <h5 className='mt-2 headline-text'>Connect Directly: Message and Network with Ease</h5>
                         <p className='mb-0 subheadline-text'>With our new direct messaging feature, you can now connect 
                             with people one-on-one. Start conversations, exchange ideas, 
                             and build your network effortlessly.
@@ -530,7 +549,7 @@ function Homepage({authentication}) {
             <div className='full-width-bands last-band'>
                 <Container className='last-band-content'>
                     <h6 className='mt-2 headline-text'>About Us</h6>
-                    <p style={{fontSize:'small'}}>Welcome to CScommunity, a platform for computer technology 
+                    <p >Welcome to CScommunity, a platform for computer technology 
                             enthusiasts and professionals. Share your knowledge, connect 
                             with others, and explore the latest trends in tech. Whether 
                             you're posting code, asking questions, or messaging peers, 
@@ -538,8 +557,11 @@ function Homepage({authentication}) {
                 </Container>
                 <Container className='last-band-content vertical-placement'>
                     <h6 className='mt-2 headline-text'>Join Us</h6>
-                    <Button variant="danger" className='band-button' onClick={openSignUp}>Sign Up</Button>
-                    <Button variant="danger" className='band-button' onClick={openLogin}>Log In</Button>
+                    <div className="button-container">
+                        <Button variant="danger" className='band-button' onClick={openSignUp}>Sign Up</Button>
+                        <Button variant="danger" className='band-button' onClick={openLogin}>Log In</Button>
+                    </div>
+                    
                 </Container>
             </div>   
 
