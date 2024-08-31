@@ -12,20 +12,63 @@
     justify-content: center;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 767px) {
+  .navbar{
+    height: 10vw !important;
+    padding-left: 4vw !important ;
+    padding-right:  4vw !important;
+    font-size: 4vw;
+  }
+
+
+
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .page-layout {
+    background-color: #c2a2e2 !important;
+  }
+}
+
+/* Laptops, Desktops, TVs, and Large Screens */
+@media (min-width: 1280px) {
+    .navbar{
+        height: 10vw;
+      }
+}
+
+
+
+
+
+
 .page-layout{
     width: 100vw;
     height: 100vh;
-    background-color:#FFEAED !important;
     overflow-x:hidden;
 }
 
 .navbar{
-    height: 5vh;
     width: 100vw;
     background-color: #1A183F;
     color: white;
-    padding-left: 4vh !important;
-    padding-right:4vh !important;
 }
 
 

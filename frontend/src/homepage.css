@@ -1,3 +1,320 @@
+@media (max-width: 767px) {
+    .modal-body{
+        display: flex;
+        flex-direction: column;
+        
+    }
+    .form-field{
+        width:100%;
+        padding-top: 2vw !important;
+        padding-bottom: 2vw !important;
+    }
+    .headline-text{
+        font-size: 4.5vw;
+    }
+
+    .subheadline-text{
+        font-size: 4vw !important;
+    }
+
+    .form-label{
+        font-size: 4vw !important;
+    }
+
+    .modal-question{
+        margin-top: 1vw;
+        font-size: 3vw !important;
+    }
+
+    .wrap-container{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin: 1vw;
+    }
+    
+    .wrap-container img{
+        height: 15vw !important;
+        margin: 1vw;
+    }
+
+    .welcome-board{
+        height: 60vw;
+    }
+    
+    .title{
+        height: 30vw;
+    }
+
+    .people-group{
+        height: 30vw;
+    }
+    
+    .people-group img{
+        height: 30vw !important;
+        margin-top: auto;
+    }
+
+    .text-img-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center ;
+        margin-top: 15vw;
+    }
+
+    .working-boy img{
+        margin-top: 5vw;
+        height: 40vw;
+    }
+
+    .card-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .info-card-body{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-size:3.5vw;
+    }
+    
+    .info-card-body img{
+        height:15vw;
+    }
+
+    .info-card{
+        width: 70%;
+        margin: 1vw;
+        
+    }
+ 
+    .working-team img{
+        height: 50vw;
+        margin-bottom:15vw;
+    }
+
+    .member-card{
+        padding: 0 !important;
+        background-color: white;
+        margin: 1vw !important;
+        font-size:3vw;
+        height:20vw;
+    }
+    
+    
+    .member-card img{
+        height: 8vw !important;
+    }
+
+    .member-card-container{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Creates two equal-width columns */
+        gap: 20px; 
+        padding-bottom: 3vw;
+    }
+
+    .member-card-text{
+        background-color:#1A183F;
+        border-color: #1A183F;
+        color:white !important;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        text-align: center;
+        height:20vw;
+        font-size:3.5vw;
+    }
+
+   
+    
+    .greeting-people img{
+        height: 40vw;
+        margin-bottom:15vw ;
+    }
+
+    .last-band{
+        display: flex;
+        flex-direction: column;
+        
+    }
+    
+    .last-band-content{
+        width:100 %!important;
+        font-size: 3vw;
+        margin-top: 5vw;
+        margin-bottom: 5vw;
+        text-align:center;
+    }
+    
+    .band-button{
+        margin: 0.5vw;
+        font-size:4vw !important;
+        width:50% !important;
+    }
+
+    .board-container{
+        padding-top: 10vw;
+        width:100% !important;
+    }
+    
+    .board-card{
+        width: 95vw !important;
+        height: 20vw;
+        padding: 2vw;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        font-size: 3.5vw; 
+    }
+   
+
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1279px) {
+ 
+}
+
+/* Laptops, Desktops, TVs, and Large Screens */
+@media (min-width: 1280px) {
+    .modal-body{
+        display: flex;
+        flex-direction: row;
+        
+    }
+
+    .form-field{
+        width:60%;
+    }
+
+    .wrap-container img{
+        height: 4vw !important;
+        margin: 0.5vw;
+    }
+
+    .people-group{
+    height: 20vw;
+    }
+
+    .people-group img{
+        height: 15vw;
+        margin-top: auto;
+    }
+
+    .text-img-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin: 10vw !important;
+    }
+    .working-boy img{
+        height: 15vw;
+        margin-left: auto;
+    }
+
+    .sitting-boy img{
+        height: 10vw !important;
+    }
+
+    .card-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .info-card-body{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .info-card{
+        height: 7.5vw;
+        width:12vw;
+        margin: 1vw;
+    }
+
+    
+    .working-team img{
+        height: 20vw;
+    }
+
+    .member-card{
+        padding: 0 !important;
+        height: 5.5vw;
+        width: 10vw;
+        background-color: white;
+        margin: 1vw;
+    }
+    
+    
+    .member-card img{
+        height: 2.5vw !important;
+    }
+    
+    .member-card-container{
+        display:flex;
+        flex-direction: row;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .greeting-people{
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    
+    .greeting-people img{
+        height: 15vw;
+        margin-left: auto !important;
+    }
+
+    .last-band{
+        display: flex;
+        flex-direction: row;
+
+    }
+
+    
+    .last-band-content{
+        width:30vw !important;
+        margin-top: 5vw;
+        margin-bottom: 5vw;
+    }
+
+    .band-button{
+        margin: 0.5vw;
+        width: 10vw;
+    }
+
+    .board-container{
+        padding-top: 10vw;
+    }
+    
+    .board-card{
+        width: 50vw;
+        height: 5vw;
+        margin: 2vw;
+        padding-left: 2vw;
+        padding-right: 2vw;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+    }
+    .card{
+        margin: 1vw;
+    }
+}
+
+
+
 
 .full-width-bands{
     width: 100vw;
@@ -25,9 +342,7 @@
 }
 
 
-.form-field{
-    width:60%;
-}
+
 
 
 .carousel{
@@ -67,14 +382,9 @@
     margin: 1vw;
 }
 
-.wrap-container img{
-    height: 4vw !important;
-    margin: 0.5vw;}
 
 
-.wrap-container img{
-    height:  3.5vw !important;
-}
+
 
 .wrap-container .btn{
     padding: 0 !important;
@@ -113,91 +423,17 @@ label.form-label{
 }
 
 .title{
-    height: 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-.people-group{
-    height: 20vw;
-}
 
-.people-group img{
-    height: 15vw;
-    margin-top: auto;
-}
 
 
 .text-img-container{
-    width: 80vw !important;
-    margin: 10vw !important;
-}
-
-.working-boy img{
-    height: 15vw;
-    margin-left: auto;
-}
-
-
-.working-team img{
-    height: 20vw;
-}
-
-.info-card{
-    height: 7.5vw;
-    width:12vw;
-    margin: 1vw;
-}
-
-.card{
-    margin: 1vw;
-}
-
-.member-card{
-    padding: 0 !important;
-    height: 5.5vw;
-    width: 10vw;
-    background-color: white;
-    margin: 1vw;
-}
-
-
-.member-card img{
-    height: 2.5vw !important;
-}
-
-
-
-
-.board-container{
-    padding-top: 10vw;
-}
-
-.board-card{
-    width: 50vw;
-    height: 5vw;
-    margin: 2vw;
-    padding-left: 2vw;
-    padding-right: 2vw;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
-}
-
-.greeting-people{
-    display: flex;
-    justify-content: flex-end;
-}
-
-
-.greeting-people img{
-    height: 15vw;
-    margin-left: auto !important;
-}
-
-.last-band-content{
-    width:30vw !important;
-    margin-top: 5vw;
-    margin-bottom: 5vw;
-}
-
-.band-button{
-    margin: 0.5vw;
-    width: 10vw;
+    width: 100% !important;
+   
 }
