@@ -100,12 +100,11 @@
         overflow-y: auto !important;
     }
 
-    .channel-list::-webkit-scrollbar{
-        width: 0.3vw;
-        background-color: #C3BEFF;
-        border-radius: 1vw;
+    .channel-list::-webkit-scrollbar {
+       display: none;
     }
-
+    
+    
 
 
     .row {
@@ -190,10 +189,8 @@
     }
 
     .channel-form-button{
-        width: 60% !important;
-        background-color: #6C63FF !important ;
-        border-color: #6C63FF !important ;
-    }
+        width: 60% !important;}
+
 
 
 }

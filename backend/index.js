@@ -498,8 +498,7 @@ app.get('/totalUsers',(request,response)=>{
 app.get('/popularchannels',(request,response)=>{
         database.query(`SELECT c.channel AS channel, u.username AS username,  c.totalpeople AS totalpeople, c.totalposts AS totalposts
         FROM channelsTable c JOIN userTable u ON c.username = u.id 
-        ORDER BY c.totalpeople DESC 
-        LIMIT 6`,(error, result)=>{
+        ORDER BY c.totalpeople DESC `,(error, result)=>{
         if (error){
             response.status(500).send("Server error during retrieving popular channels");
             return;

@@ -152,3 +152,17 @@
 }
 
 
+.suggested-channel-block{
+    background-color: rgb(232, 242, 251);
+    padding: 0.5vw;
+    margin-bottom: 0.5vw ;
+    border-color: rgb(226, 240, 251);
+}
+
+.suggested-channel-block:hover{
+    cursor: pointer;
+    background-color:rgb(209, 232, 252);
+    transform: scale(1.03);
+    
+}
+

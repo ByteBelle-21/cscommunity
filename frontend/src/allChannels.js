@@ -205,11 +205,15 @@ function AllChannels({removeAuthentication}){
     
     useEffect(()=>{
         const handleSearch= async()=>{
-            if (searchSelect === ''){
-                setShowSearchError(true);
+            if (searchText.length === 0 || searchSelect === '') {
+                setSearchChannelResult([]);
+                setSearchPeopleResult([]);
+                setSearchPostResult([]);
+                setShowSearchError(searchSelect === '');
                 return;
             }else if (searchSelect === 'channel'){
                 try {
+                    
                     const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchChannel',
                         {params:{search_input :searchText}} );
                     if (response.status === 200) {
@@ -221,10 +225,8 @@ function AllChannels({removeAuthentication}){
                 }
             
             }else if (searchSelect === 'post'){
-                if(searchText.length < 3){
-                    return;
-                }
                 try {
+                    
                     const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPost',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
@@ -237,6 +239,12 @@ function AllChannels({removeAuthentication}){
             
             }else if (searchSelect === 'people'){
                 try {
+                    if (searchText.length === 0){
+                        setSearchChannelResult([]);
+                        setSearchPeopleResult([]);
+                        setSearchPostResult([]);
+                        return;
+                    }
                     const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPeople',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
@@ -253,7 +261,7 @@ function AllChannels({removeAuthentication}){
 
         }
         handleSearch();  
-    },[searchText]);
+    },[searchText, searchSelect]);
 
 
 

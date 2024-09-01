@@ -17,6 +17,8 @@ import TextareaAutosize from 'react-textarea-autosize';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import { useParams,useLocation } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import { useNavigate } from 'react-router-dom';
 
 
 function SelectedChannel({removeAuthentication}){
@@ -26,6 +28,7 @@ function SelectedChannel({removeAuthentication}){
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const postId = urlParams.get('postId');
+    const navigateTo = useNavigate()
 
     useEffect(()=>{
         if(postId){
@@ -40,7 +43,7 @@ function SelectedChannel({removeAuthentication}){
         fetchUserDetails();
         fetchConnectedUsers();
         fetchAllPosts();  
-    },[]);
+    },[decodeURIComponent(channelName)]);
 
 
     const [userDetails, setUserDetails] = useState([]);
@@ -125,7 +128,9 @@ function SelectedChannel({removeAuthentication}){
 
     },[allPosts]);
 
-    
+    const handleSendMessage=(selectedUser)=>{
+        navigateTo(`/messages/${encodeURIComponent(selectedUser)}`);
+    }
 
     const showFileTooltip = (props) => (
         <Tooltip id="button-tooltip" {...props} className='tooltip'>
@@ -266,7 +271,107 @@ function SelectedChannel({removeAuthentication}){
     }
 
 
-     
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const openSearchModal = () => {
+        setShowSearchModal(true);
+    }
+
+    const closeSearchModal =()=>{
+        setShowSearchModal(false);
+    }
+
+    const [searchText, setSearchText] = useState('');
+    const [searchSelect, setSearchSelect] = useState('');
+    const [showSearchError, setShowSearchError] = useState(false);
+    const [searchChannelResult, setSearchChannelResult] = useState([]);
+    const [searchPostResult, setSearchPostResult] = useState([]);
+    const [searchPeopleResult, setSearchPeopleResult] = useState([]);
+    
+    
+    useEffect(()=>{
+        const handleSearch= async()=>{
+            if (searchText.length === 0 || searchSelect === '') {
+                setSearchChannelResult([]);
+                setSearchPeopleResult([]);
+                setSearchPostResult([]);
+                setShowSearchError(searchSelect === '');
+                return;
+            }else if (searchSelect === 'channel'){
+                try {
+                    
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchChannel',
+                        {params:{search_input :searchText}} );
+                    if (response.status === 200) {
+                        setSearchChannelResult(response.data);
+                        console.log("Successfully retrieved search result for channels");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }else if (searchSelect === 'post'){
+                try {
+                    
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPost',
+                    {params:{search_input :searchText}});
+                    if (response.status === 200) {
+                        setSearchPostResult(response.data);
+                        console.log("Successfully retrieved search result for posts");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }else if (searchSelect === 'people'){
+                try {
+                    if (searchText.length === 0){
+                        setSearchChannelResult([]);
+                        setSearchPeopleResult([]);
+                        setSearchPostResult([]);
+                        return;
+                    }
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPeople',
+                    {params:{search_input :searchText}});
+                    if (response.status === 200) {
+                        setSearchPeopleResult(response.data);
+                        console.log(response.data);
+                        console.log("Successfully retrieved search result for people");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }
+            
+
+        }
+        handleSearch();  
+    },[searchText, searchSelect]);
+
+    const showProfile=(userName)=>{
+        navigateTo(`/user-profile/${encodeURIComponent(userName)}`)
+    }
+
+
+    const [popularChannels, setPopularChannels] = useState([]);
+    useEffect(()=>{
+        const fetchChannels= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/popularchannels');
+                if (response.status === 200) {
+                    setPopularChannels(response.data);
+                    console.log("Successfully retrieved popular channels");
+                } 
+            }catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+        }
+        fetchChannels();  
+    },[]);
+
+    const showchannel =(channelName)=>{
+        navigateTo(`/channel/${encodeURIComponent(channelName)}`)
+    }
     
     return(
         <div className='page-layout'>
@@ -276,18 +381,88 @@ function SelectedChannel({removeAuthentication}){
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
+                <Nav.Link className='mx-2' onClick={()=>navigateTo('/all-channels')}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
                 <h6 className='me-auto'>{channelName}</h6>
-                <div className='search-container horizontal-placement'>
-                    <span className="material-icons">search</span> Search  
-                    <Form className='horizontal-placement ms-4'> 
-                        <Form.Select aria-label="Search by" className='search-bar'>
-                            <option >Search by</option>
-                            <option value="people">People</option>
-                            <option value="post">Post</option>
-                        </Form.Select>   
-                        <Form.Control placeholder="people or post" className='search-bar'/>
+                    <Form>  
+                        <Form.Control placeholder="🔍 Search" 
+                                    className='search-bar'
+                                    onClick={openSearchModal}/>
+
+                        <Modal
+                        size="md"
+                        keyboard={false} 
+                        show={showSearchModal} 
+                        onHide={closeSearchModal} 
+                        centered 
+                        style={ {width:'100%'}}
+                        >
+                        <Modal.Header className='vertical-placement' >
+                            <h6 style={{color:'rgb(6, 110, 200)'}}>Search</h6>
+                            <Form style={{ width: '100%' }}>
+                                <Form.Select 
+                                className='search-bar1 mb-1'
+                                value= {searchSelect}
+                                onChange={(e) => {setSearchSelect(e.target.value);setShowSearchError(false)}} >
+                             
+                                    <option >Search by</option>
+                                    <option value="channel">Channel</option>
+                                    <option value="people">People</option>
+                                    <option value="post">Post</option>
+                                </Form.Select>
+                                 <Form.Control placeholder="Search" 
+                                      className='search-bar2'
+                                      type="text" 
+                                      value = {searchText}
+                                      onChange={(e) => {setSearchText(e.target.value)}}       
+                                />
+                            </Form>
+                            
+                        </Modal.Header>
+                        <Modal.Body style={{fontSize:'0.9vw', height:'25vw', overflowY:'auto'}} className={showSearchError ? 'vertical-placement' : 'search-result-block'}>
+                            {showSearchError && 
+                                <div style={{display:'flex',flexWrap:'wrap', opacity:'0.5'}}>Please select an option from the dropdown menu to continue.</div>
+                            }
+                            {(!showSearchError && searchChannelResult.length === 0 && searchPeopleResult.length === 0 && searchPostResult.length ===0) &&
+                                <div style={{display:'flex',flexWrap:'wrap', opacity:'0.5', fontSize:'1vw'}}>No Search Result</div> 
+                            }
+                            {searchChannelResult.length > 0 ?
+                                searchChannelResult.map((channel)=>(
+                                    <div className='channel-result-block' onClick={()=>showchannel(channel.channel)}>
+                                       { channel.channel}
+                                        <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>Created by<img src={channel.avatar} style={{height:'1vw', marginLeft:'0.7vw'}}/><span> {channel.username}</span></p>
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                            {searchPeopleResult.length > 0 ?
+                                searchPeopleResult.map((person)=>(
+                                    <div className='result-block' 
+                                         onClick={()=> {
+                                            if(person.username=== userDetails.username){
+                                                navigateTo('/profile');
+                                            }else{
+                                                showProfile(person.username)
+                                            }
+                                        }}>
+                                        <img src={person.avatar} style={{height:'2vw'}}/><span> {person.username}</span>  
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                            {searchPostResult.length > 0 ?
+                                searchPostResult.map((post)=>(
+                                    <div className='result-block' onClick={()=>goToPost(post.channel,post.id)}>
+                                        <strong>{post.channel}</strong> <br></br>
+                                        <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
+                                        <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                        </Modal.Body>
+                    </Modal>
                     </Form> 
-                </div>       
+                   
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className='small-grid-container1'>
@@ -305,7 +480,7 @@ function SelectedChannel({removeAuthentication}){
                                 <p style={{fontSize:'0.8vw'}}>Likes</p>
                             </div>
                         </div>
-                        <Button>My Profile</Button>
+                        <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
                     </Container>
                     
                 </Container>
@@ -387,9 +562,9 @@ function SelectedChannel({removeAuthentication}){
                                     <img src={user.avatar}  style={{height:'2vw'}}/>
                                     <div className=' me-auto'>
                                         {user.username}
-                                        <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                        <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
                                     </div>
-                                    <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
+                                    <Nav.Link style={{fontSize:'small'}} className='view-conversation' onClick ={()=>handleSendMessage(user.username)}>View Conversation</Nav.Link>
                                 </Stack>
                             </div>
                             </Container>
@@ -401,6 +576,19 @@ function SelectedChannel({removeAuthentication}){
                         }
                    <h6>Suggested Channels for you</h6>
                    <Container className='small-grid-container-child'>
+                    {popularChannels.length > 0 && popularChannels
+                            .filter(channel => channel.channel !== decodeURIComponent(channelName))
+                            .slice(0,3)
+                            .map(channel=>(
+                            <Stack direction="horizontal" gap={3} className='suggested-channel-block' onClick={()=>showchannel(channel.channel)} >
+                                <div className=' me-auto'>
+                                    {channel.channel}
+                                    <p style={{fontSize:"small", marginBottom:0}}>Created by {channel.username} <span style={{marginLeft: "2vw"}}>Posts {channel.totalposts}</span></p>
+                                </div>
+                    
+
+                            </Stack>
+                        ))}
                         
                    </Container>       
                 </Container>

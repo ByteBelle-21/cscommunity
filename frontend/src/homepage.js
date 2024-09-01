@@ -204,7 +204,6 @@ function Homepage({authentication}) {
 
     // Functionality to retrieve 6 populat channels
     const [popularChannels, setPopularChannels] = useState([]);
-
     useEffect(()=>{
         const fetchChannels= async()=>{
             try {
@@ -514,7 +513,7 @@ function Homepage({authentication}) {
             <Container className='board-container vertical-placement'>
                 <h5 className='mt-2 headline-text'>Our most <span style={{color:"red"}}>popular</span> discussion boards</h5>
                 <div>
-                    {popularChannels.length > 0 && popularChannels.map(channel=>(
+                    {popularChannels.length > 0 && popularChannels.slice(0,6).map(channel=>(
                         <Stack direction="horizontal" gap={3} className='board-card'>
                             <div className=' me-auto'>
                                 {channel.channel}

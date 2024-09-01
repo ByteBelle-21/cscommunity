@@ -89,13 +89,16 @@ function OtherUserProfile({removeAuthentication}){
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
+                <Nav.Link className='mx-2' onClick={()=>navigateTo(-1)}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
                 <h6 className='me-auto '>{userName}</h6>   
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className='small-grid-container2'>  
                     <h6 className='mb-3'>Suggested People for you</h6>
-                    {suggestedPeople.length >0 && suggestedPeople.map(person=>(
-                        <div className='child-blocks'>
+                    {suggestedPeople.length >0 && suggestedPeople
+                    .filter(person => person.username !== current_user && person.username!== userName )
+                    .map(person=>(
+                        <div className='child-blocks'> 
                             <Stack direction="horizontal" gap={3}>
                                 <img src={person.avatar}  style={{height:'2vw'}}/>
                                 <div className=' me-auto'>
