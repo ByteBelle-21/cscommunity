@@ -549,18 +549,20 @@ app.get('/connectedusers',(request,response)=>{
             }
             else{
                 const userId = result[0].id;
-                database.query(`SELECT DISTINCT
+                database.query(`SELECT DISTINCT avatar, username 
+                                FROM(
+                                    SELECT
                                         CASE WHEN m.sender=? THEN u_reciever.avatar 
                                             WHEN m.reciever=? THEN u_sender.avatar 
                                         END AS avatar,
                                         CASE WHEN m.sender=? THEN u_reciever.username 
                                             WHEN m.reciever=? THEN u_sender.username 
                                         END AS username,
-                                        m.datetime
+                                        m.datetime AS datetime
                                         FROM messagesTable m
                                         JOIN userTable u_reciever ON m.reciever = u_reciever.id 
-                                        JOIN userTable u_sender ON m.sender = u_sender.id 
-                                        ORDER BY m.datetime DESC`,[userId,userId,userId,userId],(error, result)=>{
+                                        JOIN userTable u_sender ON m.sender = u_sender.id )AS subquery
+                                        ORDER BY datetime DESC`,[userId,userId,userId,userId],(error, result)=>{
                                             if (error){
                                                 response.status(500).send("Server error during retrieving direct messages");
                                                 return;
@@ -604,8 +606,8 @@ app.post('/post', (request, response) => {
                         }
                         else{
                             const channelId = channelId_result[0].id;
-                            database.query(`INSERT INTO postsTable (replyTo, username, post, channel) VALUES (?, ?, ?, ?)`,
-                            [input_reply_to, userId, input_post, channelId],(error,result)=>{
+                            database.query(`INSERT INTO postsTable (replyTo, username, post,likes, channel) VALUES (?, ?, ?, ?, ?)`,
+                            [input_reply_to, userId, input_post,0, channelId],(error,result)=>{
                                 if(error){
                                     response.status(500).send("Server error during uploading the post");
                                     return;
@@ -734,6 +736,7 @@ app.get('/allPosts',(request,response)=>{
                         u.avatar,
                         p.datetime,
                         p.post,
+                        p.likes,
                         0 AS level,
                         p.id AS root_id,
                         p.datetime AS root_datetime,
@@ -751,6 +754,7 @@ app.get('/allPosts',(request,response)=>{
                         u.avatar,
                         p.datetime,
                         p.post,
+                        p.likes,
                         pT.level + 1 AS level,
                         pT.root_id AS root_id,
                         pT.root_datetime AS root_datetime,
@@ -767,6 +771,7 @@ app.get('/allPosts',(request,response)=>{
                     avatar,
                     datetime,
                     post,
+                    likes,
                     level
                 FROM postTree
                 ORDER BY path ASC`,[channelId,channelId],(error, postResult)=>{
@@ -892,7 +897,8 @@ app.get('/allMessages',(request,response)=>{
                             const connected_user_id = secondIdResult[0].id;
                             console.log(connected_user_id);
                             database.query(`SELECT * FROM  messagesTable
-                                            WHERE (sender=? AND reciever=?) OR (sender=? AND reciever=?) `,[you_id,connected_user_id,connected_user_id,you_id],(error, messageResult)=>{
+                                            WHERE (sender=? AND reciever=?) OR (sender=? AND reciever=?)
+                                            ORDER BY datetime `,[you_id,connected_user_id,connected_user_id,you_id],(error, messageResult)=>{
                                             if (error){
                                                 console.log(error);
                                                 response.status(500).send("Server error during retrieving messages");
@@ -1081,12 +1087,12 @@ app.post('/likepost',(request, response)=>{
     const post = request.body.postId;
     const postCreator = request.body.creator;
     const loggedInUser = request.body.user;
-    database.query(`UPDATE postsTable SET likes = likes+1 WHERE id = ?`,[post], (error,result)=>{
+    database.query(`UPDATE postsTable SET likes = COALESCE(likes, 0)+1 WHERE id = ?`,[post], (error,result)=>{
         if (error){
             response.status(500).send("Server error during increasing likes for post");
             return;
         }
-        database.query(`UPDATE userTable SET likes = likes+1 WHERE username = ?`,[postCreator], (error,result)=>{
+        database.query(`UPDATE userTable SET likes = COALESCE(likes, 0)+1 WHERE username = ?`,[postCreator], (error,result)=>{
             if (error){
                 response.status(500).send("Server error during increasing likes for user");
                 return;

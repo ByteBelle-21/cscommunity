@@ -393,6 +393,9 @@ function SelectedChannel({removeAuthentication}){
             console.error("Catched axios error: ",error);
         }
     }
+
+
+
     
     return(
         <div className='page-layout'>
@@ -513,8 +516,9 @@ function SelectedChannel({removeAuthentication}){
                     }
                     {allPosts.length > 0 && 
                         <Container className='all-posts '>
-                            {allPosts.map(post=>(
+                            {allPosts.map((post,index)=>(
                             <div id={post.id} className="post-div" style={{paddingLeft:`${post.level * 2.5}vw`}}>
+                                {(post.level===0 && index > 0) && <hr style={{width:'80%'}}></hr> }
                                 <div className='post-sender'>
                                     <Nav.Link >
                                         <img src={post.avatar} style={{height:'1.5vw'}}></img>
@@ -534,7 +538,11 @@ function SelectedChannel({removeAuthentication}){
                                             ))}
                                         </div>
                                     )}
-                                    <Stack direction="horizontal" gap={3} style={{ alignItems:'center',marginTop:'0.1vw'}}>
+                                    <Stack direction="horizontal" gap={3} style={{ alignItems:'center'}}>
+                                        <Nav.Link style={{ color: 'rgb(12, 132, 237)', display: 'flex', alignItems: 'center' }}>
+                                            <span className="material-icons" style={{ margin: 0 }}>recommend</span>
+                                            <span>{post.likes}</span>
+                                        </Nav.Link>
                                         {post.isLikedByUser ?
                                             <Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleLikes(post.id,post.username,userDetails.id)}>You liked this post</Nav.Link>
                                             :<Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleLikes(post.id,post.username,userDetails.id)}>Like</Nav.Link>

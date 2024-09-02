@@ -268,7 +268,23 @@ function DirectMessage ({removeAuthentication}) {
 
     },[allMessages]);
 
-
+    const handleRating = (likes, posts)=>{
+        if (posts === 0){
+            return "⭐️"
+        }
+        else if(likes/posts >= 5){
+            return "⭐️⭐️⭐️⭐️⭐️"
+        }
+        else if(likes/posts >= 3 && likes/posts < 5){
+            return "⭐️⭐️⭐️⭐️"
+        }
+        else if(likes/posts >= 1 && likes/posts < 3){
+            return "⭐️⭐️⭐️"
+        }
+        else {
+            return "⭐️⭐️"
+        }
+    }
 
 
 
@@ -278,17 +294,22 @@ function DirectMessage ({removeAuthentication}) {
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
                 <Nav.Link  className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>{loggedInUserDetails.username}</Nav.Link>
+                <Nav.Link className='horizontal-placement' onClick={()=> navigateTo('/profile')}><img  src={loggedInUserDetails.avatar} style={{height:'1.5vw', marginRight:'0.1vw'}}/> {loggedInUserDetails.username}</Nav.Link>
+               
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
+                <Nav.Link className='mx-2' onClick={()=>navigateTo(-1)}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
                 <h6 className='me-auto '>Direct messages to {selectedUser}</h6>    
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className='small-grid-container2'>
                     <h6>Direct Messages</h6>
                     <Container className=' direct-messages small-grid-container-child'>
-                        {connectedUsers.length >0 && connectedUsers.map(user=>(
+                        {connectedUsers.length >0 && connectedUsers
+                                .filter(user => user.username !== selectedUser)
+                                .map(user=>(
+
                                 <div className='child-blocks'>
                                     <Stack direction="horizontal" gap={3}>
                                         <img src={user.avatar}  style={{height:'2vw'}}/>
@@ -393,7 +414,7 @@ function DirectMessage ({removeAuthentication}) {
                     <Container className='user-info'>
                         <p>Occupation : {selectedUserDetails.occupation}</p>
                         <p>Total Posts : {selectedUserDetails.totalPosts}</p>
-                        <p>Rating : ⭐⭐⭐⭐</p>
+                        <p>Rating : {handleRating(selectedUserDetails.likes, selectedUserDetails.totalPosts)}</p>
                     </Container>
                     <Button onClick={goToProfile}>View Profile</Button>
                 </Container>
