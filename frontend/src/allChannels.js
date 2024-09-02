@@ -277,11 +277,11 @@ function AllChannels({removeAuthentication}){
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
                 <Nav.Link className="me-auto" onClick={goToHome}>CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>{username}</Nav.Link>
+                <Nav.Link className='horizontal-placement' onClick={()=> navigateTo('/profile')}><img  src={userDetails.avatar} style={{height:'1.5vw', marginRight:'0.5vw'}}/>{username}</Nav.Link>
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
-                <h6 className='me-auto '>All Channels</h6>
+                <h6 className='me-auto' style={{marginLeft:'2vw'}}>All Channels</h6>
                 
                     <Form className='horizontal-placement ms-4'>   
                         <Form.Control placeholder="🔍 Search" 

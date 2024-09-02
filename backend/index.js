@@ -59,6 +59,7 @@ function useDatabase(){
         createFilesTable();
         createChannelsTable();
         createMessagesTable();
+        createLikesTable();
        
     })
 }
@@ -90,6 +91,7 @@ function createPostsTable(){
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                         replyTo INT ,
                         username INT,
+                        likes INT,
                         datetime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
                         post VARCHAR(1000) NOT NULL,
                         channel INT)`,(error,result)=>{
@@ -148,7 +150,21 @@ function createMessagesTable(){
                             }
                             console.log('Successfully created table messagesTable');
                             addForeignkeys();
-                        })
+                        })  
+}
+
+
+function createLikesTable(){
+    database.query(`CREATE TABLE IF NOT EXISTS likesTable
+                    (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                     postId INT NOT NULL,
+                     userId INT NOT NULL)`,(error, result)=>{
+                        if (error){
+                            console.error('Error while creating the table likesTable: ',error);
+                            return;
+                        }
+                        console.log('Successfully created table likesTable');
+                     })
 }
 
 
@@ -695,8 +711,8 @@ app.post('/fileupload',upload.array('allFiles'),(request,response)=>{
 
 
 app.get('/allPosts',(request,response)=>{
-    console.log("i am here at back all post");
     const channel = request.query.current_channel;
+    const user = request.query.user;
     console.log(channel);
     database.query(`SELECT id FROM channelsTable WHERE channel=?`,[channel],(error, result)=>{
         if (error){
@@ -759,35 +775,50 @@ app.get('/allPosts',(request,response)=>{
                                                 response.status(500).send("Server error during retrieving postTree");
                                                 return;
                                             }
-                    
-                                            const postPromises = postResult.map((post) => {
-                                                return new Promise((resolve, reject) => {
-                                                    database.query(`SELECT filename, filetype, filedata FROM filesTable WHERE postId=?`, [post.id], (error, fileResult) => {
-                                                        if (error) {
-                                                            reject("Server error during retrieving files");
-                                                        } else {
-                                                            resolve({ ...post, files: fileResult.length > 0 ? fileResult : [] });
-                                                        }
+                                            database.query(`SELECT id FROM userTable WHERE username=?`,[user],(error, userResult)=>{
+                                                if (error){
+                                                    response.status(500).send("Server error during retrieving user id while retriving all posts");
+                                                    return;
+                                                }
+                                                else{
+                                                    const userId = userResult[0].id;
+                                                    const postPromises = postResult.map((post) => {
+                                                        return new Promise((resolve, reject) => {
+                                                            database.query(`SELECT filename, filetype, filedata FROM filesTable WHERE postId=?`, [post.id], (error, fileResult) => {
+                                                                if (error) {
+                                                                    reject("Server error during retrieving files");
+                                                                } else {
+                                                                    database.query(`SELECT * FROM likesTable WHERE postId=? AND userId=?`, [post.id,userId], (error, likesResult) => {
+                                                                        if (error) {
+                                                                            reject("Server error during retrieving likes for the post");
+                                                                        } else {
+                                                                            const isLikedByUser = likesResult.length > 0; 
+                                                                            resolve({ ...post, files: fileResult.length > 0 ? fileResult : [],isLikedByUser});
+                                                                        }
+                                                                    });
+                                                                   
+                                                                }
+                                                            });
+                                                        });
                                                     });
-                                                });
-                                            });
-                                            Promise.all(postPromises)
-                                            .then(allPostsWithFiles => {
-                                                response.status(200).json(allPostsWithFiles);
-                                            })
-                                            .catch((error) => {
-                                                console.error(error);
-                                                response.status(500).send(error);
-                                            });
+                                                    Promise.all(postPromises)
+                                                    .then(allPostsWithFiles => {
+                                                        response.status(200).json(allPostsWithFiles);
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error(error);
+                                                        response.status(500).send(error);
+                                                    });
+                                                }                        
                     
                 })
 
-            }
+            })
         } 
-    })
+    }
     
 })
-
+});
 
 
 
@@ -1046,7 +1077,31 @@ app.get('/searchPeople',(request,response)=>{
 })
 
 
-
+app.post('/likepost',(request, response)=>{
+    const post = request.body.postId;
+    const postCreator = request.body.creator;
+    const loggedInUser = request.body.user;
+    database.query(`UPDATE postsTable SET likes = likes+1 WHERE id = ?`,[post], (error,result)=>{
+        if (error){
+            response.status(500).send("Server error during increasing likes for post");
+            return;
+        }
+        database.query(`UPDATE userTable SET likes = likes+1 WHERE username = ?`,[postCreator], (error,result)=>{
+            if (error){
+                response.status(500).send("Server error during increasing likes for user");
+                return;
+            }
+            database.query(`INSERT INTO likesTable (postId,userId) VALUES (?,?)`,[post,loggedInUser], (error,result)=>{
+                if (error){
+                    response.status(500).send("Server error during inserting values into likesTable");
+                    return;
+                }
+                response.status(200).send("Successfully updated userTable, likestable and postsTable for likes");
+            })
+           
+        })
+    })
+})
 
 
 
@@ -1056,7 +1111,3 @@ app.get('/searchPeople',(request,response)=>{
 app.listen(PORT, () => {
     console.log('server is running on port ' + PORT + ".");
 });
-
-
-
-

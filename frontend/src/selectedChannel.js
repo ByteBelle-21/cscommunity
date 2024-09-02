@@ -87,10 +87,10 @@ function SelectedChannel({removeAuthentication}){
     const[allPosts, setAllPosts] = useState([])
     const fetchAllPosts= async()=>{
         const channel_name = decodeURIComponent(channelName);
-        console.log("channel name is : ",channel_name);
+        const loggedInUser = sessionStorage.getItem('auth_user');
         try {
             const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//allPosts',
-            { params: {current_channel:channel_name}});
+            { params: {current_channel:channel_name, user:loggedInUser}});
             if (response.status === 200) {
                 setAllPosts(response.data);
                 console.log("All posts: ",response.data);
@@ -372,12 +372,33 @@ function SelectedChannel({removeAuthentication}){
     const showchannel =(channelName)=>{
         navigateTo(`/channel/${encodeURIComponent(channelName)}`)
     }
+
+
+    
+    const handleLikes= async(post, postCreator, loggedInUser)=>{
+        if(postCreator === sessionStorage.getItem('auth_user')){
+            return;
+        }
+        console.log(loggedInUser);
+        try {
+            const data ={ postId: post, 
+                          creator:postCreator,
+                          user:loggedInUser}
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/likepost',data);
+            if (response.status === 200) {
+                fetchAllPosts();
+                console.log("Successfully added likes to the post");
+            } 
+        }catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
     
     return(
         <div className='page-layout'>
             <Stack direction="horizontal" gap={3} className="navbar">
                 <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>{userDetails.username}</Nav.Link>
+                <Nav.Link className='horizontal-placement' onClick={()=> navigateTo('/profile')}><img  src={userDetails.avatar} style={{height:'1.5vw', marginRight:'0.1vw'}}/> {userDetails.username}</Nav.Link>
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
@@ -514,9 +535,12 @@ function SelectedChannel({removeAuthentication}){
                                         </div>
                                     )}
                                     <Stack direction="horizontal" gap={3} style={{ alignItems:'center',marginTop:'0.1vw'}}>
-                                        <Nav.Link ><span className="material-icons" style={{fontSize:'0.9vw', color:'rgb(12, 132, 237)'}} >thumb_up</span></Nav.Link>
-                                        <Nav.Link><span className="material-icons" style={{fontSize:'0.9vw', color:'red'}}  >thumb_down</span></Nav.Link>
-                                        <Nav.Link onClick={()=>handleReplyClick(post.id,post.username, post.post)} ><span className="material-icons" style={{fontSize:'1vw', color:'blue'}} >reply</span> Reply</Nav.Link>
+                                        {post.isLikedByUser ?
+                                            <Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleLikes(post.id,post.username,userDetails.id)}>You liked this post</Nav.Link>
+                                            :<Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleLikes(post.id,post.username,userDetails.id)}>Like</Nav.Link>
+                                        }
+                                        
+                                        <Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleReplyClick(post.id,post.username, post.post)} >Reply</Nav.Link>
                                     </Stack>
                                 </div>
                             </div>
