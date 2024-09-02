@@ -13,6 +13,7 @@ const mysql = require('mysql2');
 const upload = multer({ storage: multer.memoryStorage() });
 
 
+
 var database = mysql.createConnection({
   host: 'mysql-image',
   user: 'root',

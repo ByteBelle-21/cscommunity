@@ -37,7 +37,7 @@ function DirectMessage ({removeAuthentication}) {
         const current_user = sessionStorage.getItem('auth_user');
         const fetchConnectedUsers= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
                 if (response.status === 200) {
                     setConnectedUsers(response.data);
                     console.log("Successfully retrieved all connected users");
@@ -62,7 +62,7 @@ function DirectMessage ({removeAuthentication}) {
         const current_user = sessionStorage.getItem('auth_user');
         const fetchUserDetails= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//user',{
                     params: {user: current_user}
                 });
                 if (response.status === 200) {
@@ -86,7 +86,7 @@ function DirectMessage ({removeAuthentication}) {
         const current_user = selectedUser;
         const fetchUserDetails= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//user',{
                     params: {user: current_user}
                 });
                 if (response.status === 200) {
@@ -137,7 +137,7 @@ function DirectMessage ({removeAuthentication}) {
             formData.append('allFiles',file)
         });
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//fileupload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -202,7 +202,7 @@ function DirectMessage ({removeAuthentication}) {
             
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/message', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//message', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
                 fetchAllMessages();
@@ -229,7 +229,7 @@ function DirectMessage ({removeAuthentication}) {
         const you = sessionStorage.getItem('auth_user');
         const reciever = selectedUser;
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allMessages',
+            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//allMessages',
             { params: {loggedIn :you , connected:reciever }});
             if (response.status === 200) {
                 setAllMessages(response.data);

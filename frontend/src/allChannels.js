@@ -29,7 +29,7 @@ function AllChannels({removeAuthentication}){
         const current_user = sessionStorage.getItem('auth_user');
         const fetchUserDetails= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
                     params: {user: current_user}
                 });
                 if (response.status === 200) {
@@ -96,7 +96,7 @@ function AllChannels({removeAuthentication}){
             username,channel
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/createchannel', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/createchannel', data);
             if (response.status === 200) {
                 setFetchAgain(!fetchAgain);
                 console.log("Successfully created channel")
@@ -115,7 +115,7 @@ function AllChannels({removeAuthentication}){
     useEffect(()=>{
         const fetchSuggestedPeople= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
                 if (response.status === 200) {
                     setSuggestedPeople(response.data);
                     console.log("Successfully retrieved suggested user details");
@@ -141,7 +141,7 @@ function AllChannels({removeAuthentication}){
     useEffect(()=>{
         const fetchAllChannels= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allchannels');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allchannels');
                 if (response.status === 200) {
                     setAllChannels(response.data);
                     console.log("Successfully retrieved all channels");
@@ -164,7 +164,7 @@ function AllChannels({removeAuthentication}){
         const current_user = sessionStorage.getItem('auth_user');
         const fetchConnectedUsers= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
                 if (response.status === 200) {
                     setConnectedUsers(response.data);
                     console.log("Successfully retrieved all connected users");
@@ -214,7 +214,7 @@ function AllChannels({removeAuthentication}){
             }else if (searchSelect === 'channel'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchChannel',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchChannel',
                         {params:{search_input :searchText}} );
                     if (response.status === 200) {
                         setSearchChannelResult(response.data);
@@ -227,7 +227,7 @@ function AllChannels({removeAuthentication}){
             }else if (searchSelect === 'post'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPost',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPost',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPostResult(response.data);
@@ -245,7 +245,7 @@ function AllChannels({removeAuthentication}){
                         setSearchPostResult([]);
                         return;
                     }
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPeople',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPeople',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPeopleResult(response.data);

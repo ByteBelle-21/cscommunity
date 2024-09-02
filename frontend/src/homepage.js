@@ -78,7 +78,7 @@ function Homepage({authentication}) {
             signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skills: skillsArray, signupAvatar
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/signup', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/signup', data);
             if (response.status === 200) {
                 authentication(true,signupUsername);
                 navigateTo('/all-channels');
@@ -124,7 +124,7 @@ function Homepage({authentication}) {
             loginUsername, loginPassword
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/login', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/login', data);
             if (response.status === 200) {
                 authentication(true,loginUsername);
                 navigateTo('/all-channels');
@@ -169,7 +169,7 @@ function Homepage({authentication}) {
     useEffect(()=>{
         const fetchMembers= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
                 if (response.status === 200) {
                     setActiveMembers(response.data);
                     console.log("Successfully retrieved active members");
@@ -188,7 +188,7 @@ function Homepage({authentication}) {
     useEffect(()=>{
         const fetchTotalMembers= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/totalUsers');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/totalUsers');
                 if (response.status === 200) {
                     setTotalUsers(response.data -1);
                     console.log("Successfully retrieved total numebrs of users");
@@ -207,7 +207,7 @@ function Homepage({authentication}) {
     useEffect(()=>{
         const fetchChannels= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/popularchannels');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/popularchannels');
                 if (response.status === 200) {
                     setPopularChannels(response.data);
                     console.log("Successfully retrieved popular channels");

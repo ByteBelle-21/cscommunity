@@ -49,7 +49,7 @@ function SelectedChannel({removeAuthentication}){
     const [userDetails, setUserDetails] = useState([]);
     const fetchUserDetails= async()=>{
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
+            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//user',{
                 params: {user: current_user}
             });
             if (response.status === 200) {
@@ -68,7 +68,7 @@ function SelectedChannel({removeAuthentication}){
     const [connectedUsers, setConnectedUsers] = useState([]);
     const fetchConnectedUsers= async()=>{
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
             if (response.status === 200) {
                 setConnectedUsers(response.data);
                 console.log("Successfully retrieved all connected users");
@@ -89,7 +89,7 @@ function SelectedChannel({removeAuthentication}){
         const channel_name = decodeURIComponent(channelName);
         console.log("channel name is : ",channel_name);
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allPosts',
+            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//allPosts',
             { params: {current_channel:channel_name}});
             if (response.status === 200) {
                 setAllPosts(response.data);
@@ -120,7 +120,7 @@ function SelectedChannel({removeAuthentication}){
                     console.log('File URL:', fileURL);
                     setAllFiles(prevFiles => ({
                         ...prevFiles,
-                        [file.filename]: fileURL
+                        [file.filename]: fileURL,
                     }));
                 });
             }
@@ -168,7 +168,7 @@ function SelectedChannel({removeAuthentication}){
             formData.append('allFiles',file)
         });
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//fileupload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -232,7 +232,7 @@ function SelectedChannel({removeAuthentication}){
             replyTo
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/post', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//post', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
                 fetchUserDetails();
@@ -299,7 +299,7 @@ function SelectedChannel({removeAuthentication}){
             }else if (searchSelect === 'channel'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchChannel',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchChannel',
                         {params:{search_input :searchText}} );
                     if (response.status === 200) {
                         setSearchChannelResult(response.data);
@@ -312,7 +312,7 @@ function SelectedChannel({removeAuthentication}){
             }else if (searchSelect === 'post'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPost',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPost',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPostResult(response.data);
@@ -330,7 +330,7 @@ function SelectedChannel({removeAuthentication}){
                         setSearchPostResult([]);
                         return;
                     }
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPeople',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPeople',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPeopleResult(response.data);
@@ -357,7 +357,7 @@ function SelectedChannel({removeAuthentication}){
     useEffect(()=>{
         const fetchChannels= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/popularchannels');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//popularchannels');
                 if (response.status === 200) {
                     setPopularChannels(response.data);
                     console.log("Successfully retrieved popular channels");
@@ -506,18 +506,17 @@ function SelectedChannel({removeAuthentication}){
                                     {post.files && post.files.length > 0 && ( 
                                         <div className='file-list'> 
                                             {post.files.map(file => (
-                                               
                                             <Stack direction="horizontal" gap={1} className="post-file-card">
-                                                <span className="material-icons" >description</span>
-                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
+                                                <span className="material-icons file-icon" >text_snippet</span>
+                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none'}} >{file.filename}</a>
                                             </Stack>
                                             ))}
                                         </div>
                                     )}
                                     <Stack direction="horizontal" gap={3} style={{ alignItems:'center',marginTop:'0.1vw'}}>
-                                        <Nav.Link ><span className="material-icons" style={{fontSize:'0.85vw', color:'green'}} >thumb_up</span> Like</Nav.Link>
-                                        <Nav.Link><span className="material-icons" style={{fontSize:'0.85vw', color:'red'}}  >thumb_down</span> Dislike</Nav.Link>
-                                        <Nav.Link onClick={()=>handleReplyClick(post.id,post.username, post.post)} ><span className="material-icons" style={{fontSize:'0.9vw', color:'blue'}} >reply</span> Reply</Nav.Link>
+                                        <Nav.Link ><span className="material-icons" style={{fontSize:'0.9vw', color:'rgb(12, 132, 237)'}} >thumb_up</span></Nav.Link>
+                                        <Nav.Link><span className="material-icons" style={{fontSize:'0.9vw', color:'red'}}  >thumb_down</span></Nav.Link>
+                                        <Nav.Link onClick={()=>handleReplyClick(post.id,post.username, post.post)} ><span className="material-icons" style={{fontSize:'1vw', color:'blue'}} >reply</span> Reply</Nav.Link>
                                     </Stack>
                                 </div>
                             </div>

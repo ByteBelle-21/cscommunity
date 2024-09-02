@@ -83,22 +83,32 @@
 
 
 .post-file-card{
-    border: dotted 0.1vw grey;
+    border: dotted 0.1vw rgb(12, 132, 237);
     border-radius: 0.2vw ;
-    padding: 0.1vw;
+    padding: 0.2vw;
     margin: 0.1vw ;
+    font-size: small;
+    background-color: aliceblue;
+    margin-bottom: 0.5vw;
+    margin-top: 0.5vw;
 }
 
+.file-icon{
+    color: rgb(12, 132, 237);
+    font-size: 1.5vw !important;
+}
 
 
 
 .file-card{
     width: 10vw;
-    border: dotted 0.1vw grey;
+    border: dotted 0.1vw rgb(12, 132, 237);
     border-radius: 0.2vw ;
     padding: 0.1vw;
     margin: 0.1vw ;
-    background-color: rgb(231, 231, 231);
+    color: rgb(12, 132, 237);
+    font-size: small !important;
+    background-color: aliceblue;
 }
 
 .text-area-formcontrol, .filePlaceholders{

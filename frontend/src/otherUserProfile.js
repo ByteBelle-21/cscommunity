@@ -26,10 +26,10 @@ function OtherUserProfile({removeAuthentication}){
     useEffect(()=>{
         fetchSuggestedPeople();
         fetchSelectedUserDetails();
-    });
+    },[decodeURIComponent(userName)]);
         const fetchSuggestedPeople= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
                 if (response.status === 200) {
                     setSuggestedPeople(response.data);
                     console.log("Successfully retrieved suggested user details");
@@ -43,6 +43,8 @@ function OtherUserProfile({removeAuthentication}){
 
         }
 
+
+  
  
 
     const navigateTo = useNavigate()
@@ -53,9 +55,10 @@ function OtherUserProfile({removeAuthentication}){
 
     const [selectedUserDetails, setSelectedUserDetails] = useState([]);
     const the_user = userName;
+    console.log(the_user)
     const fetchSelectedUserDetails= async()=>{
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/selected-user',{
                 params: {user: the_user}
             });
             if (response.status === 200) {
@@ -81,6 +84,25 @@ function OtherUserProfile({removeAuthentication}){
         navigateTo(`/messages/${encodeURIComponent(selectedUser)}`);
     }
 
+
+    const handleRating = (likes, posts)=>{
+        if (posts === 0){
+            return "⭐️"
+        }
+        else if(likes/posts >= 5){
+            return "⭐️⭐️⭐️⭐️⭐️"
+        }
+        else if(likes/posts >= 3 && likes/posts < 5){
+            return "⭐️⭐️⭐️⭐️"
+        }
+        else if(likes/posts >= 1 && likes/posts < 3){
+            return "⭐️⭐️⭐️"
+        }
+        else {
+            return "⭐️⭐️"
+        }
+    }
+
     return(
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
@@ -90,7 +112,7 @@ function OtherUserProfile({removeAuthentication}){
             </Stack>
             <div className='sub-navbar horizontal-placement'>
                 <Nav.Link className='mx-2' onClick={()=>navigateTo(-1)}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
-                <h6 className='me-auto '>{userName}</h6>   
+                <h6 className='me-auto '> User Profile - {userName}</h6>   
             </div>
             <div className='page-content horizontal-placement'>
                 <Container className='small-grid-container2'>  
@@ -98,61 +120,71 @@ function OtherUserProfile({removeAuthentication}){
                     {suggestedPeople.length >0 && suggestedPeople
                     .filter(person => person.username !== current_user && person.username!== userName )
                     .map(person=>(
-                        <div className='child-blocks'> 
-                            <Stack direction="horizontal" gap={3}>
+                        <div className = "suggested-people-block"> 
+                            <Stack direction="horizontal" gap={3} >
                                 <img src={person.avatar}  style={{height:'2vw'}}/>
                                 <div className=' me-auto'>
                                     {person.username}
                                     <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
                                 </div>
-                                <Nav.Link style={{fontSize:'small'}} >Send message</Nav.Link>
+                                <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(person.username)} >Send message</Nav.Link>
                             </Stack>
                         </div>
                         
                     ))}
                 </Container>
                 <Container className='user-profile'>
-                    <div className='profile-background'></div>
-                    <img  src={selectedUserDetails.avatar} className='user-img'/> 
-                    <div className='user-details'>
-                        <Button onClick={()=>handleSendMessage(selectedUserDetails.username)}>Send Message</Button>
-                        <h5> Hello 👋 I am {selectedUserDetails.name} !</h5>
-                        <p>
-                            <span style={{fontWeight:'bold'}}>{selectedUserDetails.username}</span>
-                            <span style={{marginLeft:'1vw'}}><span className="material-icons" style={{fontSize:'1vw', color:'blue'}}  >work</span> {selectedUserDetails.occupation}</span>
-                            <span style={{marginLeft:'1vw'}}>{selectedUserDetails.totalPosts} Posts</span>
-                        </p>
-                        <h6 className='mt-3'>Skills</h6>
-                        <hr style={{width:'70%'}}/>
-                        <div className='all-skills'>
-                            
-                            {selectedUserDetails.skills ? 
-                                (selectedUserDetails.skills.split(',').map((skill) => (
-                                    <div className='each-skill'>{skill.trim()}</div>
-                                )))
-                                : <div>No skils avaialable</div>}
-                        </div>
-                        <h6 className='mt-5'>Activities</h6>
-                        <hr style={{width:'70%'}}/>
-                        <div className='all-skills'>
-                            {selectedUserDetails.posts ? (selectedUserDetails.posts.map(post =>(
-                                <div className='activity-post'>
-                                    <strong>{post.channel}</strong>
-                                    <p>{showPreview(post.post,10)}</p>
-                                </div>
-                            )))
+                    <Container className='block1'>
+                        <img  src={selectedUserDetails.avatar} className='user-img'/> 
+                        <h6>{selectedUserDetails.name}</h6>
+                        <p className='user-username'>{selectedUserDetails.username}</p>
+                        <Button onClick={()=>handleSendMessage(selectedUserDetails.username)} style={{marginBottom:'1vw'}}>Send Message</Button>
+                        <Container className='user-posts'>
+                            <p style={{margin:0}}>Occupation</p>
+                            <strong>{selectedUserDetails.occupation}</strong>
+                        </Container>
+                        <Container className='user-posts'>
+                            <p style={{margin:0}}>Total Posts</p>
+                            <strong>{selectedUserDetails.totalPosts}</strong>
+                        </Container>
+                        <Container className='user-posts'>
+                            <p style={{margin:0}}>User Rating</p>
+                            <strong>{handleRating(selectedUserDetails.likes ,selectedUserDetails.totalPosts)}</strong>
+                        </Container>
+                    </Container>
+                    <Container className='block2'>
+                        <Container className='block-3'>
+                            <h6>Skills</h6>
+                            <hr style={{width:'80%', marginTop:0}}/>
+                            <div className='all-skills'>
                                 
-                            
-                            : <div>No activities yet</div>}
-                        </div>
-                       
-                    </div>
-                    
-                </Container>
+                                {selectedUserDetails.skills ? 
+                                    (selectedUserDetails.skills.split(',').map((skill) => (
+                                        <div className='each-skill'>{skill.trim()}</div>
+                                    )))
+                                    : <div>No skils avaialable</div>}
+                            </div>
+
+                        </Container>
+                        <Container className='block-4'>
+                            <h6 >Activities</h6>
+                            <hr style={{width:'80%', marginTop:0}}/>
+                            <div className='all-skills'>
+                                {selectedUserDetails.posts ? (selectedUserDetails.posts.map(post =>(
+                                    <div className='activity-post'>
+                                        <strong>{post.channel}</strong>
+                                        <p>{showPreview(post.post,10)}</p>
+                                    </div>
+                                )))
+                                
+                                : <div>No activities yet</div>}
+                            </div>
+                        </Container>
+                        
                        
 
-                    
-                    
+                    </Container>
+                </Container>   
             </div>
         </div>
     )

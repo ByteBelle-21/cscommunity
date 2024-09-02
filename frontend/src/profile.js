@@ -41,7 +41,7 @@ function Profile({removeAuthentication}){
     const fetchUserDetails= async()=>{
         const current_user = sessionStorage.getItem('auth_user');
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//selected-user',{
                 params: {user: current_user}
             });
             if (response.status === 200) {
@@ -71,7 +71,7 @@ function Profile({removeAuthentication}){
         const current_user = sessionStorage.getItem('auth_user');
         const fetchConnectedUsers= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
                 if (response.status === 200) {
                     setConnectedUsers(response.data);
                     console.log("Successfully retrieved all connected users");
@@ -127,7 +127,7 @@ function Profile({removeAuthentication}){
             userId,username, email, name, occupation, skills: skillsArray, avatar
         }
         try {
-            const response = await axios.put('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/saveChanges', data);
+            const response = await axios.put('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//saveChanges', data);
             if (response.status === 200) {
                 handleEditButtonClick();
                 fetchUserDetails();
