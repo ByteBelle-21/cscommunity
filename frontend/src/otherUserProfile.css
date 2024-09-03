@@ -110,9 +110,9 @@
     padding-right: 0.5vw;
     padding-top: 0.2vw;
     padding-bottom: 0.2vw;
-    color:  rgb(47, 134, 210);
+    color:  rgb(11, 95, 168);
     font-weight: 500;
-    background-color:  rgb(232, 242, 251);
+    background-color:  rgb(223, 240, 253);
     border-radius: 0.2vw;
 }
 
@@ -123,3 +123,17 @@
     width: 100% !important;
     margin-bottom: 0.5vw;
 }
+
+.activity{
+    margin-bottom: 0.5vw;
+    padding: 0.5vw;
+    width: 100%;
+}
+
+.activity:hover{
+    cursor:pointer; 
+    background-color:rgb(221, 237, 252) !important;
+ 
+}
+
+

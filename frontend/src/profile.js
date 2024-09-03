@@ -41,7 +41,7 @@ function Profile({removeAuthentication}){
     const fetchUserDetails= async()=>{
         const current_user = sessionStorage.getItem('auth_user');
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//selected-user',{
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//selected-user',{
                 params: {user: current_user}
             });
             if (response.status === 200) {
@@ -71,7 +71,7 @@ function Profile({removeAuthentication}){
         const current_user = sessionStorage.getItem('auth_user');
         const fetchConnectedUsers= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
                 if (response.status === 200) {
                     setConnectedUsers(response.data);
                     console.log("Successfully retrieved all connected users");
@@ -127,7 +127,7 @@ function Profile({removeAuthentication}){
             userId,username, email, name, occupation, skills: skillsArray, avatar
         }
         try {
-            const response = await axios.put('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//saveChanges', data);
+            const response = await axios.put('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//saveChanges', data);
             if (response.status === 200) {
                 handleEditButtonClick();
                 fetchUserDetails();
@@ -139,6 +139,31 @@ function Profile({removeAuthentication}){
         } catch (error) {
             console.error("Catched axios error: ",error);
         }
+    }
+
+
+
+    const handleRating = (likes, posts)=>{
+        if (posts === 0){
+            return "⭐️"
+        }
+        else if(likes/posts >= 5){
+            return "⭐️⭐️⭐️⭐️⭐️"
+        }
+        else if(likes/posts >= 3 && likes/posts < 5){
+            return "⭐️⭐️⭐️⭐️"
+        }
+        else if(likes/posts >= 1 && likes/posts < 3){
+            return "⭐️⭐️⭐️"
+        }
+        else {
+            return "⭐️⭐️"
+        }
+    }
+
+    const goToPost = (channel,postId) =>{
+        const channelName = channel;
+        navigateTo(`/channel/${encodeURIComponent(channelName)}?postId=${postId}`)
     }
 
     const navigateTo = useNavigate()
@@ -155,46 +180,55 @@ function Profile({removeAuthentication}){
             </div>
             <div className='page-content horizontal-placement'> 
                        <div className='user-details-col1'>
-                            <img src={avatar}  className='current-user-img'/> 
-                            {isEditMode? (
-                                <span className="material-icons edit-icon"  onClick={openModal}>edit</span>
-                            ):""}
-                                <Modal size='lg'  backdrop="static" keyboard={false} show={showModal} onHide={closeModal} centered style={{"--bs-modal-border-radius":'1vw'}} >
-                                    <Modal.Body className='vertical-placement'>
-                                        <h5 className='mb-4'>Choose your Avatar</h5>
-                                        <Form className='from3'>
-                                            <Form.Group controlId="signup-avatar">
-                                                
-                                                    <Container className='wrap-container'>
-                                                        {[300, 301, 302, 303, 304, 305, 306, 307].map((imgNum, index) => (
-                                                                <Button key={index} onClick={() => handleAvatarClick(index,imgNum)} className={selectedAvatar === index ? 'active' : ''}>
-                                                                    <img src={`/Group ${imgNum}.png`} alt={`Avatar ${index + 1}`} />
-                                                                </Button>
-                                                        ))}
-                                                    </Container>
-                                                    <Container className='horizontal-placement' style={{gap:5}}>
-                                                        <Button onClick={closeModal}>Cancle</Button>
-                                                        <Button onClick={HandleAvatarChange} >Done</Button>
-                                                    </Container>
-                                                   
-                                            </Form.Group>
-                                        </Form>
-                                    </Modal.Body>
-                                </Modal>
-                            <h5>{name}</h5>
-                            <p>{username}</p>
-                            {isEditMode ? (
-                                <Button onClick={saveChanges}>
-                                   Save Changes
-                                </Button>
+                        <div className='child'>
+                        {isEditMode ? (
+                            <>
+                                     <img src={avatar}  className='current-user-img' style={{opacity:0.5}}/>
+                                     <span className="material-icons edit-icon"  onClick={openModal}>edit</span></>
+                                ):
+                                <img src={avatar}  className='current-user-img'/>
+                                }
+                          
+                                
+                                    <Modal size='lg'  backdrop="static" keyboard={false} show={showModal} onHide={closeModal} centered style={{"--bs-modal-border-radius":'1vw'}} >
+                                        <Modal.Body className='vertical-placement'>
+                                            <h5 className='mb-4'>Choose your Avatar</h5>
+                                            <Form className='from3'>
+                                                <Form.Group controlId="signup-avatar">
+                                                    
+                                                        <Container className='wrap-container'>
+                                                            {[300, 301, 302, 303, 304, 305, 306, 307].map((imgNum, index) => (
+                                                                    <Button key={index} onClick={() => handleAvatarClick(index,imgNum)} className={selectedAvatar === index ? 'active' : ''}>
+                                                                        <img src={`/Group ${imgNum}.png`} alt={`Avatar ${index + 1}`} />
+                                                                    </Button>
+                                                            ))}
+                                                        </Container>
+                                                        <Container className='horizontal-placement' style={{gap:5}}>
+                                                            <Button onClick={closeModal}>Cancle</Button>
+                                                            <Button onClick={HandleAvatarChange} >Done</Button>
+                                                        </Container>
+                                                    
+                                                </Form.Group>
+                                            </Form>
+                                        </Modal.Body>
+                                    </Modal>
+                                <h5>{name}</h5>
+                                <p>{username}</p>
+                                {isEditMode ? (
+                                    <Button onClick={saveChanges}>
+                                    Save Changes
+                                    </Button>
 
-                            ):
-                                <Button onClick={handleEditButtonClick}>
-                                Edit Profile
-                                </Button>}
+                                ):
+                                    <Button onClick={handleEditButtonClick}>
+                                    Edit Profile
+                                    </Button>}
+                        </div>
+                            
                             
                        </div>
                        <div className='user-details-col2'>
+                        <div className='child'>
                             <h5 style={{marginLeft:'1vw'}}>Basic Information</h5>
                             <div className='basic-information'>
                                 <Row style={{width:'100%'}}>
@@ -264,6 +298,10 @@ function Profile({removeAuthentication}){
                                         </div>
                                     </Col>
                                     <Col>
+                                    <div className='each-info'>
+                                            Rating
+                                            <h6>{handleRating(userDetails.likes,userDetails.totalPosts)}</h6>
+                                        </div>
                                         
                                     </Col>
                                 </Row>
@@ -299,10 +337,12 @@ function Profile({removeAuthentication}){
                                     </div>
                                 </Row>
                             </div>
+                            </div>
+                            <div className='child'>
                             <h5>Activities</h5>
-                                <div className="activities">
+                                <div className="activities" >
                                     {userDetails.posts ? ( userDetails.posts.map(post =>(
-                                        <div className='activity-post'>
+                                        <div className='activity-post' onClick={()=>goToPost(post.channel,post.id)}>
                                             <strong className='mb-2'>{post.channel}</strong>
                                             
                                                 <p>{showPreview(post.post,10)}</p>
@@ -316,7 +356,8 @@ function Profile({removeAuthentication}){
                                     : <div>No activities yet</div>}
                             </div>
                         </div>
-                        <div className='user-details-col1'>
+                        </div>
+                        <div className='user-details-col3'>
                             <h5>Connected People</h5>
                             {connectedUsers.length >0 && connectedUsers.map(user=>(
                                 <div className='child-blocks'>
@@ -324,9 +365,9 @@ function Profile({removeAuthentication}){
                                         <img src={user.avatar}  style={{height:'2vw'}}/>
                                         <div className=' me-auto'>
                                             {user.username}
-                                            <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
+                                            <Nav.Link style={{fontSize:'small'}} onClick={()=>navigateTo(`/user-profile/${encodeURIComponent(user.username)}`)}>View Profile</Nav.Link>
                                         </div>
-                                        <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
+                                        <Nav.Link style={{fontSize:'small'}} onClick ={()=>navigateTo(`/messages/${encodeURIComponent(user.username)}`)} >View Conversation</Nav.Link>
                                     </Stack>
                                 </div>
                             ))}

@@ -49,7 +49,7 @@ function SelectedChannel({removeAuthentication}){
     const [userDetails, setUserDetails] = useState([]);
     const fetchUserDetails= async()=>{
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//user',{
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//user',{
                 params: {user: current_user}
             });
             if (response.status === 200) {
@@ -68,7 +68,7 @@ function SelectedChannel({removeAuthentication}){
     const [connectedUsers, setConnectedUsers] = useState([]);
     const fetchConnectedUsers= async()=>{
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
             if (response.status === 200) {
                 setConnectedUsers(response.data);
                 console.log("Successfully retrieved all connected users");
@@ -89,7 +89,7 @@ function SelectedChannel({removeAuthentication}){
         const channel_name = decodeURIComponent(channelName);
         const loggedInUser = sessionStorage.getItem('auth_user');
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//allPosts',
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//allPosts',
             { params: {current_channel:channel_name, user:loggedInUser}});
             if (response.status === 200) {
                 setAllPosts(response.data);
@@ -168,7 +168,7 @@ function SelectedChannel({removeAuthentication}){
             formData.append('allFiles',file)
         });
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//fileupload', formData, {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//fileupload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -232,7 +232,7 @@ function SelectedChannel({removeAuthentication}){
             replyTo
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//post', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//post', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
                 fetchUserDetails();
@@ -299,7 +299,7 @@ function SelectedChannel({removeAuthentication}){
             }else if (searchSelect === 'channel'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchChannel',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchChannel',
                         {params:{search_input :searchText}} );
                     if (response.status === 200) {
                         setSearchChannelResult(response.data);
@@ -312,7 +312,7 @@ function SelectedChannel({removeAuthentication}){
             }else if (searchSelect === 'post'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPost',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPost',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPostResult(response.data);
@@ -330,7 +330,7 @@ function SelectedChannel({removeAuthentication}){
                         setSearchPostResult([]);
                         return;
                     }
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPeople',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPeople',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPeopleResult(response.data);
@@ -357,7 +357,7 @@ function SelectedChannel({removeAuthentication}){
     useEffect(()=>{
         const fetchChannels= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//popularchannels');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//popularchannels');
                 if (response.status === 200) {
                     setPopularChannels(response.data);
                     console.log("Successfully retrieved popular channels");
@@ -384,7 +384,7 @@ function SelectedChannel({removeAuthentication}){
             const data ={ postId: post, 
                           creator:postCreator,
                           user:loggedInUser}
-            const response = await axios.post('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/likepost',data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/likepost',data);
             if (response.status === 200) {
                 fetchAllPosts();
                 console.log("Successfully added likes to the post");
@@ -408,7 +408,7 @@ function SelectedChannel({removeAuthentication}){
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
-                <Nav.Link className='mx-2' onClick={()=>navigateTo('/all-channels')}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
+                <Nav.Link className='mx-2' onClick={()=>navigateTo(-1)}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
                 <h6 className='me-auto'>{channelName}</h6>
                     <Form>  
                         <Form.Control placeholder="🔍 Search" 
@@ -573,9 +573,9 @@ function SelectedChannel({removeAuthentication}){
                             {gotFile && <div className='filePlaceholders'>
                                 {inputFiles.map(file =>(
                                 <Stack direction="horizontal" gap={1} className="file-card">
-                                    <span className="material-icons" >description</span>
+                                    <span className="material-icons" >text_snippet</span>
                                     <div className='me-auto' style={{fontSize:'0.9vw'}}>{file.name}</div>
-                                    <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >delete</span></Nav.Link>
+                                    <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >close</span></Nav.Link>
                                 </Stack>))}
                             </div>}
                             <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>

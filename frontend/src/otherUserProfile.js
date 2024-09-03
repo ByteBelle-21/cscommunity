@@ -29,7 +29,7 @@ function OtherUserProfile({removeAuthentication}){
     },[decodeURIComponent(userName)]);
         const fetchSuggestedPeople= async()=>{
             try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
                 if (response.status === 200) {
                     setSuggestedPeople(response.data);
                     console.log("Successfully retrieved suggested user details");
@@ -58,7 +58,7 @@ function OtherUserProfile({removeAuthentication}){
     console.log(the_user)
     const fetchSelectedUserDetails= async()=>{
         try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/selected-user',{
                 params: {user: the_user}
             });
             if (response.status === 200) {
@@ -101,6 +101,11 @@ function OtherUserProfile({removeAuthentication}){
         else {
             return "⭐️⭐️"
         }
+    }
+
+    const goToPost = (channel,postId) =>{
+        const channelName = channel;
+        navigateTo(`/channel/${encodeURIComponent(channelName)}?postId=${postId}`)
     }
 
     return(
@@ -171,11 +176,11 @@ function OtherUserProfile({removeAuthentication}){
 
                         </Container>
                         <Container className='block-4'>
-                            <h6 >Activities</h6>
+                            <h5 >Activities</h5>
                             <hr style={{width:'80%', marginTop:0}}/>
                             <div className='all-skills'>
                                 {selectedUserDetails.posts ? (selectedUserDetails.posts.map(post =>(
-                                    <div className='activity-post'>
+                                    <div className='activity' onClick={()=>goToPost(post.channel,post.id)}>
                                         <strong>{post.channel}</strong>
                                         <p>{showPreview(post.post,10)}</p>
                                     </div>
