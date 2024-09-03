@@ -401,7 +401,10 @@ function SelectedChannel({removeAuthentication}){
         <div className='page-layout'>
             <Stack direction="horizontal" gap={3} className="navbar">
                 <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement' onClick={()=> navigateTo('/profile')}><img  src={userDetails.avatar} style={{height:'1.5vw', marginRight:'0.1vw'}}/> {userDetails.username}</Nav.Link>
+                <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')}>
+                    <span className="material-icons" style={{ marginRight:'0.3vw' }}>account_circle</span>
+                    <p style={{ margin: 0, padding:0 }}>{userDetails.username}</p>
+                </Nav.Link>
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>

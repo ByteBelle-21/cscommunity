@@ -549,7 +549,7 @@ app.get('/connectedusers',(request,response)=>{
             }
             else{
                 const userId = result[0].id;
-                database.query(`SELECT DISTINCT avatar, username 
+                database.query(`SELECT avatar, username 
                                 FROM(
                                     SELECT
                                         CASE WHEN m.sender=? THEN u_reciever.avatar 
@@ -558,11 +558,12 @@ app.get('/connectedusers',(request,response)=>{
                                         CASE WHEN m.sender=? THEN u_reciever.username 
                                             WHEN m.reciever=? THEN u_sender.username 
                                         END AS username,
-                                        m.datetime AS datetime
+                                        MAX(m.datetime) AS latest_datetime
                                         FROM messagesTable m
                                         JOIN userTable u_reciever ON m.reciever = u_reciever.id 
-                                        JOIN userTable u_sender ON m.sender = u_sender.id )AS subquery
-                                        ORDER BY datetime DESC`,[userId,userId,userId,userId],(error, result)=>{
+                                        JOIN userTable u_sender ON m.sender = u_sender.id   
+                                        GROUP BY username, avatar )AS subquery
+                                        ORDER BY latest_datetime DESC`,[userId,userId,userId,userId],(error, result)=>{
                                             if (error){
                                                 response.status(500).send("Server error during retrieving direct messages");
                                                 return;
@@ -907,7 +908,7 @@ app.get('/allMessages',(request,response)=>{
                     
                                             const messagePromises = messageResult.map((message) => {
                                                 return new Promise((resolve, reject) => {
-                                                    database.query(`SELECT filename, filetype, filedata FROM filesTable WHERE postId=?`, [message.id], (error, fileResult) => {
+                                                    database.query(`SELECT filename, filetype, filedata FROM filesTable WHERE messageId=?`, [message.id], (error, fileResult) => {
                                                         if (error) {
                                                             reject("Server error during retrieving files");
                                                         } else {

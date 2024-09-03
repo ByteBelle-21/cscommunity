@@ -141,7 +141,7 @@ function Profile({removeAuthentication}){
         }
     }
 
-
+    const navigateTo = useNavigate()
     return(
            <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
@@ -150,6 +150,7 @@ function Profile({removeAuthentication}){
                 <Nav.Link onClick={removeAuthentication}>Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
+                <Nav.Link className='mx-2' onClick={()=>navigateTo(-1)}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
                 <h6 className='me-auto '>My Profile</h6>
             </div>
             <div className='page-content horizontal-placement'> 

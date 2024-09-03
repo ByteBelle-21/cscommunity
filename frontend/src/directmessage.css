@@ -30,16 +30,37 @@
     margin-bottom: 1vw;
 }
 
+
+.recieved-message .message{
+    background-color: rgb(178, 215, 248);
+}
 .sent-message{
     margin-left: auto !important;
     align-items: flex-end !important;
+}
+
+
+.sent-message .message{
+    background-color:  white;
+    color:  rgb(2, 116, 215);
+}
+
+
+.recieved-file-card{
+    border: dotted 0.1vw rgb(9, 9, 9);
+    border-radius: 0.2vw ;
+    padding: 0.2vw;
+    margin: 0.1vw ;
+    font-size: small;
+    background-color: aliceblue;
+    margin-bottom: 0.5vw;
+    margin-top: 0.5vw;
 }
 
 .message{
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    background-color: white;
     border-radius: 1vw;
     margin-left: 2.5vw;
     font-size: 0.87vw;

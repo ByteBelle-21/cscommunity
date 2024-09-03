@@ -28,8 +28,8 @@ function DirectMessage ({removeAuthentication}) {
     const navigateTo = useNavigate()
     const {selectedUser} = useParams();
     
-    const goToProfile=()=>{
-        navigateTo('/profile')
+    const goToProfile=(userName)=>{
+        navigateTo(`/user-profile/${encodeURIComponent(userName)}`)
     }
 
     const [connectedUsers, setConnectedUsers] = useState([]);
@@ -294,8 +294,10 @@ function DirectMessage ({removeAuthentication}) {
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
                 <Nav.Link  className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement' onClick={()=> navigateTo('/profile')}><img  src={loggedInUserDetails.avatar} style={{height:'1.5vw', marginRight:'0.1vw'}}/> {loggedInUserDetails.username}</Nav.Link>
-               
+                <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')}>
+                    <span className="material-icons" style={{ marginRight:'0.3vw' }}>account_circle</span>
+                    <p style={{ margin: 0, padding:0 }}>{loggedInUserDetails.username}</p>
+                </Nav.Link>               
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
@@ -339,18 +341,18 @@ function DirectMessage ({removeAuthentication}) {
                                     </Nav.Link >
                                     <div className='message' >
                                        {message.message}
+                                        {message.files && message.files.length > 0 && ( 
+                                            <div className='file-list'> 
+                                                {message.files.map(file => (
+                                                <Stack direction="horizontal" gap={1} className="recieved-file-card">
+                                                    <span className="material-icons file-icon" >text_snippet</span>
+                                                    <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none'}} >{file.filename}</a>
+                                                </Stack>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
-                                    {message.files && message.files.length > 0 && ( 
-                                        <div className='file-list'> 
-                                            {message.files.map(file => (
-                                               
-                                            <Stack direction="horizontal" gap={1} className="post-file-card">
-                                                <span className="material-icons" >description</span>
-                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
-                                            </Stack>
-                                            ))}
-                                        </div>
-                                    )}
+                                    
                                 </div>  
                                 ) 
                             :
@@ -361,18 +363,18 @@ function DirectMessage ({removeAuthentication}) {
                                     </Nav.Link >
                                     <div className='message' >
                                         {message.message}
-                                    </div>
-                                    {message.files && message.files.length > 0 && ( 
+                                        {message.files && message.files.length > 0 && ( 
                                         <div className='file-list'> 
                                             {message.files.map(file => (
-                                               
                                             <Stack direction="horizontal" gap={1} className="post-file-card">
-                                                <span className="material-icons" >description</span>
-                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
+                                                <span className="material-icons file-icon" >text_snippet</span>
+                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none'}} >{file.filename}</a>
                                             </Stack>
                                             ))}
                                         </div>
                                     )}
+                                    </div>
+                                    
                                 </div>)
                             
 
@@ -416,7 +418,7 @@ function DirectMessage ({removeAuthentication}) {
                         <p>Total Posts : {selectedUserDetails.totalPosts}</p>
                         <p>Rating : {handleRating(selectedUserDetails.likes, selectedUserDetails.totalPosts)}</p>
                     </Container>
-                    <Button onClick={goToProfile}>View Profile</Button>
+                    <Button onClick={()=>goToProfile(selectedUserDetails.username)}>View Profile</Button>
                 </Container>
 
             </div>

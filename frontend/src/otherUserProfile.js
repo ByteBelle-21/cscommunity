@@ -107,7 +107,11 @@ function OtherUserProfile({removeAuthentication}){
         <div className="page-layout">
             <Stack direction="horizontal" gap={4} className="navbar" >
                 <Nav.Link className="me-auto" >CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>{current_user}</Nav.Link>
+                <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')}>
+                    <span className="material-icons" style={{ marginRight:'0.3vw' }}>account_circle</span>
+                    <p style={{ margin: 0, padding:0 }}>{current_user}</p>
+                </Nav.Link>
+              
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
