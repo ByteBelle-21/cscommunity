@@ -19,6 +19,7 @@ import data from '@emoji-mart/data';
 import { useParams,useLocation } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
+import Overlay from 'react-bootstrap/Overlay';
 
 
 function SelectedChannel({removeAuthentication}){
@@ -149,13 +150,11 @@ function SelectedChannel({removeAuthentication}){
             setGotFiles(true);
             setInputFiles(prev =>[...prev,...Array.from(files)]);
         }
-        console.log(inputFiles.length);
+        
     };
     const handleFileDelete=(filename)=>{
         setInputFiles((prev) => prev.filter((file) => file.name !== filename));
-        if(inputFiles.length===0){
-            setGotFiles(false);
-        }
+        
     }
 
     const handleUploadFile = async (post) =>{
@@ -186,11 +185,7 @@ function SelectedChannel({removeAuthentication}){
 
 
 
-    const showEmojiTooltip = (props) => (
-        <Tooltip id="button-tooltip" {...props} className='tooltip'>
-          Add reaction
-        </Tooltip>
-    );
+    
     const textAreaRef = useRef(null);
     const handleEmojiSelect = (emoji) =>{
           const cursor = textAreaRef.current.selectionStart;
@@ -199,6 +194,15 @@ function SelectedChannel({removeAuthentication}){
           textAreaRef.current.setSelectionRange(cursor + emoji.native.length, cursor + emoji.native.length);
           textAreaRef.current.focus();
     }
+    const [showEmojis,setShowEmojis] = useState(false);
+    const buttonRef =useRef(null);
+    const popoverRef =useRef(null);
+    const hideEmojis =(event) =>{
+            setShowEmojis(false);
+        
+    }
+
+    
     const emojiPopover = (
         <Popover id="popover-basic">
           <Popover.Body>
@@ -566,9 +570,15 @@ function SelectedChannel({removeAuthentication}){
                         <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
                             <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleButtonClick}>attach_file</span></Nav.Link> 
                         </OverlayTrigger>
-                        <OverlayTrigger trigger="click" placement="top" overlay={emojiPopover} >
-                            <Nav.Link className='textarea-icons'><span className="material-icons">add_reaction</span></Nav.Link> 
-                        </OverlayTrigger>
+                        
+                        <Nav.Link className='textarea-icons' onClick={()=>setShowEmojis(!showEmojis)} ref={buttonRef}><span className="material-icons">add_reaction</span></Nav.Link> 
+                        <Overlay
+                            show={showEmojis}
+                            placement="top"
+                            target={buttonRef.current}
+                        >
+                            {emojiPopover}
+                        </Overlay>
                         <div className='content-holder vertical-placement'>
                             {gotFile && <div className='filePlaceholders'>
                                 {inputFiles.map(file =>(

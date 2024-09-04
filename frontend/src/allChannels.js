@@ -390,7 +390,7 @@ function AllChannels({removeAuthentication}){
                     </Container>) :""}
                     <h6 className='mb-3'> Suggested People</h6>
                     <Container className='small-grid-container-child'>
-                        {suggestedPeople.length >0 &&  suggestedPeople.slice(0,5).map(person=>(
+                        {(suggestedPeople.length >0 && userDetails ) &&  suggestedPeople.slice(0,5).map(person=>(
                                 (person.id !== userDetails.id && 
                                     <Stack direction="horizontal" gap={3} style={{marginBottom:'1vw'}}>
                                         <img src={person.avatar}  style={{height:'2.5vw'}}/>
