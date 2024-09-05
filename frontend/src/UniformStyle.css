@@ -12,92 +12,43 @@
     justify-content: center;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@media (max-width: 767px) {
-  .navbar{
-    height: 10vw !important;
-    padding-left: 4vw !important ;
-    padding-right:  4vw !important;
-    font-size: 4vw;
-  }
-  .page-layout::-webkit-scrollbar{
-    display: none !important;
-    }
-    .page-layout{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-
-
-}
-
-/* Tablets */
-@media (min-width: 768px) and (max-width: 1279px) {
-    .navbar{
-        height: 6vw !important;
-        padding-left: 3vw !important ;
-        padding-right:  3vw !important;
-        font-size: 2vw;
-      }
-      .page-layout::-webkit-scrollbar{
-        display: none !important;
-    }
-    .page-layout{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-
-
-/* Laptops, Desktops, TVs, and Large Screens */
-@media (min-width: 1280px) {
-    .navbar{
-        padding-left: 2vw !important;
-        padding-right: 2vw !important;
-    }
-    .page-layout::-webkit-scrollbar{
-        display: none !important;
-    }
-    
-    
-}
-
-
-
-
-
-
 .page-layout{
-    width: 100vw !important;
+    max-width: 100vw !important;
     height: 100vh;
     overflow-x:hidden;
+    padding: 0 !important;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif !important;
 }
-
 
 .navbar{
     width: 100vw;
     background-color: #1A183F;
     color: white;
+    padding-left: 2vw !important;
+    padding-right: 2vw !important;
+    font-weight: bold !important;
+    
+
 }
+
+
+
+/* Laptops, Desktops, TVs, and Large Screens */
+@media (min-width: 1023px) {
+    
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
 
 
 .sub-navbar{

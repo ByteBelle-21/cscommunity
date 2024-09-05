@@ -34,7 +34,8 @@ services:
     volumes:
         - ./frontend:/app
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     command: npm start
 
 
