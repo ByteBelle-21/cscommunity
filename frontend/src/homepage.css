@@ -1,227 +1,127 @@
 
 /* Laptops, Desktops, TVs, and Large Screens */
 @media (min-width: 1023px) {
-    .modal-body{
+ 
+    .form{
+        position: relative;
+        height: 100%;
+        width: 100%;
+        box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        border-radius: 1vw;
+        z-index: 1000;
+    }
+
+    .slide-over{
+        width: 100%;
+        position: absolute;
+        height: 100%;
+    }
+
+    .slide-panel{
+        width: 50%;
+        position: absolute;
+        height: 100%;
+        color: white;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1002;
+        transition: .6s ease-in-out;
+    }
+
+    .slide-over::before{
+        content: '';
+        position: absolute;
+        width: 300%;
+        height: 100%;
+        left: -250%;
+        background-color: black;
+        z-index: 1002;
+        border-radius: 5vw;
+        transition: 1s ease-in-out;
+    }
+
+    .form.active .slide-over::before{
+        left: 50%;
+    }
+ 
+    .slide-panel.left-slide-over{
+        left: 0 ;
+        transition-delay: 0.6s;
+    }
+
+    .form.active .slide-panel.left-slide-over{
+        left: -50%;
+        transition-delay: .6s;
+    }
+
+    .form.active .slide-panel.right-slide-over{
+        right: 0;
+        transition-delay: 0.6s;
+    }
+    
+
+    .slide-panel.right-slide-over{
+        right: -50% ;
         
     }
 
-    .form-img-text{
-        width: 40% !important;
-        background-color: pink; 
+    .slide-over .btn{
+        background-color: black;
+        border-color: white;
+        color: white;
     }
 
-    .form-img-text img{
-        height: 30%;
-        margin-top: 2vw;
+    .slide-over .btn:hover{
+        background-color: white;
+        border-color: white;
+        color: black;
     }
-    
-    
-    .left-img{
-        border-top-left-radius: 1vw; 
-        border-bottom-left-radius:1vw ; 
-    }
-    
-    .right-img{
-        border-top-right-radius: 1vw; 
-        border-bottom-right-radius:1vw ; 
-    }
-
-    .carousel-item{
-        background-color: white !important;
-    }
-    
 
     .form-field{
-        width:60% !important;
-    }
-
-    .modal-question{
-        margin-top: 0.5vw;
-        font-size: 90% !important;
-    }
-
- 
-
-    .welcome-board{
-        height: 25vw;
-    }
-
-
-    .title{
-        height: 10vw;
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100%;        
-    }
-
-    .people-group{
-        height: 15vw;
-    }
-
-    .people-group img{
-        height: 15vw;
-        margin-top: auto;
-    }
-
-    .sitting-boy{
-        height: 11vw !important;
-    }
-
-
-    .text-img-container{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        margin: 10vw !important;
-        padding: 0;
-    }
-
-
-    .working-boy img{
-        height: 15vw;
-        margin-left: auto;
-    }
-
-    .text-img-card-container{
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin: 10vw !important;
-        padding: 0;
-    }
-
-   
-    .card-container{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .info-card-body{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .info-card-body img{
-        height: 7vw;
-    }
-
-    .info-card{
-        height: 7.5vw;
-        width:12vw;
-        margin: 1vw;
-    }
-
-    
-    .working-team img{
-        height: 20vw;
-    }
-
-    .member-card{
-        padding: 0 !important;
-        height: 5.5vw;
-        width: 10vw;
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        right: 0;
+        z-index: 1001;
         background-color: white;
-        margin: 1vw;
-    }
-    
-    
-    .member-card img{
-        height: 2.5vw !important;
-    }
-    
-    .member-card-container{
-        display:flex;
-        flex-direction: row;
-        justify-content:center;
-        align-items:center;
+        transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
     }
 
-    .member-card-text{
-        color: white !important;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
+    .form.active .form-field{
+        right: 50%;
     }
 
 
-    .board-card{
-        width: 55vw;
-        height: 5vw;
-        margin: 2vw;
-        padding-left: 2vw;
-        padding-right: 2vw;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+    .form-field .btn,.form-field-SignUp .btn{
+        background-color: #e9ff4f;
+        border: #e9ff4f;
+        color: black;
+    }
+    .form-field .btn:hover, .form-field-SignUp .btn:hover {
+        background-color: black;
+        border-color: black;
+        color: white;
+
     }
 
-    .greeting-people{
-        display: flex;
-        justify-content: flex-end;
-    }
-    
-    
-    .greeting-people img{
-        height: 17vw;
-        margin-left: auto !important;
+    .form-field.SignUp{
+        visibility: hidden;
     }
 
-    .last-band{
-        display: flex;
-        flex-direction: row;
-
+    .form.active .form-field.SignUp{
+        visibility: visible;
     }
 
     
-    .last-band-content{
-        width:30vw !important;
-        margin-top: 5vw;
-        margin-bottom: 5vw;
-    }
-
-    .band-button{
-        margin: 0.5vw;
-        width: 10vw;
-    }
-
-    .board-container{
-        padding-top: 10vw;
-    }
     
-    
-    .card{
-        margin: 1vw;
-    }
-
-    .button-container{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
 }
-
-
-
-
-.full-width-bands{
-    width: 100vw;
-    background-color: #1A183F;
-    color: white;
-    padding: 0.5vw;
-}
-
-
-
-
-
-
 
 
 .carousel{
@@ -274,39 +174,4 @@
 
 .wrap-container .btn.active{
     background-color: #6C63FF !important ;
-}
-
-.form-field form{
-    width: 70% !important;
-}
-
-
-
-label.form-label{
-    margin-bottom: 0 !important;
-}
-
-
-
-
-
-.welcome-board{
-    width: 100vw;
-    background-color: #FFF1D6;   
-}
-
-.title{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-
-
-
-.text-img-container{
-    width: 100% !important;
-   
 }

@@ -14,6 +14,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useRef } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { fetchActiveMembers ,fetchPopularChannels,handleRating,recognizeDevice} from './functions.js';
+import ModalBody from 'react-bootstrap/esm/ModalBody.js';
 
 
 function Homepage({authentication}) {
@@ -34,8 +35,8 @@ function Homepage({authentication}) {
     const [signupPassword, setSignupPassword] = useState('');
     const [signupName, setSignupName] = useState('');
     const [signupOccupation, setSignupOccupation] = useState('');
+    
     const [signupSkills, setSignupSkills] = useState('');
-    const [signupAvatar, setSignupAvatar] = useState('');
     const [showSignupAlert, setShowSignupAlert] = useState(false);
     const [showSignUp401, setShowSignUp401] = useState(false);
     const [signUp401Message, setSignUp401Message] = useState('');
@@ -48,21 +49,23 @@ function Homepage({authentication}) {
     }
 
 
-    // Functionality to choose the avatar
-    const [avatar, setAvatar] = useState(null)
-    const handleAvatarClick=(index,imgNum)=>{
-        setShowSignupAlert(false);
-        setAvatar(index);
-        setSignupAvatar(`/Group ${imgNum}.png`)
+    const setActive=()=>{
+        const form = document.getElementsByClassName("form");
+        form[0].classList.add("active");
 
     }
 
+    const removeActive=()=>{
+        const form = document.getElementsByClassName("form");
+        form[0].classList.remove("active");
+
+    }
 
     // Functionality to move between signup forms
     const carouselRef = useRef(null)
     const goToNextForm=()=>{
         if (carouselRef.current) {
-            carouselRef.current.next();
+            carouselRef.current.next()
         }
     }
 
@@ -75,11 +78,12 @@ function Homepage({authentication}) {
     const handleSignup =async(e)=>{
         e.preventDefault();
         const skillsArray = signupSkills.split(',').map(item => item.trim()).join(',');
-        if(skillsArray.length ==0 || !signupUsername || !signupEmail || !signupPassword || !signupName || !signupOccupation || !signupAvatar){
+        if(skillsArray.length ==0 || !signupUsername || !signupEmail || !signupPassword || !signupName || !signupOccupation ){
             setShowSignupAlert(true);
             return;
         }
         openSignUp(false);
+        const signupAvatar = '/Group 216.png'
         const data = {
             signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skills: skillsArray, signupAvatar
         }
@@ -109,23 +113,14 @@ function Homepage({authentication}) {
     const [showLoginAlert, setShowLoginAlert] = useState(false);
     const [showLogIn401, setShowLogIn401] = useState(false);
     const [logIn401Message, setLogIn401Message] = useState('');
-    const [loginShow, setLoginShow] = useState(false);
-
-    const openLogin=()=>{
-        setLoginShow(true)
-    }
-
-    const closeLogin= ()=>{
-        setLoginShow(false)
-    }
-
+   
     const handleLogin =async(e)=>{
         e.preventDefault();
         if( !loginUsername || !loginPassword){
             setShowLoginAlert(true);
             return;
         }
-        openLogin(false);
+        
         const data = {
             loginUsername, loginPassword
         }
@@ -144,28 +139,6 @@ function Homepage({authentication}) {
                 console.error("Catched axios error: ",error);
             }     
         } 
-    }
-
-
-    // Go to signup page from login page
-    const goTOSignup=()=>{
-        closeLogin();
-        setShowLogIn401(false);
-        setLogIn401Message('');
-        setShowLoginAlert(false);
-        setShowSignupAlert(false);
-        openSignUp();
-    }
-
-
-    // Go to login page from signup page
-    const goToLogin=()=>{
-        closeSignup();
-        setShowSignUp401(false);
-        setSignUp401Message('');
-        setShowLoginAlert(false);
-        setShowSignupAlert(false);
-        openLogin();
     }
 
 
@@ -236,6 +209,8 @@ function Homepage({authentication}) {
     }, []);
 
 
+
+    
  
     return (
         <Container className='page-layout'>
@@ -243,15 +218,6 @@ function Homepage({authentication}) {
                 <Nav.Link className="me-auto">
                     CScommunity
                 </Nav.Link>
-                <Nav.Link onClick={openLogin} style={{background:"#ebeae8", 
-                                                       color:"black", 
-                                                       paddingLeft:"2vh", 
-                                                       paddingRight:"2vh", 
-                                                       paddingTop:"0.5vh",
-                                                       paddingBottom:"0.5vh",
-                                                       borderRadius:'1vh' }}>
-                                                        Log In
-                </Nav.Link> 
                 <Nav.Link onClick={openSignUp} style={{background:"black", 
                                                        color:"white", 
                                                        paddingLeft:"2vh", 
@@ -259,9 +225,148 @@ function Homepage({authentication}) {
                                                        paddingTop:"0.5vh",
                                                        paddingBottom:"0.5vh",
                                                        borderRadius:'1vh' }}>
-                                                        Sign Up
+                    Lets Connect
                 </Nav.Link>    
-            </Stack> 
+            </Stack>
+            <Modal size='lg' 
+                   backdrop="static" 
+                   keyboard={false} 
+                   show={signupShow} 
+                   onHide={closeSignup} 
+                   centered style={{"--bs-modal-border-radius":'1vw',
+                   '--bs-modal-padding':'0',
+                   zIndex:100000}} >
+                <ModalBody style={{height:'60vh', width:'50vw', zIndex:100000}}>
+                    <div className="form">
+                        <div className='slide-over'>
+                            <div className='slide-panel left-slide-over'>
+                                <p style={{fontSize:'1.5vw',fontWeight:'bold'}}>
+                                    Hello, Friend!
+                                </p>
+                                <p>Don't have an account ?</p>
+                                <Button onClick={setActive}>
+                                    Sign Up
+                                </Button>
+                            </div>
+                            <div className=' slide-panel right-slide-over'>
+                                <p style={{fontSize:'1.5vw',fontWeight:'bold'}}>
+                                    Welcome Back!
+                                </p>
+                                <p>Already have an account ?</p>
+                                <Button onClick={removeActive}>
+                                    Log In
+                                </Button>
+                            </div> 
+                        </div>
+                        <div className='form-field login'>
+                            {showLoginAlert && <Alert variant="danger" 
+                                                      className='modal-question'> 
+                                                    💡Please fill out all required fields
+                                                </Alert>}
+                            {showLogIn401 && <Alert variant="danger" 
+                                                    className='modal-question' >
+                                                    {logIn401Message}
+                                                    </Alert> }
+                            {!showLogIn401 && !showLoginAlert  && 
+                                <p style={{fontSize:'2vw',fontWeight:'bold'}} className='mb-4'>
+                                    Log In
+                            </p>}
+                            <Form onSubmit={handleLogin}>
+                                <Form.Group controlId="signup-username" >
+                                    <Form.Label>Username</Form.Label>
+                                    <Form.Control type="text" 
+                                                  placeholder="Enter username" 
+                                                  className='mb-3' 
+                                                  onChange={(e) => {
+                                                    setLoginUsername(e.target.value); 
+                                                    setShowLoginAlert(false);}} />
+                                </Form.Group>
+                                <Form.Group controlId="signup-password">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control type="password" 
+                                                  placeholder="Password" 
+                                                  className='mb-3' 
+                                                  onChange={(e) =>{
+                                                    setLoginPassword(e.target.value); 
+                                                    setShowLoginAlert(false);}} />
+                                </Form.Group>
+                                <Stack direction="horizontal" gap={3}>
+                                    <Button  className="btn btn-primary w-100" 
+                                             onClick={closeSignup} >
+                                        Cancle
+                                    </Button>
+                                    <Button onClick={handleLogin} className="btn btn-primary w-100">
+                                        Log in
+                                    </Button>
+                                </Stack>   
+                            </Form>
+
+                        </div>
+                        <div className='form-field SignUp'>
+                            {showSignupAlert && <Alert variant="danger" 
+                                                       className='modal-question'> 
+                                                            💡Please fill out all required fields
+                                                </Alert>}
+                            {showSignUp401 && <Alert variant="danger" 
+                                                     className='modal-question' >
+                                                        {signUp401Message}
+                                                </Alert> }
+                                        
+                            {!showSignUp401 && !showSignupAlert &&  
+                            <p style={{fontSize:'2vw',fontWeight:'bold'}} 
+                            className='mb-4'>Sign Up</p>}
+                            <Carousel style={{height:'70%'}} interval={600000} 
+                                className='vertical-placement' 
+                                ref={carouselRef}>
+                                <Carousel.Item className='vertical-placement'>
+                                    <Form onSubmit={handleSignup}>
+                                            <Form.Group controlId="signup-username" >
+                                                <Form.Label>Username</Form.Label>
+                                                <Form.Control type="text" 
+                                                placeholder="Enter username" className='mb-3' onChange={(e) => {setSignupUsername(e.target.value); setShowSignupAlert(false);}} />
+                                            </Form.Group>
+                                            <Form.Group controlId="signup-email">
+                                                <Form.Label>Email address</Form.Label>
+                                                <Form.Control type="email" placeholder="Enter email" className='mb-3' onChange={(e) => {setSignupEmail(e.target.value); setShowSignupAlert(false);}} />
+                                            </Form.Group>
+                                            <Form.Group controlId="signup-password">
+                                                <Form.Label>Password</Form.Label>
+                                                <Form.Control type="password" placeholder="Password" className='mb-3' onChange={(e) => {setSignupPassword(e.target.value); setShowSignupAlert(false);}} />
+                                            </Form.Group>
+                                            <Stack direction="horizontal" gap={3}>
+                                                <Button  className="btn btn-primary w-100" onClick={closeSignup} >Cancle</Button>
+                                                <Button  className="btn btn-primary w-100" onClick={goToNextForm} >Continue</Button>
+                                            </Stack>   
+                                        </Form>
+                                </Carousel.Item>
+                                <Carousel.Item className='vertical-placement'>
+                                  
+                                    <Form onSubmit={handleSignup}>
+                                        <Form.Group controlId="signup-name" >
+                                            <Form.Label>Name</Form.Label>
+                                            <Form.Control type="text" placeholder="Enter name" className='mb-3' onChange={(e) => {setSignupName(e.target.value) ; setShowSignupAlert(false);}} />
+                                        </Form.Group>
+                                        <Form.Group controlId="signup-occupation">
+                                            <Form.Label>Occupation</Form.Label>
+                                            <Form.Control type="text" placeholder="Enter occupation" className='mb-3' onChange={(e) => {setSignupOccupation(e.target.value) ; setShowSignupAlert(false);}} />
+                                        </Form.Group>
+                                        <Form.Group controlId="signup-skills">
+                                            <Form.Label>Skills</Form.Label>
+                                            <Form.Control type="text" placeholder="Enter skills" className='mb-3' onChange={(e) => {setSignupSkills(e.target.value) ; setShowSignupAlert(false);}} />
+                                        </Form.Group>
+                                        <Stack direction="horizontal" gap={3}>
+                                            <Button  className="btn btn-primary w-100" onClick={goToPrevForm} >Go back</Button>
+                                            <Button className="btn btn-primary w-100" onClick={handleSignup} >Sign Up</Button>
+                                        </Stack>
+                                    </Form>
+                                    
+                                </Carousel.Item>
+                            </Carousel>
+                </div> 
+            </div >
+            </ModalBody>
+           </Modal>
+           
             <div style={{height:'50vh',
                                marginTop:'1vh',
                                background:'#e9ff4f', 
@@ -589,20 +694,12 @@ function Homepage({authentication}) {
                     Get started now – 
                     it's free and easy!
                 </p>
-                <Button style={{background:'#e9ff4f',
+                <Button onClick={openSignUp} style={{background:'#e9ff4f',
                                 color:'black',
                                 border:'#e9ff4f',
                                 paddingLeft:'0.5vw',
                                 paddingRight:'0.5vw'}}>
-                    Sign Up
-                </Button>
-                <Button style={{background:'#e9ff4f',
-                                color:'black',
-                                border:'#e9ff4f',
-                                paddingLeft:'0.5vw',
-                                paddingRight:'0.5vw',
-                                margin:'0.5vw'}}>
-                    Log In
+                    Get started
                 </Button>
             </div>
         </Container>
