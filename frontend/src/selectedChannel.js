@@ -482,7 +482,7 @@ function SelectedChannel({removeAuthentication}){
                             } 
                             {searchPostResult.length > 0 ?
                                 searchPostResult.map((post)=>(
-                                    <div className='result-block' onClick={()=>goToPost(post.channel,post.id)}>
+                                    <div className='result-block' >
                                         <strong>{post.channel}</strong> <br></br>
                                         <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
                                         <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>
