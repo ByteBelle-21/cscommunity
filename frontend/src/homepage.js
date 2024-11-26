@@ -223,6 +223,7 @@ function Homepage({authentication}) {
                 <Nav.Link className="me-auto">
                     CScommunity
                 </Nav.Link>
+                
                 <Nav.Link onClick={openSignUp} style={{background:"black", 
                                                        color:"white", 
                                                        paddingLeft:"1vw", 

@@ -15,8 +15,10 @@ import DirectMessage from './directmessage';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { fetchActiveMembers ,fetchPopularChannels,handleRating,recognizeDevice} from './functions.js';
+import Offcanvas from 'react-bootstrap/Offcanvas';
 
-
+import Image from 'react-bootstrap/Image';
 
 
 function AllChannels({removeAuthentication}){
@@ -271,36 +273,136 @@ function AllChannels({removeAuthentication}){
     }
 
 
+    const [device, setDevice] = useState();
+    useEffect(() => {
+        const fetchDeviceType= ()=>{
+            try {
+                const response = recognizeDevice();
+                if (response != null) {
+                    setDevice(response);
+                } 
+            }catch (error) {
+                console.error("Catched error during retrieving popular channels: ",error);    
+            }
+        }
+        window.addEventListener('resize', fetchDeviceType);
+        fetchDeviceType(); 
 
+        return () => window.removeEventListener('resize', fetchDeviceType);
+    }, []);
+ 
+    
+    const [mobile, setMobile] = useState(false);
+    useEffect(()=>{
+        const isMobile=()=>{
+            const width = window.innerWidth;
+            if(width > 600){
+                setMobile(false);
+            }
+            else{
+                setMobile(true);
+            }
+        }
+        window.addEventListener('resize', isMobile);
+        isMobile(); 
+        return () => window.removeEventListener('resize', isMobile);
+    },[]);
+
+
+    const [width, setwidth] = useState(0);
+    useEffect(()=>{
+        const setCurrentWidth=()=>{
+            const width = window.innerWidth;
+            setwidth(width);
+        }
+        window.addEventListener('resize', setCurrentWidth);
+        setCurrentWidth(); 
+        return () => window.removeEventListener('resize', setCurrentWidth);
+    },[]);
+
+
+    const [showMenu, setShowMenu] = useState(false);
+
+    const handleCloseMenu = () => setShowMenu(false);
+    const handleShowMenu = () => setShowMenu(true);
 
     return(
         <div className="page-layout">
-            <Stack direction="horizontal" gap={4} className="navbar" >
-                <Nav.Link className="me-auto" onClick={goToHome}>CScommunity</Nav.Link>
-                <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')}>
-                    <span className="material-icons" style={{ marginRight:'0.3vw' }}>account_circle</span>
-                    <p style={{ margin: 0, padding:0 }}>{username}</p>
+            {(!mobile) && <Stack direction="horizontal" className="navbar" gap={4}>
+                <Nav.Link >
+                    CScommunity
                 </Nav.Link>
-                <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
-            </Stack>
-            <div className='sub-navbar horizontal-placement'>
-                <h6 className='me-auto' style={{marginLeft:'2vw'}}>All Channels</h6>
-                
-                    <Form className='horizontal-placement ms-4'>   
-                        <Form.Control placeholder="🔍 Search" 
+                 <Form className='horizontal-placement ms-4 me-auto  search-form'>   
+                        <Form.Control placeholder="Search" 
                                       className='search-bar'
                                       onClick={openSearchModal}
                     />
-                    <Modal
+                </Form> 
+                <Nav.Link style={{color:'#c6e010'}}>
+                    Home
+                </Nav.Link> 
+                <Nav.Link  style={{color:'#c6e010'}} onClick={()=> navigateTo('/messages')} >
+                    Message
+                </Nav.Link> 
+                <Nav.Link onClick={removeAuthentication}>
+                    Logout
+                </Nav.Link> 
+            </Stack>}
+            {mobile &&
+                <Stack direction="horizontal" className="navbar" gap={4} style={{background:'#e9ff4f'}}>
+                <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={handleShowMenu} >
+                <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' }}>menu</span>
+                 </Nav.Link>
+                 <Offcanvas show={showMenu} onHide={handleCloseMenu} style={{background:'black',color:'white'}}>
+                    <Offcanvas.Header>
+                    <Offcanvas.Title ><p className='rfont'> Menu</p></Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center'}} onClick={handleCloseMenu}   >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)', marginRight:'calc(1vmin)' }}>home</span>
+                        <p className='rfont' style={{margin:0}}> Home</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }}  onClick={openSearchModal} >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>search</span>
+                        <p className='rfont' style={{margin:0}}> Search</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/messages')}   >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>mail</span>
+                        <p className='rfont'style={{margin:0}}>  Messages</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')} >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>person</span>
+                        <p className='rfont'style={{margin:0}}>My Profile</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={handleCloseMenu} >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>close</span>
+                        <p className='rfont'style={{margin:0}}>Close Menu</p>
+                        </Nav.Link>
+                    </Offcanvas.Body>
+                </Offcanvas>
+                <Nav.Link className="me-auto">
+                    CScommunity
+                 </Nav.Link> 
+                 <Nav.Link >
+                    Log out
+                 </Nav.Link>
+            </Stack>
+            }
+            <Modal
                         size="md"
                         keyboard={false} 
                         show={showSearchModal} 
                         onHide={closeSearchModal} 
-                        centered 
-                        style={ {width:'100%'}}
+                        centered
+                        className='search-modal'
+                        style={{'--bs-modal-border-radius':0}}
                         >
                         <Modal.Header className='vertical-placement' >
-                            <h6 style={{color:'rgb(6, 110, 200)'}}>Search</h6>
+                            <p className='rfont'>Search</p>
                             <Form style={{ width: '100%' }}>
                                 <Form.Select 
                                 className='search-bar1 mb-1'
@@ -319,14 +421,13 @@ function AllChannels({removeAuthentication}){
                                       onChange={(e) => {setSearchText(e.target.value)}}       
                                 />
                             </Form>
-                            
                         </Modal.Header>
-                        <Modal.Body style={{fontSize:'0.9vw', height:'25vw', overflowY:'auto'}} className={showSearchError ? 'vertical-placement' : 'search-result-block'}>
+                            <Modal.Body className=' rfont search-result-block'>
                             {showSearchError && 
-                                <div style={{display:'flex',flexWrap:'wrap', opacity:'0.5'}}>Please select an option from the dropdown menu to continue.</div>
+                                <p className={device==0?'sfont':'rfont'} style={{display:'flex',flexWrap:'wrap', opacity:'0.5'}}>Please select an option from the dropdown menu to continue.</p>
                             }
                             {(!showSearchError && searchChannelResult.length === 0 && searchPeopleResult.length === 0 && searchPostResult.length ===0) &&
-                                <div style={{display:'flex',flexWrap:'wrap', opacity:'0.5', fontSize:'1vw'}}>No Search Result</div> 
+                                <p className={device==0?'sfont':'rfont'}  style={{display:'flex',flexWrap:'wrap', opacity:'0.5'}}>No Search Result</p> 
                             }
                             {searchChannelResult.length > 0 ?
                                 searchChannelResult.map((channel)=>(
@@ -362,125 +463,244 @@ function AllChannels({removeAuthentication}){
                                 ))   
                                 :  ""
                             } 
-                        </Modal.Body>
-                    </Modal>
-                                    
-                    </Form>
-                    
-            </div>
-            <div className='page-content horizontal-placement'>
-                <Container className="small-grid-container1">
-                {userDetails ? (
-                    <Container className=' profile' >
-                       
-                        <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
-                        <p style={{fontSize:'0.8vw'}}>{userDetails.username}</p>
-                        <p style={{fontSize:'1vw'}} >{userDetails.name}</p>
-                        <div className='horizontal-placement'>
-                            <div className='mx-2 vertical-placement'>
-                                {userDetails.totalPosts}
-                                <p style={{fontSize:'0.8vw'}}>Posts</p>
+                            </Modal.Body>
+                    </Modal> 
+                    {(width > 1000) && 
+                    <div className='page-content horizontal-placement'>
+                     <Container className="small-grid-container1">
+                    {userDetails ? (
+                        <Container className=' profile' >
+                            <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
+                            <p className='rfont'>{userDetails.username}</p>
+                            <p className='rfont' >{userDetails.name}</p>
+                            <div className='horizontal-placement'>
+                                <div className='mx-2 vertical-placement'>
+                                    {userDetails.totalPosts}
+                                    <p style={{fontSize:'calc(0.4em + 1vmin)'}}>Posts</p>
+                                </div>
+                                <div className='mx-2 vertical-placement'>
+                                    {userDetails.likes}
+                                    <p style={{fontSize:'calc(0.4em + 1vmin)'}}>Likes</p>
+                                </div>
                             </div>
-                            <div className='mx-2 vertical-placement'>
-                                {userDetails.likes}
-                                <p style={{fontSize:'0.8vw'}}>Likes</p>
-                            </div>
-                        </div>
-                        <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
-                    </Container>) :""}
-                    <h6 className='mb-3'> Suggested People</h6>
-                    <Container className='small-grid-container-child'>
-                        {(suggestedPeople.length >0 && userDetails ) &&  suggestedPeople.slice(0,5).map(person=>(
-                                (person.id !== userDetails.id && 
-                                    <Stack direction="horizontal" gap={3} style={{marginBottom:'1vw'}}>
-                                        <img src={person.avatar}  style={{height:'2.5vw'}}/>
-                                        <div className=' me-auto'>
-                                            {person.username}
-                                            <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
-                                        </div>   
-                                </Stack>
-
-                                )
-                                
-                        ))}
+                            <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
+                        </Container>) :""}
                     </Container>
-                </Container>
-                <Container className='large-grid-container '>
-                    <Container className='col-titles'>
-                        <Row style={{width:'100%'}} >
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
-                    </Container>
-                    <Container className="channel-list">
-                        {allChannels.length > 0 && allChannels.map(channel=>(
-                            <Row  className='channel horizontal-placement' onClick={()=>showchannel(channel.channel)}>
-                                <Col xs={6} md={6}>
-                                 <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
-                                </Col>
-                                <Col xs={2} md={1}>{channel.totalposts}</Col>
-                                <Col xs={2} md={1}>{channel.totalpeople}</Col>
-                                <Col xs={2} md={4}><img src={channel.avatar}  style={{height:'2vw'}}/> {channel.username}</Col> 
+                    <Container className='large-grid-container '>
+                        <Stack direction='horizontal' gap={1}  className='create-channel-block '>
+                            <Image style={{margin:0, border:'solid #e68d83'}} src="holder.js/171x180" roundedCircle />
+                            <Form className='me-auto create-channel-form' style={{ flexGrow: 1 }}>   
+                            <Form.Control placeholder={createChannelAlert?"Enter channel's name":"Channel name"}
+                                         style={{border:createChannelAlert?'0.1vw solid red':''}} 
+                                        className='channel-bar'
+                                        onChange={(e) => {setChannel(e.target.value); setCreateChannelAlert(false)}}
+                                />
+                            </Form>  
+                            <Button className='create-channel-btn'  onClick={handleChannelCreation}>
+                                Create Channel
+                            </Button> 
+                        </Stack>
+                        <Container className='col-titles'>
+                            <Row style={{width:'100%'}} >
+                                <Col xs={6} md={6} ><p style={{fontSize:'calc(0.4em + 1vmin)'}}>Channel</p></Col>
+                                <Col xs={2} md={1}><p style={{fontSize:'calc(0.4em + 1vmin)'}}>Posts</p></Col>
+                                <Col xs={2} md={1}> <p style={{fontSize:'calc(0.4em + 1vmin)'}}>People</p></Col>
+                                <Col xs={2} md={4}><p style={{fontSize:'calc(0.4em + 1vmin)'}}>Creator</p></Col>
                             </Row>
-
-                        ))}
+                        </Container>
+                        <Container className="channel-list">
+                            {allChannels.length > 0 && allChannels.map(channel=>(
+                                <Row  className='channel horizontal-placement' onClick={()=>showchannel(channel.channel)}>
+                                    <Col xs={6} md={6}>
+                                     <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
+                                    </Col>
+                                    <Col xs={2} md={1}>{channel.totalposts}</Col>
+                                    <Col xs={2} md={1}>{channel.totalpeople}</Col>
+                                    <Col xs={2} md={4}><img src={channel.avatar}  style={{height:'2vw'}}/> {channel.username}</Col> 
+                                </Row>
+    
+                            ))}
+                        </Container>
                     </Container>
-                </Container>
-                <Container className='small-grid-container2'>  
-                    <h6>Recent Direct Messages</h6>
-                        <Container className=' direct-messages small-grid-container-child '>
-                            {connectedUsers.length > 0 && 
-                                    connectedUsers.slice(0,5).map(user =>(
-                                        <div className='child-blocks'>
-                                            <Stack direction="horizontal" gap={3}>
-                                                <img src={user.avatar}  style={{height:'2vw'}}/>
+                    <Container className='small-grid-container2'>  
+                            <Container className=' direct-messages small-grid-container-child '>
+                              <p className='semifont' >Recent Direct Messages</p>
+                                {connectedUsers.length > 0 && 
+                                        connectedUsers.slice(0,5).map(user =>(
+                                            <div className='child-blocks'>
+                                                <Stack direction="horizontal" gap={3}>
+                                                    <img src={user.avatar}  style={{height:'2vw'}}/>
+                                                    <div className=' me-auto'>
+                                                        {user.username}
+                                                        <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
+                                                    </div>
+                                                    <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} className='view-conversation' >View Conversation</Nav.Link>
+                                                </Stack>
+                                            </div>
+                                        ))}
+                                
+                                {connectedUsers.length === 0 &&
+                                    <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                        <p style={{opacity:'0.5', alignSelf:'center'}}>No messages </p> 
+                                    </Container>                            
+                                }
+                            </Container> 
+                            <Container className='direct-messages small-grid-container-child'>
+                               <p className='semifont' >Suggested People</p>
+                                {(suggestedPeople.length >0 && userDetails ) &&  suggestedPeople.slice(0,5).map(person=>(
+                                        (person.id !== userDetails.id && 
+                                            <Stack direction="horizontal" gap={3} style={{marginBottom:'1vw'}}>
+                                                <img src={person.avatar}  style={{height:'2.5vw'}}/>
                                                 <div className=' me-auto'>
-                                                    {user.username}
-                                                    <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
-                                                </div>
-                                                <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} className='view-conversation' >View Conversation</Nav.Link>
-                                            </Stack>
-                                        </div>
-                                    ))}
-                            
-                            {connectedUsers.length === 0 &&
-                                <Container className=' direct-messages small-grid-container-child vertical-placement'>
-                                    <p style={{opacity:'0.5', alignSelf:'center'}}>No messages </p> 
-                                </Container>                            
-                            }
-                        </Container> 
-                     
-                    
-                    <div className='create-channel-container small-grid-container-child vertical-placement'>
-                        <div className='create-channel-block vertical-placement'>
-                            <img src="/Group 209.png" />
-                            <Button className='create-channel-btn' onClick={openCreationForm}>Create new Channel</Button>
-                        </div>
+                                                    {person.username}
+                                                    <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
+                                                </div>   
+                                        </Stack>
 
-                    </div>
+                                        )
+                                        
+                                ))}
+                    </Container>                           
+                    </Container>
+                </div>} 
+                {width>=600 && width<=1000 &&
+                    <div className='page-content horizontal-placement'>
+                   <Container className='large-grid-container '>
+                       <Stack direction='horizontal' gap={1}  className='create-channel-block '>
+                           <Image style={{margin:0, border:'solid #e68d83'}} src="holder.js/171x180" roundedCircle />
+                           <Form className='me-auto create-channel-form' style={{ flexGrow: 1 }}>   
+                           <Form.Control placeholder={createChannelAlert?"Enter channel's name":"Channel name"}
+                                        style={{border:createChannelAlert?'0.1vw solid red':''}} 
+                                       className='channel-bar'
+                                       onChange={(e) => {setChannel(e.target.value); setCreateChannelAlert(false)}}
+                               />
+                           </Form>  
+                           <Button className='create-channel-btn'  onClick={handleChannelCreation}>
+                               Create 
+                           </Button> 
+                       </Stack>
+                       <Container className='col-titles semifont'>
+                           <Row style={{width:'100%'}} >
+                           <Col xs={6} md={6} ><p style={{fontSize:'calc(0.4em + 1vmin)'}}>Channel</p></Col>
+                                <Col xs={2} md={1}><p style={{fontSize:'calc(0.4em + 1vmin)'}}>Posts</p></Col>
+                                <Col xs={2} md={1}> <p style={{fontSize:'calc(0.4em + 1vmin)'}}>People</p></Col>
+                                <Col xs={2} md={4}><p style={{fontSize:'calc(0.4em + 1vmin)'}}>Creator</p></Col>
+                           </Row>
+                       </Container>
+                       <Container className="channel-list">
+                           {allChannels.length > 0 && allChannels.map(channel=>(
+                               <Row  className='channel horizontal-placement' onClick={()=>showchannel(channel.channel)}>
+                                   <Col xs={6} md={6}>
+                                    <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
+                                   </Col>
+                                   <Col xs={2} md={1}>{channel.totalposts}</Col>
+                                   <Col xs={2} md={1}>{channel.totalpeople}</Col>
+                                   <Col xs={2} md={4}><img src={channel.avatar}  style={{height:'2vw'}}/> {channel.username}</Col> 
+                               </Row>
+   
+                           ))}
+                       </Container>
+                   </Container>
+                   <Container className='small-grid-container2'> 
+                        {userDetails ? (
+                            <Container className=' profile' >
+                                <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
+                                <p className='rfont'>{userDetails.username}</p>
+                                <p className='rfont' >{userDetails.name}</p>
+                                <div className='horizontal-placement'>
+                                    <div className='mx-2 vertical-placement'>
+                                        {userDetails.totalPosts}
+                                        <p style={{fontSize:'calc(0.4em + 1vmin)'}}>Posts</p>
+                                    </div>
+                                    <div className='mx-2 vertical-placement'>
+                                        {userDetails.likes}
+                                        <p style={{fontSize:'calc(0.4em + 1vmin)'}}>Likes</p>
+                                    </div>
+                                </div>
+                                <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
+                            </Container>) :""}
+                
+                           <Container className=' direct-messages small-grid-container-child '>
+                             <p className='semifont' >Recent Direct Messages</p>
+                               {connectedUsers.length > 0 && 
+                                       connectedUsers.slice(0,5).map(user =>(
+                                           <div className='child-blocks'>
+                                               <Stack direction="horizontal" gap={3}>
+                                                   <img src={user.avatar}  style={{height:'2vw'}}/>
+                                                   <div className=' me-auto'>
+                                                       {user.username}
+                                                       <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
+                                                   </div>
+                                                   <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} className='view-conversation' >View Conversation</Nav.Link>
+                                               </Stack>
+                                           </div>
+                                       ))}
+                               
+                               {connectedUsers.length === 0 &&
+                                   <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                       <p style={{opacity:'0.5', alignSelf:'center'}}>No messages </p> 
+                                   </Container>                            
+                               }
+                           </Container> 
+                           <Container className='direct-messages small-grid-container-child'>
+                              <p className='semifont' >Suggested People</p>
+                               {(suggestedPeople.length >0 && userDetails ) &&  suggestedPeople.slice(0,5).map(person=>(
+                                       (person.id !== userDetails.id && 
+                                           <Stack direction="horizontal" gap={3} style={{marginBottom:'1vw'}}>
+                                               <img src={person.avatar}  style={{height:'2.5vw'}}/>
+                                               <div className=' me-auto'>
+                                                   {person.username}
+                                                   <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(person.username)} >View Profile</Nav.Link>
+                                               </div>   
+                                       </Stack>
 
-                    
-                    <Modal show={createChannelform} onHide={closeCreationForm} centered style={{"--bs-modal-border-radius":'1vw'}} >
-                        <Modal.Body className='vertical-placement'>
-                            <h5>Create your Own Channel</h5>
-                            <Form className=' new-channels-form mt-2'>
-                                <Form.Group controlId="signup-username" >
-                                    <Form.Label>Enter Channel Name</Form.Label>
-                                    <Form.Control type="text" placeholder="i.e Java discussion channel" className='mb-3' onChange={(e) => {setChannel(e.target.value); setCreateChannelAlert(false);}}/>
-                                </Form.Group>
-                            </Form>
-                            {createChannelAlert && <Alert variant="danger" > 💡Please fill out all required fields</Alert>}
-                            <Stack direction="horizontal" gap={3}>
-                                <Button type='submit' className='channel-form-button' onClick={closeCreationForm}>Cancle</Button>
-                                <Button type='submit' className='channel-form-button' onClick={handleChannelCreation}>Create</Button>
-                            </Stack>
-                             
-                        </Modal.Body>
-                    </Modal>                                
-                </Container>
-            </div>
+                                       )
+                                       
+                               ))}
+                            </Container>                           
+                   </Container>
+               </div>}   
+               {(width<600) &&
+                     <Container className='large-grid-container'>
+                     <Stack direction='horizontal' gap={1}  className='create-channel-block '>
+                         <Image style={{margin:0, border:'solid #e68d83'}} src="holder.js/171x180" roundedCircle />
+                         <Form className='me-auto create-channel-form' style={{ flexGrow: 1 }}>   
+                         <Form.Control placeholder={createChannelAlert?"Enter channel's name":"Channel name"}
+                                      style={{border:createChannelAlert?'0.1vw solid red':''}} 
+                                     className='channel-bar'
+                                     onChange={(e) => {setChannel(e.target.value); setCreateChannelAlert(false)}}
+                             />
+                         </Form>  
+                         <Button className='create-channel-btn'  onClick={handleChannelCreation}>
+                             Create 
+                         </Button> 
+                     </Stack>
+                     <Container className='col-titles'>
+                         <Row style={{width:'100%'}} >
+                         <Col xs={6} md={6} ><p style={{fontSize:'calc(0.5em + 1vmin)'}}>Channel</p></Col>
+                                <Col xs={2} md={1}><p style={{fontSize:'calc(0.5em + 1vmin)'}}>Posts</p></Col>
+                                <Col xs={2} md={1}> <p style={{fontSize:'calc(0.5em + 1vmin)'}}>People</p></Col>
+                                <Col xs={2} md={4}><p style={{fontSize:'calc(0.5em + 1vmin)'}}>Creator</p></Col>
+                         </Row>
+                     </Container>
+                     <Container className="channel-list">
+                         {allChannels.length > 0 && allChannels.map(channel=>(
+                             <Row  className='channel horizontal-placement' onClick={()=>showchannel(channel.channel)}>
+                                 <Col xs={6} md={6}>
+                                  <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
+                                 </Col>
+                                 <Col xs={2} md={1}>{channel.totalposts}</Col>
+                                 <Col xs={2} md={1}>{channel.totalpeople}</Col>
+                                 <Col xs={2} md={4}><img src={channel.avatar}  style={{height:'2vw'}}/> {channel.username}</Col> 
+                             </Row>
+ 
+                         ))}
+                     </Container>
+                 </Container>
+
+               }
+                       
+
         </div>
     )
 

@@ -1,26 +1,66 @@
-@media (min-width: 1280px){
-    .search-bar{
+
+@media (max-aspect-ratio: 1/1) and (max-width:599px){
+    .search-form{
         width: 100% !important;
-        height: 4.5vh !important;
-        font-size: small !important;
-        border-radius: 3vw !important;
-        background-color: rgb(232, 242, 251) !important;
+    }   
+    .search-bar1, .search-bar2{
+        font-size: calc(0.3em + 1vmin) !important;
     }
 
-    .search-bar::placeholder{
-        font-weight: bold;
+    .search-modal.modal{
+        height: 50% !important ;
     }
 
+
+}
+
+
+@media (min-aspect-ratio: 1/1){
+    .search-form{
+        width: 30% !important;
+    }   
+    .search-bar1, .search-bar2{
+        font-size: calc(0.3em + 1vmin) !important;
+    }
+
+    .search-modal.modal{
+        height: 50% !important ;
+    }
+
+
+}
+
+.search-bar1, .search-bar2{
+    font-size: calc(0.4em + 1vmin) !important;
+}
+
+.search-modal.modal {
+    height: 60% !important ;
+}
+
+
+
+.search-bar{
+    width: 100% !important;
+    font-size: calc(0.5em + 1vmin) !important; 
+    font-size: small !important;
+    border-radius: 3vw !important;
+    background-color: rgb(242, 243, 245) !important;
+}
    
-    .search-bar:hover{
-        cursor: pointer;
-    }
 
-    .search-result-block{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+    
+.search-bar:hover{
+    cursor: pointer;
+}
+
+.search-result-block{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100% !important;
+    overflow: auto;
+}
 
 
     .channel-result-block{
@@ -64,6 +104,9 @@
     }
 
 
+
+
+
     .profile{
         display: flex;
         flex-direction: column;
@@ -73,20 +116,23 @@
         width: 100%;
         height: 50%;
         padding: 1vw;
-        background-color: rgb(232, 242, 251);
+        background-color: white;
         border-radius: 1vw;
         margin-bottom: 1vw !important;
     }
 
     .profile .btn{
-        font-size: 1vw !important;
-        height: 2.5vw;
-        width: 10vw;
-        
+        font-size: calc(0.4em + 1vmin);
+        background-color: #e9ff4f;
+        border-color: #e9ff4f;
+        color: black;
     }
 
     .profile .btn:hover{
         transform: scale(1.05);
+        background-color:black;
+        border-color:black;
+        color: white;
     }
 
     .channel-list{
@@ -137,6 +183,9 @@
 
     .direct-messages{
         height:50% !important;
+        background-color: white;
+        border-radius: 1vw;
+        padding: 1vw !important;
     }
 
     .view-conversation{
@@ -162,36 +211,49 @@
         background-color: rgb(232, 242, 251);
     }
 
+
+@media (max-width:599px){
     .create-channel-block{
-        width: 90%;
-        height: 100% ;
-        background-color: rgb(232, 242, 251);
-        border-radius: 1vw;
+        width: 100%;
+        background-color: white;
+        padding: 1vw;
+        border-radius: 1vw !important;
+    }
+}
+
+@media (min-width:600px){
+    .create-channel-block{
+        width: 100%;
+        background-color: white;
+        padding: 1vw;
+        border-radius: 1vw !important;
+    }
+}
+    .create-channel-form{
+        width: 60% !important;
+        
+    }
+    .channel-bar{
+        border-radius: 2vw !important;
+        font-size: calc(0.3em + 1vmin) !important ; 
     }
 
+
+
+    
     .create-channel-btn{
         background-color: black !important;
         border-color: black !important;
         color: white !important;  
+        border-radius: 2vw !important;
+        font-size: calc(0.4em + 1vmin) !important ; 
     }
 
     .create-channel-btn:hover{
         transform: scale(1.05);
     }
 
-    .create-channel-block img{
-        height: 50% !important;
-        margin-bottom: 1vw;
-    }
-
-    .new-channels-form {
-        width: 60%;
-    }
-
-    .channel-form-button{
-        width: 60% !important;}
+  
 
 
-
-}
 
