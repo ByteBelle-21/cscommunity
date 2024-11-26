@@ -1,105 +1,251 @@
 import './homepage.css';
 import './allChannels.css';
-import './UniformStyle.css';
+import './UniformStyle.css'
+import './selectedChannel.css'
 import Stack from 'react-bootstrap/Stack';
 import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/esm/Container';
-import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/esm/Button';
-import { useEffect, useState, useRef } from 'react';
+import Container from 'react-bootstrap/esm/Container';
+import Button from 'react-bootstrap/Button';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Popover from 'react-bootstrap/Popover';
+import { useRef } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
+import { useParams,useLocation } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
-import DirectMessage from './directmessage';
-import axios from 'axios';
-import Alert from 'react-bootstrap/Alert';
-import Dropdown from 'react-bootstrap/Dropdown';
+import Overlay from 'react-bootstrap/Overlay';
 
 
+function SelectedChannel({removeAuthentication}){
+    const {channelName} = useParams();
+    const current_user = sessionStorage.getItem('auth_user');
 
-
-function AllChannels({removeAuthentication}){
-    const formControlRef = useRef(null);
-    const [createChannelform, setCreateChannelForm] = useState(false)
-    const [username, setUsername] = useState('');
-    const [userDetails, setUserDetails] = useState([]);
+    const location = useLocation();
+    const urlParams = new URLSearchParams(location.search);
+    const postId = urlParams.get('postId');
+    const navigateTo = useNavigate()
 
     useEffect(()=>{
-        const current_user = sessionStorage.getItem('auth_user');
-        const fetchUserDetails= async()=>{
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/user',{
-                    params: {user: current_user}
-                });
-                if (response.status === 200) {
-                    setUserDetails(response.data[0]);
-                    console.log("Successfully retrieved current user details");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
+        if(postId){
+            const searchedPost = document.getElementById(postId);
+            if(searchedPost){
+                searchedPost.scrollIntoView({behavior:'smooth'});
             }
-
         }
-        fetchUserDetails();  
-    },[]);
+    })
+
+    useEffect(()=>{
+        fetchUserDetails();
+        fetchConnectedUsers();
+        fetchAllPosts();  
+    },[decodeURIComponent(channelName)]);
 
 
-
-
-    const openCreationForm = ()=>{
-        setCreateChannelForm(true)
+    const [userDetails, setUserDetails] = useState([]);
+    const fetchUserDetails= async()=>{
+        try {
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//user',{
+                params: {user: current_user}
+            });
+            if (response.status === 200) {
+                setUserDetails(response.data[0]);
+                console.log("Successfully retrieved current user details");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
     }
-    const closeCreationForm=()=>{
-        setCreateChannelAlert(false);
-        setCreateChannelForm(false)
+
+
+    const [connectedUsers, setConnectedUsers] = useState([]);
+    const fetchConnectedUsers= async()=>{
+        try {
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//connectedusers',{ params: { user: current_user} });
+            if (response.status === 200) {
+                setConnectedUsers(response.data);
+                console.log("Successfully retrieved all connected users");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+
     }
 
-    const navigateTo = useNavigate()
-    const showchannel =(channelName)=>{
-        navigateTo(`/channel/${encodeURIComponent(channelName)}`)
-    }
-    const showConversation = () =>{
-        navigateTo('/messages')
+
+
+    const[allPosts, setAllPosts] = useState([])
+    const fetchAllPosts= async()=>{
+        const channel_name = decodeURIComponent(channelName);
+        const loggedInUser = sessionStorage.getItem('auth_user');
+        try {
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//allPosts',
+            { params: {current_channel:channel_name, user:loggedInUser}});
+            if (response.status === 200) {
+                setAllPosts(response.data);
+                console.log("All posts: ",response.data);
+                console.log("Successfully retrieved all posts for channel",channelName);
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+
     }
 
-    const showProfile=(userName)=>{
-        navigateTo(`/user-profile/${encodeURIComponent(userName)}`)
+    const [allFiles, setAllFiles] = useState([]);
+    useEffect(()=>{
+        const createURL = (fileData, fileType) =>{
+            const processedData = new Uint8Array(fileData.data);
+            const blob = new Blob([processedData], { type: fileType });
+            
+            return URL.createObjectURL(blob);
+        }
+        allPosts.forEach((post)=>{
+            if (post.files && post.files.length > 0) {
+                post.files.forEach(file => {
+                    const fileURL = createURL(file.filedata, file.filetype);
+                    console.log('File URL:', fileURL);
+                    setAllFiles(prevFiles => ({
+                        ...prevFiles,
+                        [file.filename]: fileURL,
+                    }));
+                });
+            }
+        })
+
+    },[allPosts]);
+
+    const handleSendMessage=(selectedUser)=>{
+        navigateTo(`/messages/${encodeURIComponent(selectedUser)}`);
+    }
+
+    const showFileTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props} className='tooltip'>
+          Upload file
+        </Tooltip>
+    );
+    const fileRef = useRef(null);
+    const handleButtonClick = () => {
+        fileRef.current.click(); 
+      };
+    const [inputFiles, setInputFiles] = useState([]);
+    const [gotFile, setGotFiles] = useState(false);
+    const handleFileInput = (event) => {
+        const files = event.target.files;
+        if (files) {
+            setGotFiles(true);
+            setInputFiles(prev =>[...prev,...Array.from(files)]);
+        }
+        
+    };
+    const handleFileDelete=(filename)=>{
+        setInputFiles((prev) => prev.filter((file) => file.name !== filename));
+        
+    }
+
+    const handleUploadFile = async (post) =>{
+        if (inputFiles.length === 0){
+            return;
+        }
+        const formData = new FormData();
+        formData.append('postId',post)
+        inputFiles.forEach((file)=>{
+            formData.append('allFiles',file)
+        });
+        try {
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//fileupload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 200) {
+                setGotFiles(false);
+                setInputFiles([]);
+                console.log("Files uploaded successfully");
+            }
+        } catch (error) {
+            console.error("Error while uploading files:", error);
+        }
     }
     
 
-    const goToHome =()=>{
-        navigateTo('/')
+
+
+    
+    const textAreaRef = useRef(null);
+    const handleEmojiSelect = (emoji) =>{
+          const cursor = textAreaRef.current.selectionStart;
+          const newInput = inputPost.slice(0,cursor) + emoji.native +inputPost.slice(cursor);
+          setInputPost(newInput);
+          textAreaRef.current.setSelectionRange(cursor + emoji.native.length, cursor + emoji.native.length);
+          textAreaRef.current.focus();
+    }
+    const [showEmojis,setShowEmojis] = useState(false);
+    const buttonRef =useRef(null);
+    const popoverRef =useRef(null);
+    const hideEmojis =(event) =>{
+            setShowEmojis(false);
+        
     }
 
-    useEffect(()=>{
-        setUsername(sessionStorage.getItem('auth_user'));
-    },[])
+    
+    const emojiPopover = (
+        <Popover id="popover-basic">
+          <Popover.Body>
+                <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+          </Popover.Body>
+        </Popover>
+    );
+    
 
-    const [fetchAgain, setFetchAgain] = useState(false);
 
 
-
-    const [channel, setChannel] = useState('')
-    const [createChannelAlert,setCreateChannelAlert] = useState(false)
-    const handleChannelCreation =async(e)=>{
+    
+    const showSendTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props} className='tooltip'>
+          Send
+        </Tooltip>
+      );
+    const [inputPost, setInputPost] = useState('');
+    const handleInputChange = (e) =>{
+        setInputPost(e.target.value);
+    }
+    const handleSendPost =async(e)=>{
         e.preventDefault();
-        if(!channel){
-            setCreateChannelAlert(true);
-            return;
-        }
-        closeCreationForm();
+        const current_user = sessionStorage.getItem('auth_user');
+        const channel = decodeURIComponent(channelName);
+        console.log(replyTo);
         const data = {
-            username,channel
+            current_user,
+            inputPost,
+            channel,
+            replyTo
         }
         try {
-            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/createchannel', data);
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//post', data);
             if (response.status === 200) {
-                setFetchAgain(!fetchAgain);
-                console.log("Successfully created channel")
+                console.log("Uploaded post succesfully");
+                fetchUserDetails();
+                fetchAllPosts();
+                setReplyTo(null);
+                setReplyToUser('');
+                setInputPost('');
+                handleUploadFile(response.data.postId); 
+               
             } 
             else if(response.status === 401){
                 console.log(response.message)
@@ -109,80 +255,23 @@ function AllChannels({removeAuthentication}){
         }
       
     }
-
-
-    const [suggestedPeople, setSuggestedPeople] = useState([]);
-    useEffect(()=>{
-        const fetchSuggestedPeople= async()=>{
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/activeusers');
-                if (response.status === 200) {
-                    setSuggestedPeople(response.data);
-                    console.log("Successfully retrieved suggested user details");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
-
-        }
-        fetchSuggestedPeople();  
-    },[]);
-
-    
+  
 
 
 
-    
-
-    const [allChannels, setAllChannels] = useState([]);
-    useEffect(()=>{
-        const fetchAllChannels= async()=>{
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/allchannels');
-                if (response.status === 200) {
-                    setAllChannels(response.data);
-                    console.log("Successfully retrieved all channels");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
-
-        }
-        fetchAllChannels();  
-    },[fetchAgain]);
-
-
-    
-    const [connectedUsers, setConnectedUsers] = useState([]);
-    useEffect(()=>{
-        const current_user = sessionStorage.getItem('auth_user');
-        const fetchConnectedUsers= async()=>{
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
-                if (response.status === 200) {
-                    setConnectedUsers(response.data);
-                    console.log("Successfully retrieved all connected users");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
-
-        }
-        fetchConnectedUsers();  
-    },[]);
-
-
-    const handleSendMessage=(selectedUser)=>{
-        navigateTo(`/messages/${encodeURIComponent(selectedUser)}`);
+    const [replyTo, setReplyTo] = useState(null);
+    const [replyToUser, setReplyToUser] = useState('');
+    const [replyToPost, setReplyToPost] = useState('');
+    const handleReplyClick = (Id, user, post) =>{
+        setReplyTo(Id);
+        setReplyToUser(user);
+        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "..........";
+        setReplyToPost(postPreview);
+    }
+    const handleCancelReply = ()=>{
+        setReplyToUser('');
+        setReplyTo(null);
+        setReplyToPost('');
     }
 
 
@@ -214,7 +303,7 @@ function AllChannels({removeAuthentication}){
             }else if (searchSelect === 'channel'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchChannel',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchChannel',
                         {params:{search_input :searchText}} );
                     if (response.status === 200) {
                         setSearchChannelResult(response.data);
@@ -227,7 +316,7 @@ function AllChannels({removeAuthentication}){
             }else if (searchSelect === 'post'){
                 try {
                     
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPost',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPost',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPostResult(response.data);
@@ -245,7 +334,7 @@ function AllChannels({removeAuthentication}){
                         setSearchPostResult([]);
                         return;
                     }
-                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchPeople',
+                    const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//searchPeople',
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPeopleResult(response.data);
@@ -263,35 +352,74 @@ function AllChannels({removeAuthentication}){
         handleSearch();  
     },[searchText, searchSelect]);
 
+    const showProfile=(userName)=>{
+        navigateTo(`/user-profile/${encodeURIComponent(userName)}`)
+    }
 
 
-    const goToPost = (channel,postId) =>{
-        const channelName = channel;
-        navigateTo(`/channel/${encodeURIComponent(channelName)}?postId=${postId}`)
+    const [popularChannels, setPopularChannels] = useState([]);
+    useEffect(()=>{
+        const fetchChannels= async()=>{
+            try {
+                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//popularchannels');
+                if (response.status === 200) {
+                    setPopularChannels(response.data);
+                    console.log("Successfully retrieved popular channels");
+                } 
+            }catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+        }
+        fetchChannels();  
+    },[]);
+
+    const showchannel =(channelName)=>{
+        navigateTo(`/channel/${encodeURIComponent(channelName)}`)
+    }
+
+
+    
+    const handleLikes= async(post, postCreator, loggedInUser)=>{
+        if(postCreator === sessionStorage.getItem('auth_user')){
+            return;
+        }
+        console.log(loggedInUser);
+        try {
+            const data ={ postId: post, 
+                          creator:postCreator,
+                          user:loggedInUser}
+            const response = await axios.post('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/likepost',data);
+            if (response.status === 200) {
+                fetchAllPosts();
+                console.log("Successfully added likes to the post");
+            } 
+        }catch (error) {
+            console.error("Catched axios error: ",error);
+        }
     }
 
 
 
-
+    
     return(
-        <div className="page-layout">
-            <Stack direction="horizontal" gap={4} className="navbar" >
-                <Nav.Link className="me-auto" onClick={goToHome}>CScommunity</Nav.Link>
+        <div className='page-layout'>
+            <Stack direction="horizontal" gap={3} className="navbar">
+                <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
                 <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')}>
                     <span className="material-icons" style={{ marginRight:'0.3vw' }}>account_circle</span>
-                    <p style={{ margin: 0, padding:0 }}>{username}</p>
+                    <p style={{ margin: 0, padding:0 }}>{userDetails.username}</p>
                 </Nav.Link>
                 <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
             </Stack>
             <div className='sub-navbar horizontal-placement'>
-                <h6 className='me-auto' style={{marginLeft:'2vw'}}>All Channels</h6>
-                
-                    <Form className='horizontal-placement ms-4'>   
+                <Nav.Link className='mx-2' onClick={()=>navigateTo(-1)}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
+                <h6 className='me-auto'>{channelName}</h6>
+                    <Form>  
                         <Form.Control placeholder="🔍 Search" 
-                                      className='search-bar'
-                                      onClick={openSearchModal}
-                    />
-                    <Modal
+                                    className='search-bar'
+                                    onClick={openSearchModal}/>
+
+                        <Modal
                         size="md"
                         keyboard={false} 
                         show={showSearchModal} 
@@ -354,7 +482,7 @@ function AllChannels({removeAuthentication}){
                             } 
                             {searchPostResult.length > 0 ?
                                 searchPostResult.map((post)=>(
-                                    <div className='result-block' onClick={()=>goToPost(post.channel,post.id)}>
+                                    <div className='result-block' >
                                         <strong>{post.channel}</strong> <br></br>
                                         <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
                                         <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>
@@ -364,110 +492,156 @@ function AllChannels({removeAuthentication}){
                             } 
                         </Modal.Body>
                     </Modal>
-                                    
-                    </Form>
-                    
+                    </Form> 
+                   
             </div>
             <div className='page-content horizontal-placement'>
-                <Container className="small-grid-container1">
-                {userDetails ? (
+                <Container className='small-grid-container1'>
                     <Container className=' profile' >
                         <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
-                        <p className='rfont'>{userDetails.username}</p>
-                        <p className='rfont' >{userDetails.name}</p>
+                        <p style={{fontSize:'0.8vw'}}>{userDetails.username}</p>
+                        <p style={{fontSize:'1vw'}} >{userDetails.name}</p>
                         <div className='horizontal-placement'>
                             <div className='mx-2 vertical-placement'>
                                 {userDetails.totalPosts}
-                                <p style={{fontSize:'calc(0.5em + 1vmin)'}}>Posts</p>
+                                <p style={{fontSize:'0.8vw'}}>Posts</p>
                             </div>
                             <div className='mx-2 vertical-placement'>
                                 {userDetails.likes}
-                                <p style={{fontSize:'calc(0.5em + 1vmin)'}}>Likes</p>
+                                <p style={{fontSize:'0.8vw'}}>Likes</p>
                             </div>
                         </div>
                         <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
-                    </Container>) :""}
-                </Container>
-                <Container className='large-grid-container '>
-                    <Container className='col-titles'>
-                        <Row style={{width:'100%'}} >
-                            <Col xs={6} md={6}>Channel</Col>
-                            <Col xs={2} md={1}>Posts</Col>
-                            <Col xs={2} md={1}>People</Col>
-                            <Col xs={2} md={4}>Creator</Col>
-                        </Row>
                     </Container>
-                    <Container className="channel-list">
-                        {allChannels.length > 0 && allChannels.map(channel=>(
-                            <Row  className='channel horizontal-placement' onClick={()=>showchannel(channel.channel)}>
-                                <Col xs={6} md={6}>
-                                 <span style={{fontWeight:'semi-bold'}}>{channel.channel}</span>
-                                </Col>
-                                <Col xs={2} md={1}>{channel.totalposts}</Col>
-                                <Col xs={2} md={1}>{channel.totalpeople}</Col>
-                                <Col xs={2} md={4}><img src={channel.avatar}  style={{height:'2vw'}}/> {channel.username}</Col> 
-                            </Row>
-
-                        ))}
-                    </Container>
+                    
                 </Container>
-                <Container className='small-grid-container2'>  
-                    <h6>Recent Direct Messages</h6>
-                        <Container className=' direct-messages small-grid-container-child '>
-                            {connectedUsers.length > 0 && 
-                                    connectedUsers.slice(0,5).map(user =>(
-                                        <div className='child-blocks'>
-                                            <Stack direction="horizontal" gap={3}>
-                                                <img src={user.avatar}  style={{height:'2vw'}}/>
-                                                <div className=' me-auto'>
-                                                    {user.username}
-                                                    <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
-                                                </div>
-                                                <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} className='view-conversation' >View Conversation</Nav.Link>
+                <Container className='large-grid-container middle-container '>
+                    {allPosts.length ===0 && 
+                        <Container className='all-posts vertical-placement'>
+                            <p style={{fontSize:'0.9vw',opacity:0.5}}>No posts yet in this channel</p>
+                        </Container>   
+                    }
+                    {allPosts.length > 0 && 
+                        <Container className='all-posts '>
+                            {allPosts.map((post,index)=>(
+                            <div id={post.id} className="post-div" style={{paddingLeft:`${post.level * 2.5}vw`}}>
+                                {(post.level===0 && index > 0) && <hr style={{width:'80%'}}></hr> }
+                                <div className='post-sender'>
+                                    <Nav.Link >
+                                        <img src={post.avatar} style={{height:'1.5vw'}}></img>
+                                        <strong style={{fontSize:'0.8vw', marginLeft:'1vw',opacity:'0.7'}}>{post.username}</strong>    
+                                    </Nav.Link >
+                                    <span style={{fontSize:'0.7vw',  marginLeft:'1vw'}}>{post.datetime}</span>
+                                </div>
+                                <div className='post-text' style={{paddingLeft:'2.5vw',fontSize:'0.87vw'}}>
+                                    <span>{post.post}</span>
+                                    {post.files && post.files.length > 0 && ( 
+                                        <div className='file-list'> 
+                                            {post.files.map(file => (
+                                            <Stack direction="horizontal" gap={1} className="post-file-card">
+                                                <span className="material-icons file-icon" >text_snippet</span>
+                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none'}} >{file.filename}</a>
                                             </Stack>
+                                            ))}
                                         </div>
-                                    ))}
+                                    )}
+                                    <Stack direction="horizontal" gap={3} style={{ alignItems:'center'}}>
+                                        <Nav.Link style={{ color: 'rgb(12, 132, 237)', display: 'flex', alignItems: 'center' }}>
+                                            <span className="material-icons" style={{ margin: 0 }}>recommend</span>
+                                            <span>{post.likes}</span>
+                                        </Nav.Link>
+                                        {post.isLikedByUser ?
+                                            <Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleLikes(post.id,post.username,userDetails.id)}>You liked this post</Nav.Link>
+                                            :<Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleLikes(post.id,post.username,userDetails.id)}>Like</Nav.Link>
+                                        }
+                                        
+                                        <Nav.Link style={{color:'rgb(12, 132, 237)'}} onClick={()=>handleReplyClick(post.id,post.username, post.post)} >Reply</Nav.Link>
+                                    </Stack>
+                                </div>
+                            </div>
+                        
+                     ))}
+                     </Container>}
+                     {replyToUser && <div className='replyto-holder'>
+                                <Nav.Link ><span className="material-icons reply-cancel" onClick={handleCancelReply}>close</span></Nav.Link>Reply to @{replyToUser}<span style={{marginLeft:'1vw'}}>{replyToPost}</span>
+                    </div>}
+                    <Form className='text-area horizontal-placement'>
+                        <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={handleFileInput}/>
+                        <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
+                            <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleButtonClick}>attach_file</span></Nav.Link> 
+                        </OverlayTrigger>
+                        
+                        <Nav.Link className='textarea-icons' onClick={()=>setShowEmojis(!showEmojis)} ref={buttonRef}><span className="material-icons">add_reaction</span></Nav.Link> 
+                        <Overlay
+                            show={showEmojis}
+                            placement="top"
+                            target={buttonRef.current}
+                        >
+                            {emojiPopover}
+                        </Overlay>
+                        <div className='content-holder vertical-placement'>
+                            {gotFile && <div className='filePlaceholders'>
+                                {inputFiles.map(file =>(
+                                <Stack direction="horizontal" gap={1} className="file-card">
+                                    <span className="material-icons" >text_snippet</span>
+                                    <div className='me-auto' style={{fontSize:'0.9vw'}}>{file.name}</div>
+                                    <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >close</span></Nav.Link>
+                                </Stack>))}
+                            </div>}
+                            <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your post here" value={inputPost} className='text-area-formcontrol' onChange={handleInputChange}/>
+                        </div>  
+                        <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
+                            <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleSendPost}>send</span></Nav.Link>
+                        </OverlayTrigger>
+
                             
-                            {connectedUsers.length === 0 &&
-                                <Container className=' direct-messages small-grid-container-child vertical-placement'>
-                                    <p style={{opacity:'0.5', alignSelf:'center'}}>No messages </p> 
-                                </Container>                            
-                            }
-                        </Container> 
-                     
-                    
-                    <div className='create-channel-container small-grid-container-child vertical-placement'>
-                        <div className='create-channel-block vertical-placement'>
-                            <img src="/Group 209.png" />
-                            <Button className='create-channel-btn' onClick={openCreationForm}>Create new Channel</Button>
-                        </div>
-
-                    </div>
-
-                    
-                    <Modal show={createChannelform} onHide={closeCreationForm} centered style={{"--bs-modal-border-radius":'1vw'}} >
-                        <Modal.Body className='vertical-placement'>
-                            <h5>Create your Own Channel</h5>
-                            <Form className=' new-channels-form mt-2'>
-                                <Form.Group controlId="signup-username" >
-                                    <Form.Label>Enter Channel Name</Form.Label>
-                                    <Form.Control type="text" placeholder="i.e Java discussion channel" className='mb-3' onChange={(e) => {setChannel(e.target.value); setCreateChannelAlert(false);}}/>
-                                </Form.Group>
-                            </Form>
-                            {createChannelAlert && <Alert variant="danger" > 💡Please fill out all required fields</Alert>}
-                            <Stack direction="horizontal" gap={3}>
-                                <Button type='submit' className='channel-form-button' onClick={closeCreationForm}>Cancle</Button>
-                                <Button type='submit' className='channel-form-button' onClick={handleChannelCreation}>Create</Button>
-                            </Stack>
-                             
-                        </Modal.Body>
-                    </Modal>                                
+                    </Form>
                 </Container>
+                <Container className='small-grid-container2' >  
+                <h6>Direct Messages</h6>
+                {connectedUsers.length >0 && connectedUsers.map(user=>(
+                            <Container className=' direct-messages small-grid-container-child'>
+                            <div className='child-blocks'>
+                                <Stack direction="horizontal" gap={3}>
+                                    <img src={user.avatar}  style={{height:'2vw'}}/>
+                                    <div className=' me-auto'>
+                                        {user.username}
+                                        <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
+                                    </div>
+                                    <Nav.Link style={{fontSize:'small'}} className='view-conversation' onClick ={()=>handleSendMessage(user.username)}>View Conversation</Nav.Link>
+                                </Stack>
+                            </div>
+                            </Container>
+                        ))}
+                        {connectedUsers.length === 0 &&
+                            <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                <p style={{opacity:'0.5'}}>No messages </p>
+                            </Container>
+                        }
+                   <h6>Suggested Channels for you</h6>
+                   <Container className='small-grid-container-child'>
+                    {popularChannels.length > 0 && popularChannels
+                            .filter(channel => channel.channel !== decodeURIComponent(channelName))
+                            .slice(0,3)
+                            .map(channel=>(
+                            <Stack direction="horizontal" gap={3} className='suggested-channel-block' onClick={()=>showchannel(channel.channel)} >
+                                <div className=' me-auto'>
+                                    {channel.channel}
+                                    <p style={{fontSize:"small", marginBottom:0}}>Created by {channel.username} <span style={{marginLeft: "2vw"}}>Posts {channel.totalposts}</span></p>
+                                </div>
+                    
+
+                            </Stack>
+                        ))}
+                        
+                   </Container>       
+                </Container>
+               
                 
             </div>
         </div>
-    )
 
+    )
 }
 
-export default AllChannels;
+export default SelectedChannel;

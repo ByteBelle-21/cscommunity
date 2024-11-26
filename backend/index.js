@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
-const PORT = 4000;
+const PORT = 5000;
 
 const app = express();
 app.use(cors());
@@ -17,7 +17,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 var database = mysql.createConnection({
   host: 'mysql-image',
   user: 'root',
-  password: 'abcdefgh'
+  password: 'thisIsNewPass12'
  
 });
 

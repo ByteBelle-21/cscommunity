@@ -32,7 +32,13 @@
 }
 
 
-
+.send-btn{
+    background-color: black  !important;
+    border: black  !important;
+    color: white  !important;
+    border-radius: 2vw  !important;
+    font-size: calc(0.4em + 1vmin)  !important;
+}
 
 .text-area{
     width: 100%;
@@ -40,14 +46,10 @@
     padding-left: 0.3vw !important;
     padding-right: 0.3vw !important;
     background-color: white !important;
-    margin: 0.5vw;
     border-radius: 1vw;
     gap:0.2vw;
     border: solid 0.1vw rgb(198, 198, 198);
 }
-
-
-
 
 
 .popover {
@@ -111,11 +113,66 @@
     background-color: aliceblue;
 }
 
-.text-area-formcontrol, .filePlaceholders{
+
+.send-post-block{
+    display: flex !important;
+   flex-direction: column !important;
+    width: 100%;
+    background-color: white;
+    padding: 1vw;
+    border-radius: 1vw !important;
+}
+
+
+@media (max-width:599px){
+    .text-area-formcontrol{
+        resize: none !important;
+        width: 100% !important;
+        border: none !important;
+        margin: 0 !important;
+        font-size: calc(2.5em + 1vmin) !important;
+    }
+    .send-post-block{
+        display: flex !important;
+       flex-direction: column !important;
+        width: 100%;
+        background-color: white;
+        padding: 1vw;
+        padding-bottom: 2vw !important;
+        padding-top: 2vw !important;
+        border-radius: 1vw !important;
+    }
+}
+
+
+
+@media (min-width:600px) and (max-width:1000px){
+    .text-area-formcontrol{
+        resize: none !important;
+        width: 100% !important;
+        border: none !important;
+        margin: 0 !important;
+        font-size: calc(0.5em + 1vmin) !important;
+    }
+}
+
+
+@media (min-width:1001px){
+    .text-area-formcontrol{
+        resize: none !important;
+        width: 100% !important;
+        border: none !important;
+        margin: 0 !important;
+        font-size: calc(0.3em + 1vmin) !important;
+    }
+}
+
+.filePlaceholders{
     resize: none !important;
     width: 100% !important;
     border: none !important;
     margin: 0 !important;
+    font-size: calc(0.3em + 1vmin) !important;
 }
 
 .filePlaceholders{

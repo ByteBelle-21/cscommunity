@@ -6,5 +6,5 @@ RUN npm install cors
 RUN npm install express
 RUN npm install mysql2
 COPY . .
-EXPOSE 4000
+EXPOSE 5000
 CMD ["node","index.js"]
