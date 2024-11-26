@@ -1,3 +1,49 @@
+body{
+    min-width: 300px;
+}
+
+
+.sfont{
+    font-size: calc(0.3em + 1vmin); 
+}
+
+.rfont{
+    font-size: calc(0.5em + 1vmin); 
+}
+
+.mfont{
+    font-size: calc(0.75em + 1vmin); 
+}
+
+
+.lfont{
+    font-size: calc(1em + 1vmin); 
+}
+
+
+.xfont{
+    font-size: calc(1.5em + 1vmin); 
+}
+
+
+.xxfont{
+    font-size: calc(2rem + 1vmin); 
+}
+
+.buttonText{
+    font-size: calc(0.5em + 1vmin) !important ; 
+}
+
+
+
+
+
+
+
+
+
+
+
 .horizontal-placement{
     display:flex;
     flex-direction: row;
@@ -12,32 +58,15 @@
     justify-content: center;
 }
 
-.page-layout{
-    max-width: 100vw !important;
-    height: 100vh;
-    overflow-x:hidden;
-    padding: 0 !important;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif !important;
-}
+
 
 .navbar{
     width: 100vw;
     padding-left: 2vw !important;
     padding-right: 2vw !important;
-    font-weight: bold !important;
-    
-
+    font-weight: bold !important;   
+    font-size: calc(0.5em + 1vmin);
 }
-
-
-
-/* Laptops, Desktops, TVs, and Large Screens */
-@media (min-width: 1023px) {
-    
-    
-    
-}
-
 
 
 
@@ -103,9 +132,6 @@
     
 
 }
-
-
-
 
 
 .small-grid-container-child{

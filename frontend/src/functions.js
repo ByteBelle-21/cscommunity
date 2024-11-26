@@ -3,17 +3,17 @@ import axios from 'axios';
 
 export function recognizeDevice(){
     const width = window.innerWidth;
-    if(width <= 767){
+    const height = window.innerHeight;
+    if(width > height){
         return 0;
     }
-    else if (767 <width <= 1023){
-        return 1;
-    }
-    else if (1023 <width <= 1439){
-        return 2;
-    }
     else{
-        return 3;
+        if(width > 768){
+            return  1;
+        }
+        else{
+            return 2;
+        }
     }
 
 };
