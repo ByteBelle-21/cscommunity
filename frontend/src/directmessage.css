@@ -1,3 +1,39 @@
+@media (min-width:1001px) {
+
+    .direct-messages-all{
+        height:100% !important;
+        background-color: white;
+        border-radius: 1vw;
+        padding: 1vw !important;
+    }
+
+    .connected-user-profile{
+        width: 100% !important;
+        height:50% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items:  center !important;
+        background-color: white;
+        border-radius: 1vw;
+        margin-bottom: 1vw !important;
+        padding: 1vw !important;
+    }
+    
+    
+}
+
+
+
+@media (min-width:600px)and (max-width:1000px){
+
+    .direct-messages-all{
+        height:100% !important;
+        background-color: white;
+        border-radius: 1vw;
+        padding: 1vw !important;
+    }
+  
+}
 
 .all-conversations{
     height: 85vh !important;
@@ -16,11 +52,6 @@
 
 }
 
-.connected-user-profile{
-    display: flex !important;
-    flex-direction: column !important;
-    align-items:  center !important;
-}
 
 .sent-message, .recieved-message{
     display: flex;

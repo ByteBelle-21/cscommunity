@@ -121,14 +121,14 @@
         margin-bottom: 1vw !important;
     }
 
-    .profile .btn{
+    .profile .btn, .connected-user-profile .btn{
         font-size: calc(0.4em + 1vmin);
         background-color: #e9ff4f;
         border-color: #e9ff4f;
         color: black;
     }
 
-    .profile .btn:hover{
+    .profile .btn:hover, .connected-user-profile .btn:hover{
         transform: scale(1.05);
         background-color:black;
         border-color:black;

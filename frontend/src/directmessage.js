@@ -23,6 +23,9 @@ import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import TextareaAutosize from 'react-textarea-autosize';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import { fetchActiveMembers ,fetchPopularChannels,handleRating,recognizeDevice} from './functions.js';
+import Image from 'react-bootstrap/Image';
 
 function DirectMessage ({removeAuthentication}) {
     const navigateTo = useNavigate()
@@ -221,6 +224,7 @@ function DirectMessage ({removeAuthentication}) {
 
     useEffect(()=>{
         fetchAllMessages();
+        fetchUserDetails();
     },[]);
 
 
@@ -288,141 +292,355 @@ function DirectMessage ({removeAuthentication}) {
 
 
 
+    const goToPost = (channel,postId) =>{
+        const channelName = channel;
+        navigateTo(`/channel/${encodeURIComponent(channelName)}?postId=${postId}`)
+    }
+
+
+
+    const [device, setDevice] = useState();
+    useEffect(() => {
+        const fetchDeviceType= ()=>{
+            try {
+                const response = recognizeDevice();
+                if (response != null) {
+                    setDevice(response);
+                } 
+            }catch (error) {
+                console.error("Catched error during retrieving popular channels: ",error);    
+            }
+        }
+        window.addEventListener('resize', fetchDeviceType);
+        fetchDeviceType(); 
+
+        return () => window.removeEventListener('resize', fetchDeviceType);
+    }, []);
+ 
+
+
+    const [mobile, setMobile] = useState(false);
+    useEffect(()=>{
+        const isMobile=()=>{
+            const width = window.innerWidth;
+            if(width > 600){
+                setMobile(false);
+            }
+            else{
+                setMobile(true);
+            }
+        }
+        window.addEventListener('resize', isMobile);
+        isMobile(); 
+        return () => window.removeEventListener('resize', isMobile);
+    },[]);
+
+
+    const [width, setwidth] = useState(0);
+    useEffect(()=>{
+        const setCurrentWidth=()=>{
+            const width = window.innerWidth;
+            setwidth(width);
+        }
+        window.addEventListener('resize', setCurrentWidth);
+        setCurrentWidth(); 
+        return () => window.removeEventListener('resize', setCurrentWidth);
+    },[]);
+
+
+    const [showMenu, setShowMenu] = useState(false);
+
+    const handleCloseMenu = () => setShowMenu(false);
+    const handleShowMenu = () => setShowMenu(true);
+
+
+
+    const [searchText, setSearchText] = useState('');
+    const [searchSelect, setSearchSelect] = useState('');
+    const [showSearchError, setShowSearchError] = useState(false);
+    const [searchChannelResult, setSearchChannelResult] = useState([]);
+    const [searchPostResult, setSearchPostResult] = useState([]);
+    const [searchPeopleResult, setSearchPeopleResult] = useState([]);
+
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const openSearchModal = () => {
+        setShowSearchModal(true);
+    }
+
+    const closeSearchModal =()=>{
+        setShowSearchModal(false);
+    }
+
+
+    const [userDetails, setUserDetails] = useState([]);
+    const fetchUserDetails= async()=>{
+        try {
+            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//user',{
+                params: {user: current_user}
+            });
+            if (response.status === 200) {
+                setUserDetails(response.data[0]);
+                console.log("Successfully retrieved current user details");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
+
 
 
     return (
         <div className="page-layout">
-            <Stack direction="horizontal" gap={4} className="navbar" >
-                <Nav.Link  className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')}>
-                    <span className="material-icons" style={{ marginRight:'0.3vw' }}>account_circle</span>
-                    <p style={{ margin: 0, padding:0 }}>{loggedInUserDetails.username}</p>
-                </Nav.Link>               
-                <Nav.Link onClick={removeAuthentication} >Log Out</Nav.Link>
+            {(!mobile) && <Stack direction="horizontal" className="navbar" gap={4}>
+                <Nav.Link >
+                    CScommunity
+                </Nav.Link>
+                 <Form className='horizontal-placement ms-4 me-auto  search-form'>   
+                        <Form.Control placeholder="Search" 
+                                      className='search-bar'
+                                      onClick={openSearchModal}
+                    />
+                </Form> 
+                <Nav.Link style={{color:'#c6e010'}}>
+                    Home
+                </Nav.Link> 
+                <Nav.Link  style={{color:'#c6e010'}} onClick={()=> navigateTo('/messages')} >
+                    Message
+                </Nav.Link> 
+               
+                <Nav.Link onClick={removeAuthentication}>
+                    Logout
+                </Nav.Link> 
+            </Stack>}
+            {mobile &&
+                <Stack direction="horizontal" className="navbar" gap={4} style={{background:'#e9ff4f'}}>
+                <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={handleShowMenu} >
+                <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' }}>menu</span>
+                 </Nav.Link>
+                 <Offcanvas show={showMenu} onHide={handleCloseMenu} style={{background:'black',color:'white'}}>
+                    <Offcanvas.Header>
+                    <Offcanvas.Title ><p className='rfont'> Menu</p></Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center'}} onClick={handleCloseMenu}   >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)', marginRight:'calc(1vmin)' }}>home</span>
+                        <p className='rfont' style={{margin:0}}> Home</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }}  onClick={openSearchModal} >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>search</span>
+                        <p className='rfont' style={{margin:0}}> Search</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/messages')}   >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>mail</span>
+                        <p className='rfont'style={{margin:0}}>  Messages</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={()=> navigateTo('/profile')} >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>person</span>
+                        <p className='rfont'style={{margin:0}}>My Profile</p>
+                        </Nav.Link>
+                        <br></br>
+                        <Nav.Link style={{display: 'flex', alignItems: 'center' }} onClick={handleCloseMenu} >
+                        <span className="material-icons " style={{fontSize:'calc(1em + 1vmin)' ,marginRight:'calc(1vmin)' }}>close</span>
+                        <p className='rfont'style={{margin:0}}>Close Menu</p>
+                        </Nav.Link>
+                    </Offcanvas.Body>
+                </Offcanvas>
+                <Nav.Link className="me-auto">
+                    CScommunity
+                 </Nav.Link> 
+                 <Nav.Link >
+                    Log out
+                 </Nav.Link>
             </Stack>
-            <div className='sub-navbar horizontal-placement'>
-                <Nav.Link className='mx-2' onClick={()=>navigateTo(-1)}><span className="material-icons" >keyboard_backspace</span></Nav.Link>
-                <h6 className='me-auto '>Direct messages to {selectedUser}</h6>    
-            </div>
-            <div className='page-content horizontal-placement'>
-                <Container className='small-grid-container2'>
-                    <h6>Direct Messages</h6>
-                    <Container className=' direct-messages small-grid-container-child'>
-                        {connectedUsers.length >0 && connectedUsers
-                                .filter(user => user.username !== selectedUser)
-                                .map(user=>(
-
-                                <div className='child-blocks'>
-                                    <Stack direction="horizontal" gap={3}>
-                                        <img src={user.avatar}  style={{height:'2vw'}}/>
-                                        <div className=' me-auto'>
-                                            {user.username}
-                                            <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                        </div>
-                                        <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                    </Stack>
-                                </div>
-                            ))}
-                            {connectedUsers.length === 0 &&
-                           
-                                <p style={{opacity:'0.5'}}>No messages </p>
-                      
+            }
+            <Modal
+                        size="md"
+                        keyboard={false} 
+                        show={showSearchModal} 
+                        onHide={closeSearchModal} 
+                        centered
+                        className='search-modal'
+                        style={{'--bs-modal-border-radius':0}}
+                        >
+                        <Modal.Header className='vertical-placement' >
+                            <p className='rfont'>Search</p>
+                            <Form style={{ width: '100%' }}>
+                                <Form.Select 
+                                className='search-bar1 mb-1'
+                                value= {searchSelect}
+                                onChange={(e) => {setSearchSelect(e.target.value);setShowSearchError(false)}} >
+                             
+                                    <option >Search by</option>
+                                    <option value="channel">Channel</option>
+                                    <option value="people">People</option>
+                                    <option value="post">Post</option>
+                                </Form.Select>
+                                 <Form.Control placeholder="Search" 
+                                      className='search-bar2'
+                                      type="text" 
+                                      value = {searchText}
+                                      onChange={(e) => {setSearchText(e.target.value)}}       
+                                />
+                            </Form>
+                        </Modal.Header>
+                            <Modal.Body className=' rfont search-result-block'>
+                            {showSearchError && 
+                                <p className={device==0?'sfont':'rfont'} style={{display:'flex',flexWrap:'wrap', opacity:'0.5'}}>Please select an option from the dropdown menu to continue.</p>
                             }
-                     </Container>    
-                </Container>
-                <Container className='large-grid-container'>
-                    <div className='all-posts '>
-                    {allMessages.length > 0 && allMessages.map(message=>(
-                            message.reciever === loggedInUserDetails.id ?
-                                (<div className='recieved-message'>
-                                    <Nav.Link >
-                                        <img src={selectedUserDetails.avatar} style={{height:'1.5vw'}}></img>
-                                        <strong style={{fontSize:'0.8vw', marginLeft:'1vw',opacity:'0.7'}}>{selectedUserDetails.username}</strong>    
-                                    </Nav.Link >
-                                    <div className='message' >
-                                       {message.message}
-                                        {message.files && message.files.length > 0 && ( 
-                                            <div className='file-list'> 
-                                                {message.files.map(file => (
-                                                <Stack direction="horizontal" gap={1} className="recieved-file-card">
-                                                    <span className="material-icons file-icon" >text_snippet</span>
-                                                    <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none'}} >{file.filename}</a>
-                                                </Stack>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                    
-                                </div>  
-                                ) 
-                            :
-                                (<div className='sent-message'>
-                                    <Nav.Link >
-                                        <strong style={{fontSize:'0.8vw', marginRight:'1vw',opacity:'0.7'}}>You</strong> 
-                                        <img src={loggedInUserDetails.avatar} style={{height:'1.5vw'}}></img>   
-                                    </Nav.Link >
-                                    <div className='message' >
-                                        {message.message}
-                                        {message.files && message.files.length > 0 && ( 
-                                        <div className='file-list'> 
-                                            {message.files.map(file => (
-                                            <Stack direction="horizontal" gap={1} className="post-file-card">
-                                                <span className="material-icons file-icon" >text_snippet</span>
-                                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none'}} >{file.filename}</a>
-                                            </Stack>
-                                            ))}
-                                        </div>
-                                    )}
-                                    </div>
-                                    
-                                </div>)
-                            
-
-                            ))}
-                        
-                    </div>
-
-
-                    <Form className='text-area horizontal-placement'>
-                            <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={handleFileInput}/>
-                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showFileTooltip}>  
-                                <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleButtonClick}>attach_file</span></Nav.Link> 
-                            </OverlayTrigger>
-                            <OverlayTrigger trigger="click" placement="top" overlay={emojiPopover} >
-                                <Nav.Link className='textarea-icons'><span className="material-icons">add_reaction</span></Nav.Link> 
-                            </OverlayTrigger>
-                            <div className='content-holder vertical-placement'>
-                                {gotFile && <div className='filePlaceholders'>
-                                    {inputFiles.map(file =>(
-                                    <Stack direction="horizontal" gap={1} className="file-card">
-                                        <span className="material-icons" >text_snippet</span>
-                                        <div className='me-auto' style={{fontSize:'0.9vw'}}>{file.name}</div>
-                                        <Nav.Link  onClick={()=>handleFileDelete(file.name)}> <span className="material-icons" >close</span></Nav.Link>
-                                    </Stack>))}
-                                </div>}
-                                <TextareaAutosize ref={textAreaRef} minRows={1} maxRows={3} placeholder="Add your message here" value={inputMessage} className='text-area-formcontrol' onChange={handleInputChange}/>
-                            </div>  
-                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 250 }} overlay={showSendTooltip}>
-                                <Nav.Link className='textarea-icons'><span className="material-icons" onClick={handleSendMessage}>send</span></Nav.Link>
-                            </OverlayTrigger>
-
-                                
-                        </Form>
-                </Container>
-                <Container className=' small-grid-container1 connected-user-profile'>
-                    <img src={selectedUserDetails.avatar}  style={{height:'6vw'}}/>
-                    <strong className='mt-2'>{selectedUserDetails.name}</strong>
-                    <p style={{fontSize:'0.9vw'}}>{selectedUserDetails.username}</p>
-                    <Container className='user-info'>
-                        <p>Occupation : {selectedUserDetails.occupation}</p>
-                        <p>Total Posts : {selectedUserDetails.totalPosts}</p>
-                        <p>Rating : {handleRating(selectedUserDetails.likes, selectedUserDetails.totalPosts)}</p>
+                            {(!showSearchError && searchChannelResult.length === 0 && searchPeopleResult.length === 0 && searchPostResult.length ===0) &&
+                                <p className={device==0?'sfont':'rfont'}  style={{display:'flex',flexWrap:'wrap', opacity:'0.5'}}>No Search Result</p> 
+                            }
+                            {searchChannelResult.length > 0 ?
+                                searchChannelResult.map((channel)=>(
+                                    <div className='channel-result-block' onClick={()=>showchannel(channel.channel)}>
+                                       { channel.channel}
+                                        <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>Created by<img src={channel.avatar} style={{height:'1vw', marginLeft:'0.7vw'}}/><span> {channel.username}</span></p>
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                            {searchPeopleResult.length > 0 ?
+                                searchPeopleResult.map((person)=>(
+                                    <div className='result-block' 
+                                         onClick={()=> {
+                                            if(person.username=== userDetails.username){
+                                                navigateTo('/profile');
+                                            }else{
+                                                showProfile(person.username)
+                                            }
+                                        }}>
+                                        <img src={person.avatar} style={{height:'2vw'}}/><span> {person.username}</span>  
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                            {searchPostResult.length > 0 ?
+                                searchPostResult.map((post)=>(
+                                    <div className='result-block' onClick={()=>goToPost(post.channel,post.id)}>
+                                        <strong>{post.channel}</strong> <br></br>
+                                        <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
+                                        <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>
+                                    </div>  
+                                ))   
+                                :  ""
+                            } 
+                            </Modal.Body>
+                    </Modal>
+                    {(width > 1000) && 
+                    <div className='page-content horizontal-placement'>
+                     <Container className="small-grid-container1">
+                        <Container className=' small-grid-container1 connected-user-profile'>
+                        <img src={selectedUserDetails.avatar}  style={{height:'6vw'}}/>
+                        <strong className='mt-2'>{selectedUserDetails.name}</strong>
+                        <p style={{fontSize:'0.9vw'}}>{selectedUserDetails.username}</p>
+                        <Container className='user-info'>
+                            <p>Occupation : {selectedUserDetails.occupation}</p>
+                            <p>Total Posts : {selectedUserDetails.totalPosts}</p>
+                            <p>Rating : {handleRating(selectedUserDetails.likes, selectedUserDetails.totalPosts)}</p>
+                        </Container>
+                        <Button onClick={()=>goToProfile(selectedUserDetails.username)}>View Profile</Button>
                     </Container>
-                    <Button onClick={()=>goToProfile(selectedUserDetails.username)}>View Profile</Button>
-                </Container>
 
-            </div>
+                    {userDetails ? (
+                        <Container className=' profile' >
+                            <img  src={userDetails.avatar}  style={{height:'5vw'}}/> 
+                            <p className='rfont'>{userDetails.username}</p>
+                            <p className='rfont' >{userDetails.name}</p>
+                            <div className='horizontal-placement'>
+                                <div className='mx-2 vertical-placement'>
+                                    {userDetails.totalPosts}
+                                    <p style={{fontSize:'calc(0.4em + 1vmin)'}}>Posts</p>
+                                </div>
+                                <div className='mx-2 vertical-placement'>
+                                    {userDetails.likes}
+                                    <p style={{fontSize:'calc(0.4em + 1vmin)'}}>Likes</p>
+                                </div>
+                            </div>
+                            <Button onClick={()=> navigateTo('/profile')}>My Profile</Button>
+                        </Container>) :""}
+                    </Container>
+                    <Container className='large-grid-container'>
+                        
+                    </Container>
+                    <Container className='small-grid-container2'>  
+                            <Container className=' direct-messages-all small-grid-container-child '>
+                              <p className='semifont' >All Direct Messages</p>
+                                {connectedUsers.length > 0 && 
+                                        connectedUsers.slice(0,5).map(user =>(
+                                            <div className='child-blocks'>
+                                                <Stack direction="horizontal" gap={3}>
+                                                    <img src={user.avatar}  style={{height:'2vw'}}/>
+                                                    <div className=' me-auto'>
+                                                        {user.username}
+                                                        <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
+                                                    </div>
+                                                    <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} className='view-conversation' >View Conversation</Nav.Link>
+                                                </Stack>
+                                            </div>
+                                        ))}
+                                
+                                {connectedUsers.length === 0 &&
+                                    <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                        <p style={{opacity:'0.5', alignSelf:'center'}}>No messages </p> 
+                                    </Container>                            
+                                }
+                            </Container> 
 
+                     
+                    </Container>
+                </div>} 
+                {width>=600 && width<=1000 &&
+                    <div className='page-content horizontal-placement'>
+                        <Container className='large-grid-container'>
+                        <Stack direction='horizontal' gap={1} >
+                                     <Image style={{margin:0, border:'solid #e68d83'}} src="holder.js/171x180" roundedCircle />
+                                     <Nav.Link  >That user</Nav.Link>
+                                 </Stack>  
+                        </Container>
+                        <Container className='small-grid-container2'>  
+                            <Container className=' direct-messages-all small-grid-container-child '>
+                              <p className='semifont' >All Direct Messages</p>
+                                {connectedUsers.length > 0 && 
+                                        connectedUsers.slice(0,5).map(user =>(
+                                            <div className='child-blocks'>
+                                                <Stack direction="horizontal" gap={3}>
+                                                    <img src={user.avatar}  style={{height:'2vw'}}/>
+                                                    <div className=' me-auto'>
+                                                        {user.username}
+                                                        <Nav.Link style={{fontSize:'small'}} onClick={()=>showProfile(user.username)} >View Profile</Nav.Link>
+                                                    </div>
+                                                    <Nav.Link style={{fontSize:'small'}} onClick ={()=>handleSendMessage(user.username)} className='view-conversation' >View Conversation</Nav.Link>
+                                                </Stack>
+                                            </div>
+                                        ))}
+                                
+                                {connectedUsers.length === 0 &&
+                                    <Container className=' direct-messages small-grid-container-child vertical-placement'>
+                                        <p style={{opacity:'0.5', alignSelf:'center'}}>No messages </p> 
+                                    </Container>                            
+                                }
+                            </Container> 
+
+                     
+                    </Container>
+                    
+               </div>} 
+               {(width < 600) && 
+                    <Container className='large-grid-container '>
+                            <Stack direction='horizontal' gap={1} >
+                                     <Image style={{margin:0, border:'solid #e68d83'}} src="holder.js/171x180" roundedCircle />
+                                     <Nav.Link  >That user</Nav.Link>
+                                 </Stack>  
+                    
+
+                    </Container>
+                }
         </div>
     )
 
