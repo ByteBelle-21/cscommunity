@@ -294,3 +294,19 @@ export async function getUserDeatils(setUserDetails){
         console.error("Catched axios error: ",error);
     }
 }
+
+
+export async function getAllChannels(setAllChannels){
+    try {
+        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/allchannels');
+        if (response.status === 200) {
+            setAllChannels(response.data);
+            console.log("Successfully retrieved all channels");
+        } 
+        else{
+            console.log(response.message)
+        }
+    } catch (error) {
+        console.error("Catched axios error: ",error);
+    }
+}

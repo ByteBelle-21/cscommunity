@@ -10,7 +10,7 @@ import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate } from 'react-router-dom';
-import { getUserDeatils } from './functions.js';
+import { getUserDeatils, getAllChannels } from './functions.js';
 
 function Channels(){
     const navigateTo = useNavigate()
@@ -48,7 +48,12 @@ function Channels(){
         getUserDeatils(setUserDetails);  
     },[]);
 
+    const [fetchAgain, setFetchAgain] = useState(false);
 
+    const [allChannels, setAllChannels] = useState([]);
+    useEffect(()=>{
+        getAllChannels(setAllChannels);  
+    },[fetchAgain]);
 
     return(
         <div className="channels">
@@ -88,105 +93,17 @@ function Channels(){
                 <div className='channel-list'>
                     <p>All Channels</p>
                     <ListGroup as="ol" >
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start" >
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge className='badge'pill>14 </Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start channel-item">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start channel-item">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start channel-item">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start channel-item">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start channel-item">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start channel-item">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start channel-item">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start ">
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start">
-                            <div className="ms-2 me-auto">
-                                <div className="fw-bold">Subheading</div>
-                                Cras justo odio
-                            </div>
-                            <Badge  pill>14</Badge>
-                        </ListGroup.Item>
+                        {allChannels.length > 0 && allChannels.map(channel=>(
+                             <ListGroup.Item
+                                as="li"
+                                className="d-flex justify-content-between align-items-start" >
+                                <div className="ms-2 me-auto">
+                                <div className="fw-bold">{channel.channel}</div>
+                                    Created by {channel.username}
+                                </div>
+                                <Badge className='badge'pill>{channel.totalposts}</Badge>
+                            </ListGroup.Item>
+                        ))}
                     </ListGroup>
                 </div>
            </div>
