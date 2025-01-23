@@ -1,0 +1,60 @@
+
+.sfont{
+    font-size: calc(0.3em + 1vmin); 
+}
+
+.semifont{
+    font-size: calc(0.4em + 1vmin); 
+}
+
+.rfont{
+    font-size: calc(0.5em + 1vmin); 
+}
+
+.mfont{
+    font-size: calc(0.75em + 1vmin); 
+}
+
+
+.lfont{
+    font-size: calc(1em + 1vmin); 
+}
+
+
+
+.navlink{
+    position:fixed;
+    justify-content: flex-end;
+    align-items: center !important;
+    text-decoration: none !important;
+    width: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    background-color: white;
+    z-index: 100000;
+    padding-top: 0.5vw;
+    padding-bottom: 0.5vw;
+}
+
+.nav-link {
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    color: black !important;
+    font-weight: 600 !important;
+
+}
+.join-button{
+    background-color: black;
+    color: white !important;
+    margin-right:  5vw !important;
+    margin-left: 3vw !important;
+}
+
+.subpages{
+    margin-top: 3vw !important;
+}
+
+.search-results{
+    width: 100%;
+    height: fit-content;
+}
+

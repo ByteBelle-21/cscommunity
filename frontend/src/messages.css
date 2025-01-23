@@ -1,0 +1,176 @@
+.messages{
+    background-color: rgb(239, 245, 250) !important;
+    height: 94vh;
+    padding: 2vh;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.message-left-block{
+    width: 20%;
+    height: 100%;
+    background-color: white;
+    overflow: hidden;
+}
+
+.direct-messages{
+    border-radius: 0;
+}
+
+.direct-message-item{
+    border: none;
+    margin-bottom: 1vh;
+    border-radius: 0;
+}
+
+.direct-message-item:hover{
+    background-color: #d1d8fc;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.message-middle-block{
+    width: 58%;
+    height: 100% !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.connected-user-logo-block{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+}
+
+.connected-user-img{
+    height: 100%;
+    width: 4%;
+    margin-right: 2vh;
+}
+
+.connected-user-name{
+    display: flex;
+    flex-direction: column;
+}
+
+.message-block{
+    flex-grow: 1;
+}
+
+.textarea-block{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    bottom: 0 !important;
+    align-items: center;
+    position:relative ;
+}
+
+.text-area-formcontrol{
+    flex-grow: 1;
+    border-radius: 2vw;
+    border: none;
+    padding: 0.5vh;
+    padding-left: 4vh;
+    height: fit-content !important;
+    max-height: 10vh;
+    overflow-y: auto;
+}
+
+.text-area-formcontrol:focus {
+    outline:none !important; 
+}
+
+.text-area-formcontrol::-webkit-scrollbar {
+    width: 0px; 
+    height: 0px; 
+}
+
+
+.message-right-block {
+    height: 100%;
+    width:20%;
+    overflow-y: hidden;
+}
+
+.connected-user-profile{
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+
+.profile-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none;
+    text-align: center;
+}
+
+.profile-details-item{
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.detail-point{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-skills-item, .activity-item{
+    border: none;
+}
+
+
+.social-media-div{
+    height: 100%;
+}
+
+.social-media-item{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.social-media-img{
+    height: 3.5vh;
+}
+
+.social-media-img:hover{
+    transform: scale(1.1);
+}
+
+.activity-item{
+    overflow-y: auto;
+}
+
+.activity-item::-webkit-scrollbar{
+    width: 0.5vh;
+    background-color:#eef0f7;
+}
+
+.activity-item::-webkit-scrollbar-thumb{
+    background-color:#d1d8fc;
+}
+
+.activity-list{
+    width: 100%;
+}
+
+.activity-block{
+    flex-grow: 1;
+}
+
+.activity-list-item:hover{
+    background-color: #eaeaec;
+    cursor: pointer;
+}

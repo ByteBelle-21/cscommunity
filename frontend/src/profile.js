@@ -1,347 +1,489 @@
-import './UniformStyle.css';
 import './profile.css';
-import Stack from 'react-bootstrap/Stack';
-import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/esm/Container';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/esm/Button';
-import { useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Image from 'react-bootstrap/Image';
+import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
-import { useNavigate } from 'react-router-dom';
-import './otherUserProfile.css';
-import axios from 'axios';
+import { useState } from 'react';
+import Form from 'react-bootstrap/Form';
+import Stack from 'react-bootstrap/Stack';
+import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Row from 'react-bootstrap/Row';
 
 
-function Profile({removeAuthentication}){
-    
-        
-   
+function Profile(){
 
-    const showPreview =(text, num)=>{
-        const words = text.split(' ');
-        return words.slice(0, num).join(' ')+" . . . . . . . .";
+    const[showDeleteProfileModal, setShowDeleteProfileModal] = useState(false);
+    const openDeleteProfileModal = ()=>{
+        setShowDeleteProfileModal(true);
     }
 
-
-    const [id, setId] = useState();
-    const [userDetails, setUserDetails] = useState([]);
-    const [name, setName] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [occupation, setOccupation] = useState('');
-    const [skills, setSkills] = useState('');
-    const [avatar, setAvatar] = useState(''); 
-    useEffect(()=>{
-        fetchUserDetails();
-    },[]);
-
-
-    const fetchUserDetails= async()=>{
-        const current_user = sessionStorage.getItem('auth_user');
-        try {
-            const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/selected-user',{
-                params: {user: current_user}
-            });
-            if (response.status === 200) {
-                setId(response.data.id);
-                setUserDetails(response.data);
-                setName(response.data.name);
-                setUsername(response.data.username);
-                setEmail(response.data.email);
-                setOccupation(response.data.occupation);
-                setSkills(response.data.skills);
-                setAvatar(response.data.avatar);
-                console.log("Successfully retrieved current user details");
-            } 
-            else if(response.status === 401){
-                console.log(response.message)
-            }
-        } catch (error) {
-            console.error("Catched axios error: ",error);
-        }
-       
-
-    }
-    
-
-    const [connectedUsers, setConnectedUsers] = useState([]);
-    useEffect(()=>{
-        const current_user = sessionStorage.getItem('auth_user');
-        const fetchConnectedUsers= async()=>{
-            try {
-                const response = await axios.get('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
-                if (response.status === 200) {
-                    setConnectedUsers(response.data);
-                    console.log("Successfully retrieved all connected users");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
-
-        }
-        fetchConnectedUsers();  
-    },[]);
-
-    const [isEditMode, setEditMode] = useState(false);
-    const handleEditButtonClick = ()=>{
-        setEditMode(!isEditMode);
+    const closeDeleteProfileModal = ()=>{
+        setShowDeleteProfileModal(false);
     }
 
-    const [showModal, setShowModal]  = useState(false);
-    const openModal = ()=>{
-        setShowModal(true);
+    const[showAddMediaModal, setShowAddMediaModal] = useState(false);
+    const openAddMediaModal = ()=>{
+        setShowAddMediaModal(true);
     }
 
-    const closeModal = ()=>{
-        setShowModal(false);
+    const closeAddMediaModal = ()=>{
+        setShowAddMediaModal(false);
     }
-
-    const [selectedAvatar, setSelectedAvatar] = useState();
-    const handleAvatarClick=(index,imgNum)=>{
-        setSelectedAvatar(index);
-        setNewAvatar(`/Group ${imgNum}.png`);
-
-    }
-
-    const [newAvatar, setNewAvatar] = useState('');
-    const HandleAvatarChange = ()=>{
-        setAvatar(newAvatar);
-        closeModal();
-    }
-
-
-    const saveChanges = async(e)=>{
-        e.preventDefault();
-        const userId = id;
-        const skillsArray = skills.split(',').map(item => item.trim()).join(',');
-        if(skillsArray.length ==0 || !username || !email || !name || !occupation || !avatar){
-            // setShowSignupAlert(true);
-            return;
-        }
-        const data = {
-            userId,username, email, name, occupation, skills: skillsArray, avatar
-        }
-        try {
-            const response = await axios.put('https://jrg814-4000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/saveChanges', data);
-            if (response.status === 200) {
-                handleEditButtonClick();
-                fetchUserDetails();
-                console.log("Successfully saved all changes")
-            } 
-            else if(response.status === 401){
-                console.log(response.message)
-            }
-        } catch (error) {
-            console.error("Catched axios error: ",error);
-        }
-    }
-
 
     return(
-           <div className="page-layout">
-            <Stack direction="horizontal" gap={4} className="navbar" >
-                <Nav.Link href="#" className="me-auto">CScommunity</Nav.Link>
-                <Nav.Link className='horizontal-placement'>{userDetails.username}</Nav.Link>
-                <Nav.Link onClick={removeAuthentication}>Log Out</Nav.Link>
-            </Stack>
-            <div className='sub-navbar horizontal-placement'>
-                <h6 className='me-auto '>My Profile</h6>
-            </div>
-            <div className='page-content horizontal-placement'> 
-                       <div className='user-details-col1'>
-                            <img src={avatar}  className='current-user-img'/> 
-                            {isEditMode? (
-                                <span className="material-icons edit-icon"  onClick={openModal}>edit</span>
-                            ):""}
-                                <Modal size='lg'  backdrop="static" keyboard={false} show={showModal} onHide={closeModal} centered style={{"--bs-modal-border-radius":'1vw'}} >
-                                    <Modal.Body className='vertical-placement'>
-                                        <h5 className='mb-4'>Choose your Avatar</h5>
-                                        <Form className='from3'>
-                                            <Form.Group controlId="signup-avatar">
-                                                
-                                                    <Container className='wrap-container'>
-                                                        {[300, 301, 302, 303, 304, 305, 306, 307].map((imgNum, index) => (
-                                                                <Button key={index} onClick={() => handleAvatarClick(index,imgNum)} className={selectedAvatar === index ? 'active' : ''}>
-                                                                    <img src={`/Group ${imgNum}.png`} alt={`Avatar ${index + 1}`} />
-                                                                </Button>
-                                                        ))}
-                                                    </Container>
-                                                    <Container className='horizontal-placement' style={{gap:5}}>
-                                                        <Button onClick={closeModal}>Cancle</Button>
-                                                        <Button onClick={HandleAvatarChange} >Done</Button>
-                                                    </Container>
-                                                   
-                                            </Form.Group>
-                                        </Form>
-                                    </Modal.Body>
-                                </Modal>
-                            <h5>{name}</h5>
-                            <p>{username}</p>
-                            {isEditMode ? (
-                                <Button onClick={saveChanges}>
-                                   Save Changes
-                                </Button>
-
-                            ):
-                                <Button onClick={handleEditButtonClick}>
-                                Edit Profile
-                                </Button>}
-                            
-                       </div>
-                       <div className='user-details-col2'>
-                            <h5 style={{marginLeft:'1vw'}}>Basic Information</h5>
-                            <div className='basic-information'>
-                                <Row style={{width:'100%'}}>
-                                    <Col>
-                                        <div className='each-info'>
-                                            Name
-                                            {isEditMode ? (
-                                                <Form.Control 
-                                                    type="text" 
-                                                    value={name} 
-                                                    onChange={(e) => setName( e.target.value)}
-                                                    
-                                                />
-                                            )
-                                            : <h6>{name}</h6>}
-                                        </div>
-                                    </Col>
-                                    <Col>
-                                        <div className='each-info'>
-                                            Username
-                                            {isEditMode ? (
-                                                <Form.Control 
-                                                    type="text" 
-                                                    value={username} 
-                                                    onChange={(e) => setUsername( e.target.value)}
-                                                    
-                                                />
-                                            )
-                                            :  <h6>{username}</h6>}
-                                           
-                                        </div>
-                                    </Col>
-                                    <Col>
-                                        <div className='each-info'>
-                                            Email
-                                            {isEditMode ? (
-                                                <Form.Control 
-                                                    type="email" 
-                                                    value={email} 
-                                                    onChange={(e) => setEmail( e.target.value)}
-                                                    
-                                                />
-                                            )
-                                            :  <h6>{email}</h6>}
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row style={{width:'100%'}}>
-                                    <Col>
-                                        <div className='each-info'>
-                                            Occupation
-                                            {isEditMode ? (
-                                                <Form.Control 
-                                                    type="text" 
-                                                    value={occupation} 
-                                                    onChange={(e) => setOccupation( e.target.value)}
-                                                    
-                                                />
-                                            )
-                                            :  <h6>{occupation}</h6>}
-                                        </div>
-                                    </Col>
-                                    <Col>
-                                        <div className='each-info'>
-                                            Total Posts
-                                            <h6>{userDetails.totalPosts}</h6>
-                                        </div>
-                                    </Col>
-                                    <Col>
-                                        
-                                    </Col>
-                                </Row>
-                                <Row style={{width:'100%'}}>
-                                <div className='each-info'>
-                                    Skills
-                                    <div className='all-skills'>
-                                        { isEditMode ? (
-                                            skills ? (
-                                                <Form.Control 
-                                                    type="text" 
-                                                    value={skills}
-                                                    onChange={(e) => setSkills( e.target.value)} 
-                                                    
-                                                />
-                                            ):
-                                                <Form.Control 
-                                                type="text" 
-                                                value="No skils avaialable" 
-                                                
-                                                />
-                                        ):
-                                        (skills ? 
-                                            (userDetails.skills.split(',').map((skill) => (
-                                                <div className='each-skill'>{skill.trim()}</div>
-                                            )))
-                                            : <div>No skils avaialable</div>)
-
-
-                                        }
-
-                                    </div>
-                                    </div>
-                                </Row>
+        <div className="profile">
+            <div className='profile-left-block'>
+                <ListGroup as="ol" className='profile-suggestions-list'>
+                        <ListGroup.Item className='suggestion-item' as="li">
+                            <div className="fw-bold">Top Profiles</div>
+                            <hr style={{marginBottom:'0'}}></hr>
+                        </ListGroup.Item>
+                        <ListGroup.Item
+                            as="li"
+                            className="d-flex justify-content-between align-items-start suggestion-item">
+                            <div className="image-container">
+                                <Image 
+                                    src="Group 301.png" 
+                                    className="top-user-img" 
+                                    roundedCircle 
+                                />
                             </div>
-                            <h5>Activities</h5>
-                                <div className="activities">
-                                    {userDetails.posts ? ( userDetails.posts.map(post =>(
-                                        <div className='activity-post'>
-                                            <strong className='mb-2'>{post.channel}</strong>
-                                            
-                                                <p>{showPreview(post.post,10)}</p>
-                                            
-                                            
-                                            
+                            <div className="ms-2 me-auto">
+                            <div className="fw-bold">sdbv sdcjsdc </div>
+                                <Link className='view-link'>View Profile</Link>
+                            </div>
+                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
+                        </ListGroup.Item>
+                        <ListGroup.Item
+                            as="li"
+                            className="d-flex justify-content-between align-items-start suggestion-item">
+                            <div className="image-container">
+                                <Image 
+                                    src="Group 301.png" 
+                                    className="top-user-img" 
+                                    roundedCircle 
+                                />
+                            </div>
+                            <div className="ms-2 me-auto">
+                            <div className="fw-bold">sdbv sdcjsdc </div>
+                                <Link className='view-link'>View Profile</Link>
+                            </div>
+                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
+                        </ListGroup.Item>
+                        <ListGroup.Item
+                            as="li"
+                            className="d-flex justify-content-between align-items-start suggestion-item">
+                            <div className="image-container">
+                                <Image 
+                                    src="Group 301.png" 
+                                    className="top-user-img" 
+                                    roundedCircle 
+                                />
+                            </div>
+                            <div className="ms-2 me-auto">
+                            <div className="fw-bold">sdbv sdcjsdc </div>
+                                <Link className='view-link'>View Profile</Link>
+                            </div>
+                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
+                        </ListGroup.Item>
+                        <ListGroup.Item
+                            as="li"
+                            className="d-flex justify-content-between align-items-start suggestion-item">
+                            <div className="image-container">
+                                <Image 
+                                    src="Group 301.png" 
+                                    className="top-user-img" 
+                                    roundedCircle 
+                                />
+                            </div>
+                            <div className="ms-2 me-auto">
+                            <div className="fw-bold">sdbv sdcjsdc </div>
+                                <Link className='view-link'>View Profile</Link>
+                            </div>
+                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>
+                        </ListGroup.Item>
+                        <ListGroup.Item
+                            as="li"
+                            className="d-flex justify-content-between align-items-start suggestion-item">
+                            <div className="image-container">
+                                <Image 
+                                    src="Group 301.png" 
+                                    className="top-user-img" 
+                                    roundedCircle 
+                                />
+                            </div>
+                            <div className="ms-2 me-auto">
+                            <div className="fw-bold">sdbv sdcjsdc </div>
+                                <Link className='view-link'>View Profile</Link>
+                            </div>
+                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>
+                        </ListGroup.Item>
+                    </ListGroup>
+                    <div className='top-channels-block'>
+                            <p className='fw-bold'>Currently Popular Channels</p>
+                            <ListGroup as="ol" >
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start" >
+                                    <div className="ms-2 me-auto">
+                                    <div className="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <Badge className='badge'pill>14 </Badge>
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start">
+                                    <div className="ms-2 me-auto">
+                                    <div className="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <Badge  pill>14</Badge>
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start channel-item">
+                                    <div className="ms-2 me-auto">
+                                    <div className="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <Badge  pill>14</Badge>
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start channel-item">
+                                    <div className="ms-2 me-auto">
+                                    <div className="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <Badge  pill>14</Badge>
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start channel-item">
+                                    <div className="ms-2 me-auto">
+                                    <div className="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <Badge  pill>14</Badge>
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start channel-item">
+                                    <div className="ms-2 me-auto">
+                                    <div className="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <Badge  pill>14</Badge>
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start">
+                                    <div className="ms-2 me-auto">
+                                        <div className="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <Badge  pill>14</Badge>
+                                </ListGroup.Item>
+                            </ListGroup>                               
+                    </div>
+            </div>
+            <div className='large-block'>
+                <div className='own-profile-img-block'>
+                    <Image src="Group 301.png" className='own-profile-img' roundedCircle />
+                    <Button className="edit-profile-btn" >
+                    <span class="material-symbols-outlined " style={{marginRight:'1vh'}}> edit </span>
+                        Edit Profile
+                    </Button>
+                    <Button className="delete-profile-btn" onClick={openDeleteProfileModal}>
+                        <span class="material-symbols-outlined " style={{marginRight:'1vh'}}> edit </span>
+                        Delete Profile
+                    </Button>
+                    <Modal 
+                        size="md" 
+                        show={showDeleteProfileModal} 
+                        onHide={closeDeleteProfileModal}
+                        centered>
+                        <Modal.Body>
+                            <p className='mfont create-channel-title' >
+                                <span 
+                                    class="material-symbols-outlined" 
+                                    style={{fontSize:'1.5vw', 
+                                            marginRight:'0.5vh',
+                                            color:'red'}}>
+                                    error
+                                </span>
+                                Delete Your Profile ?
+                            </p>
+                            <p>Remeber, This action <span style={{color:'red', fontWeight:'bold'}}> CANNOT </span> 
+                                be undone. You will loose your data, posts,connections, everything !</p>
+                        </Modal.Body>
+                        <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
+                            <Button className='cancle-channel-btn' onClick={closeDeleteProfileModal}>
+                                Cancle
+                            </Button>
+                            <Button className='delete-modal-btn' onClick={closeDeleteProfileModal}>
+                                Delete
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                    <div className='social-media-details'>
+                        <Stack direction='horizontal' gap={1} style={{marginTop:'4vh'}}>
+                            <Stack direction='vertical' style={{alignItems:'center'}}>
+                                <span style={{fontWeight:'bold'}}>6</span>
+                                <span style={{fontSize:'small'}}>Total Posts</span>
+                            </Stack>
+                            <Stack direction='vertical' style={{alignItems:'center'}}>
+                                <span style={{fontWeight:'bold'}}>6</span>
+                                <span style={{fontSize:'small'}}>Total Connections</span>
+                            </Stack>
+                        </Stack>
+                        <div className='actual-social-media-details'>
+                            <ListGroup as="ol" className='profile-suggestions-list'>
+                                <ListGroup.Item className='suggestion-item' as="li">
+                                    <div className="fw-bold" style={{display:'flex', justifyContent:'space-between'}}>
+                                        Linked Social Media Accounts 
+                                        <Link onClick={openAddMediaModal}>
+                                            <span class="material-symbols-outlined">add</span>
+                                        </Link>
+                                    </div>
+                                    <hr style={{marginBottom:'0'}}></hr>
+                                </ListGroup.Item>
+                                <Modal 
+                                    size="md" 
+                                    show={showAddMediaModal} 
+                                    onHide={closeAddMediaModal}
+                                    centered>
+                                    <Modal.Body>
+                                        <p className='mfont create-channel-title' >
+                                            <span 
+                                                class="material-symbols-outlined" 
+                                                style={{fontSize:'1.5vw', 
+                                                        marginRight:'1vh',
+                                                        color:'#2F3C7E'
+                                                }}>
+                                                person_add
+                                            </span>
+                                            Link New Social Media Account
+                                        </p>
+                                        <p>Remeber, You can link upto 4 social media accounts.</p>
+                                        <Form.Label htmlFor="inputPassword5">Choose Media Type</Form.Label>
+                                        <Form.Select aria-label="Default select example"  className="mb-3">
+                                            <option>Select media</option>
+                                            <option value="1">Instagram</option>
+                                            <option value="2">Facebook</option>
+                                            <option value="3">LinkedIn</option>
+                                            <option value="3">GitHub</option>
+                                            <option value="3">SnapChat</option>
+                                            <option value="3">Twitter</option>
+                                            <option value="3">Youtube</option>
+                                        </Form.Select>
+                                        <Form.Label htmlFor="basic-url">Add URL to your Account</Form.Label>
+                                        <InputGroup className="mb-3">
+                                            <InputGroup.Text id="basic-addon3">
+                                            https:
+                                            </InputGroup.Text>
+                                            <Form.Control id="basic-url" aria-describedby="basic-addon3" />
+                                        </InputGroup>
+                                    </Modal.Body>
+                                    <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
+                                        <Button className='cancle-channel-btn' onClick={closeAddMediaModal}>
+                                            Cancle
+                                        </Button>
+                                        <Button className='edit-profile-btn' onClick={closeAddMediaModal}>
+                                            Link Account
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start suggestion-item">
+                                    <div className="image-container">
+                                        <Image 
+                                            src="linkedin.png" 
+                                            className="top-user-img" 
+                                            roundedCircle 
+                                        />
+                                    </div>
+                                    <div className="ms-2 me-auto">
+                                        <div className="fw-bold">tanya. sdjhjk</div>
+                                    </div>
+                                    <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>delete</span></Link>  
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start suggestion-item">
+                                    <div className="image-container">
+                                        <Image 
+                                            src="instagram.png" 
+                                            className="top-user-img" 
+                                            roundedCircle 
+                                        />
+                                    </div>
+                                    <div className="ms-2 me-auto">
+                                        <div className="fw-bold">tanya. sdjhjk</div>
+                                    </div>
+                                    <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>delete</span></Link>  
+                                </ListGroup.Item>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start suggestion-item">
+                                    <div className="image-container">
+                                        <Image 
+                                            src="facebook.png" 
+                                            className="top-user-img" 
+                                            roundedCircle 
+                                        />
+                                    </div>
+                                    <div className="ms-2 me-auto">
+                                        <div className="fw-bold">tanya. sdjhjk</div>
+                                    </div>
+                                    <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>delete</span></Link>  
+                                </ListGroup.Item>
+                            </ListGroup>
+                        </div> 
+                    </div> 
+                   
+
+                </div>
+                <div className='profile-details-block'>
+                    <div className='user-text-details'>
+                        <p className='fw-bold'>User Details</p>
+                        <Form>
+                            <Row className="mb-3">
+                                <Form.Group as={Col} md="4" controlId="validationCustom01">
+                                    <Form.Label>First name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="text"
+                                        placeholder="First name"
+                                        defaultValue="Mark"
+                                    />
+                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md="4" controlId="validationCustom02">
+                                        <Form.Label>Last name</Form.Label>
+                                        <Form.Control
+                                            required
+                                            type="text"
+                                            placeholder="Last name"
+                                            defaultValue="Otto"
+                                        />
+                                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group as={Col} md="4" controlId="validationCustomUsername">
+                                        <Form.Label>Username</Form.Label>
+                                        <InputGroup hasValidation>
+                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                            <Form.Control
+                                            type="text"
+                                            placeholder="Username"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                            Please choose a username.
+                                            </Form.Control.Feedback>
+                                        </InputGroup>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Group as={Col} md="6" controlId="validationCustom03">
+                                        <Form.Label>Email address</Form.Label>
+                                        <Form.Control type="text" placeholder="abc@gmail.com" required />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please provide a valid city.
+                                        </Form.Control.Feedback>
+                                        </Form.Group>
+                                        <Form.Group as={Col} md="3" controlId="validationCustom04">
+                                        <Form.Label>Occupation</Form.Label>
+                                        <Form.Control type="text" placeholder="Student" required />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please provide a valid state.
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Row>
+                                <Row>
+                                    <Form.Group as={Col} md="9" >
+                                        <Form.Label>Skills</Form.Label>
+                                        <Form.Control type="text" placeholder="HTML, react, C++, .." required />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please provide a valid city.
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Row>
+                            </Form>
+                            <hr style={{marginTop:'4vh', marginBottom:'4vh'}}></hr>
+                        </div>
+                        <div className='recent-activities-block'>
+                            <p className='fw-bold' style={{display:'flex'}}>
+                                <span class="material-symbols-outlined" style={{marginRight:'1vh'}}>
+                                    history
+                                </span> 
+                                Recent Activities
+                            </p>
+                            <div className='history-block'>
+                                <ListGroup as="ol" >
+                                    <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start history-item" >
+                                        <div className="ms-2 me-auto">
+                                        <div className="fw-bold">Subheading</div>
+                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
                                         </div>
-                                    )))
-                                        
+                                        <Link className='view-post-link'>View Post</Link>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start channel-item history-item">
+                                        <div className="ms-2 me-auto">
+                                        <div className="fw-bold">Subheading</div>
+                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
+                                        </div>
+                                        <Link className='view-post-link'>View Post</Link>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start channel-item history-item">
+                                        <div className="ms-2 me-auto">
+                                        <div className="fw-bold">Subheading</div>
+                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
+                                        </div>
+                                        <Link className='view-post-link'>View Post</Link>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start channel-item history-item">
+                                        <div className="ms-2 me-auto">
+                                        <div className="fw-bold">Subheading</div>
+                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
+                                        </div>
+                                        <Link className='view-post-link'>View Post</Link>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start channel-item history-item">
+                                        <div className="ms-2 me-auto">
+                                        <div className="fw-bold">Subheading</div>
+                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
+                                        </div>
+                                        <Link className='view-post-link'>View Post</Link>
+                                    </ListGroup.Item>
                                     
-                                    : <div>No activities yet</div>}
+
+
+                                </ListGroup>                   
                             </div>
                         </div>
-                        <div className='user-details-col1'>
-                            <h5>Connected People</h5>
-                            {connectedUsers.length >0 && connectedUsers.map(user=>(
-                                <div className='child-blocks'>
-                                    <Stack direction="horizontal" gap={3}>
-                                        <img src={user.avatar}  style={{height:'2vw'}}/>
-                                        <div className=' me-auto'>
-                                            {user.username}
-                                            <Nav.Link style={{fontSize:'small'}} >View Profile</Nav.Link>
-                                        </div>
-                                        <Nav.Link style={{fontSize:'small'}} >View Conversation</Nav.Link>
-                                    </Stack>
-                                </div>
-                            ))}
-                            {connectedUsers.length === 0 &&
-                           
-                                <p style={{opacity:'0.5'}}>No messages </p>
-                      
-                            }
-                       </div>
 
-               
-                
+                    </div>
             </div>
 
-        </div> 
-    )
+        </div>
+    );
 }
 
 export default Profile;

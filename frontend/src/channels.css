@@ -1,0 +1,243 @@
+.channels{
+    background-color: rgb(239, 245, 250) !important;
+    height: 94vh;
+    padding: 2vh;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+
+.left-block{
+    background-color: white;
+    padding: 1vh;
+    height: 100%;
+}
+
+.left-block, .right-block{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.middle-block{
+    background-color: transparent;
+    width: 58%;
+    height: 100%;
+}
+
+
+.create-post-block{
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.new-post-btn{
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+    border-radius: 2vw;
+    background-color:  #6f3be7;
+    border-color:  #6f3be7;
+}
+
+.new-post-btn:hover{
+    background-color: white;
+    color: #6f3be7;
+    border-color:  #6f3be7;
+}
+
+.attach-section{
+    display: flex;
+    flex-direction: row;
+}
+
+.add-channel-btn{
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    width: 90%;
+    font-weight: bolder;
+    background-color:  #2F3C7E;
+    border-color: #2F3C7E;
+    margin-bottom: 2vh;
+}
+
+.add-channel-btn:hover{
+    transform: scale(1.1);
+    background-color:  #2F3C7E;
+    border-color: #2F3C7E;
+}
+
+.add-channel-btn .material-symbols-outlined{
+    margin-right: 0.5vh;
+}
+
+.channel-list{
+    width: 90%;
+    overflow-y: auto;
+}
+
+.channel-list::-webkit-scrollbar{
+    width: 0.5vh;
+    background-color:#eef0f7;
+}
+
+.channel-list::-webkit-scrollbar-thumb{
+    background-color: #2F3C7E;
+}
+
+.channel-item:hover{
+    cursor: pointer;
+    background-color: #c2caf1;
+}
+
+.badge{
+    background-color: #2F3C7E !important;
+}
+
+.list-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.profile-list{
+    width: 100%;
+}
+
+.profile-link{
+    font-weight: bold;
+    text-decoration: none;
+    color: #d84434;
+    padding: 1vh;
+}
+
+.profile-link:hover{
+    transform: scale(1.1);
+}
+
+.first-item{
+    position: relative; 
+    padding: 20px;
+    width: 100%;
+    background-color: white; 
+}
+
+.first-item::before {
+    content: ''; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 50%; 
+    background-color: #b2fcec; 
+}
+
+.profile-img{
+    width: 35%;
+    z-index: 1000;
+    margin: 0.5vh;
+   
+}
+
+.suggestions{
+    margin-top: 2vh;
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: white;
+}
+
+
+.image-container{
+    flex-shrink: 0 !important;  
+    width: 12%;
+    height: 100% !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    margin-right: 1vh;
+}
+
+.top-user-img{
+    width: 100%;
+    margin: 0 ;
+    padding: 0;
+}
+
+.view-link{
+    font-size: small;
+    text-decoration: none;
+    color: #d84434;
+    font-weight: bold;
+}
+
+.message-link{
+    font-size:medium;
+    text-decoration: none;
+    color:#2F3C7E;
+    font-weight: semibold;
+}
+
+
+
+
+.view-link:hover{
+    transform: scale(1.1);
+}
+
+.message-link:hover{
+    transform: scale(1.1);
+}
+
+.suggestions::-webkit-scrollbar{
+    width: 0.5vh;
+    background-color:#eef0f7;
+}
+
+.suggestions::-webkit-scrollbar-thumb{
+    background-color:#2F3C7E;
+}
+
+.suggestion-item{
+    border: none;
+    margin-bottom: 0.5vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-channel-title{
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-top: 1vh;
+}
+
+.cancle-channel-btn, .cancle-channel-btn:hover{
+    background-color: white;
+    color: black;
+    border-color: #2F3C7E;
+}
+
+.cancle-channel-btn:hover, .create-channel-btn:hover{
+    transform: scale(1.1);
+}
+
+.create-channel-btn, .create-channel-btn:hover{
+    background-color:#2F3C7E;
+    color: white;
+    border-color: #2F3C7E;
+}
+
+.offcanvas-block{
+    padding-top: 6vh;
+    background-color: white;
+}
