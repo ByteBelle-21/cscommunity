@@ -16,7 +16,7 @@ import Alert from 'react-bootstrap/Alert';
 import {SignInModal} from './functions.js';
 
 
-function Homepage(){
+function Homepage({authentication}){
     const [signupShow, setSignupShow] = useState(false);
     const openSignUp=()=>{
         setSignupShow(true);
@@ -27,7 +27,7 @@ function Homepage(){
     
     return(
         <div className='homepage'>
-            <SignInModal showSignUpModal={signupShow} closeSignUpModal={closeSignup} />
+            <SignInModal authenticate={authentication} showSignUpModal={signupShow} closeSignUpModal={closeSignup} />
             <Stack direction="horizontal" gap={4} className='welcome-block'>
                 <div className="me-auto">
                     <p className='welcome-headline'> 

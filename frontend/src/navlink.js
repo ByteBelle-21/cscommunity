@@ -63,6 +63,10 @@ function Navlink(){
         }
     }
 
+    const logout = () =>{
+        removeAuthentication();
+    }
+
     return(
         <Nav className='navlink' defaultActiveKey="/home">
             {homepage ? (
@@ -135,7 +139,7 @@ function Navlink(){
                         <Nav.Link  onClick={goToProfile}> Profile</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link style={{marginRight:'5vw'}} > Log out</Nav.Link>
+                        <Nav.Link style={{marginRight:'5vw'}} onClick={logout} > Log out</Nav.Link>
                     </Nav.Item>
                 </>
             )}  

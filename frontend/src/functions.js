@@ -1,9 +1,6 @@
 import './Homepage.css';
 import './Uniformstyle.css';
 import Stack from 'react-bootstrap/Stack';
-import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/Container';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
@@ -12,10 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Carousel from 'react-bootstrap/Carousel';
 import { useRef } from 'react';
-import Alert from 'react-bootstrap/Alert';
 
 
-export function SignInModal({showSignUpModal, closeSignUpModal}){
+
+export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
     const navigateTo = useNavigate();
 
     // Sign up functionality
@@ -76,7 +73,8 @@ export function SignInModal({showSignUpModal, closeSignUpModal}){
         }
         try {
             const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/signup', data);
-            if (response.status === 200) {    
+            if (response.status === 200) {  
+                authenticate(true,signupUsername);
                 navigateTo('/channels');
             } 
         } catch (error) {
@@ -105,6 +103,7 @@ export function SignInModal({showSignUpModal, closeSignUpModal}){
         try {
             const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/login', data);
             if (response.status === 200) {
+                authenticate(true,loginUsername);
                 navigateTo('/channels');
             }     
         } catch (error) {
