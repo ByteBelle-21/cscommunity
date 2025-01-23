@@ -20,7 +20,13 @@ function App() {
     })
 
     useEffect(() => {
-        sessionStorage.setItem('auth_user', authenticatedUser)
+        if(authenticatedUser){
+            sessionStorage.setItem('auth_user', authenticatedUser);
+        }
+        else{
+            sessionStorage.removeItem('auth_user');
+        }
+        
     }, [authenticatedUser]);
 
     const authentication = (hasAccess,current_user)=>{
@@ -31,6 +37,7 @@ function App() {
     const removeAuthentication = ()=>{
         setHasAuthentication(false);
         setAuthenticatedUser('');
+        sessionStorage.removeItem('auth_user');
     }
   return (
     <Router >

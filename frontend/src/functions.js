@@ -103,7 +103,7 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
         try {
             const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/login', data);
             if (response.status === 200) {
-                authenticate(true,loginUsername);
+                authenticate( true, loginUsername);
                 navigateTo('/channels');
             }     
         } catch (error) {
