@@ -5,11 +5,12 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Image from 'react-bootstrap/Image';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate } from 'react-router-dom';
+import { getUserDeatils } from './functions.js';
 
 function Channels(){
     const navigateTo = useNavigate()
@@ -41,6 +42,12 @@ function Channels(){
     const closeOffCanvas = ()=>{
         setShowOffCanvas(false);
     }
+
+    const [userDetails, setUserDetails] = useState([]);
+     useEffect(()=>{
+        getUserDeatils(setUserDetails);  
+    },[]);
+
 
 
     return(
@@ -243,17 +250,17 @@ function Channels(){
            <div className='right-block'>
                 <ListGroup as="ol" className='profile-list'>
                     <ListGroup.Item className='list-item first-item' as="li">
-                        <Image src="profile.png" className='profile-img' roundedCircle />
-                        <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>Name is my</p>
-                        <p style={{margin:'0'}}>My pofession is </p>
+                        <Image src="Group 301.png" className='profile-img' roundedCircle />
+                        <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>{userDetails.name}</p>
+                        <p style={{margin:'0'}}>{userDetails.username}</p>
                     </ListGroup.Item>
                     <ListGroup.Item as="li" className='list-item' >
                         <p style={{margin:'0'}}>Total Posts</p>
-                        <p style={{margin:'0' , fontWeight:'bold'}}>35</p>
+                        <p style={{margin:'0' , fontWeight:'bold'}}>{userDetails.totalPosts}</p>
                     </ListGroup.Item>
                     <ListGroup.Item className='list-item' as="li">
                         <p style={{margin:'0'}}>Total Connections</p>
-                        <p style={{margin:'0', fontWeight:'bold'}}>6</p>
+                        <p style={{margin:'0', fontWeight:'bold'}}>{userDetails.totalConnections}</p>
                     </ListGroup.Item>
                     <ListGroup.Item className='list-item' as="li">
                         <Link className='profile-link' onClick={()=> navigateTo('/profile')}>View Profile</Link>

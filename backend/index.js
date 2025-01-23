@@ -75,7 +75,7 @@ function createUserTable(){
                         skills TEXT  NOT NULL,
                         avatar VARCHAR(200)  NOT NULL,
                         totalPosts INT  NOT NULL,
-                        likes INT  NOT NULL)`,(error,result)=>{
+                        totalConnections INT  NOT NULL)`,(error,result)=>{
                             if (error){
                                 console.error('Error while creating the table userTable: ',error);
                                 return;
@@ -349,7 +349,7 @@ app.post('/signup', (request, response) => {
                             
                         }
                         else{
-                            database.query(`INSERT INTO userTable (username,email,password,name,occupation,skills,avatar,totalPosts,likes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,[input_username, input_email,input_password,input_name, input_occupation, input_skills,input_avatar,0,0],(error,result)=>{
+                            database.query(`INSERT INTO userTable (username,email,password,name,occupation,skills,avatar,totalPosts,totalConnections) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,[input_username, input_email,input_password,input_name, input_occupation, input_skills,input_avatar,0,0],(error,result)=>{
                                 if(error){
                                     response.status(500).send("Server error during sign up3 :");
                                     return;

@@ -275,3 +275,22 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
         </Modal>
     );
 }
+
+
+export async function getUserDeatils(setUserDetails){
+    const current_user = sessionStorage.getItem('auth_user');
+    try {
+        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/user',{
+            params: {user: current_user}
+        });
+        if (response.status === 200) {
+            setUserDetails(response.data[0]);
+            console.log("Successfully retrieved current user details");
+        } 
+        else{
+            console.log(response.message)
+        }
+    } catch (error) {
+        console.error("Catched axios error: ",error);
+    }
+}
