@@ -16,7 +16,7 @@ import {SignInModal} from './functions.js'
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-function Navlink(){
+function Navlink({removeAuthentication}){
     const navigateTo = useNavigate();
 
     const location = useLocation();
