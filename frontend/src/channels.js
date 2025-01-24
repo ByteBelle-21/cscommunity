@@ -236,7 +236,7 @@ function Channels(){
                                 <div className="ms-2 me-auto">
                                 <div className="fw-bold">{member.name}</div>
                                     <Link className='view-link' onClick={openOffCanvas}>View Profile</Link>
-                                    <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} />
+                                    <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={member.username} />
                                 </div>
                                 <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
                             </ListGroup.Item> 

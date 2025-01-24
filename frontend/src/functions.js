@@ -281,7 +281,35 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
 }
 
 
-export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas}){
+export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherUser}){
+    const [selectedUserDetails, setSelectedUserDetails] = useState([]);
+    useEffect(()=>{
+        const fetchSelectedUserDetails= async()=>{
+            try {
+                const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+                    params: {user: otherUser}
+                });
+                if (response.status === 200) {
+                    setSelectedUserDetails(response.data);
+                    console.log(response.data);
+                    console.log("Successfully retrieved selected user details");
+                } 
+                else if(response.status === 401){
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+        };
+        fetchSelectedUserDetails();
+    },[]);
+
+
+    const showPreview =(text, num)=>{
+        const words = text.split(' ');
+        return words.slice(0, num).join(' ')+" . . . . . . . .";
+    }
+
     return(
         <Offcanvas 
         show={showOffCanvas} 
@@ -295,10 +323,9 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas}){
         <Offcanvas.Body>
             <ListGroup as="ol" className='connected-user-profile'>
                 <ListGroup.Item className='profile-item ' as="li">
-                    <Image src="Group 301.png" className='profile-img' roundedCircle />
-                    <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>Nitya dfjhj shdfj</p>
-                    <p style={{fontSize:'medium'}}>ByteBelle</p>
-                    <p >Nitys is jhfjcherf hf fh f fejhfjhc sbsc jshd cbc sjd c hvsjd vbjdvbj vs vjh </p>
+                    <Image src={selectedUserDetails.avatar} className='profile-img' roundedCircle />
+                    <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>{selectedUserDetails.username}</p>
+                    <p >Hello 👋 Nice to meet you. My name is {selectedUserDetails.name}. I am a {selectedUserDetails.occupation}!</p>
                 </ListGroup.Item>
                 <ListGroup.Item as="li"  className='social-media-item'>
                     <Stack direction='horizontal' gap={4}>
@@ -311,59 +338,51 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas}){
                         <Link>
                             <Image  src="linkedin.png"  className="social-media-img"  roundedCircle />
                         </Link>
+                        <Link>
+                            <Image  src="message.png"  className="social-media-img" roundedCircle />
+                        </Link>
                     </Stack>
-                
                 </ListGroup.Item>
                 <ListGroup.Item className='profile-skills-item' as="li">
                     <hr></hr>
                     <p  style={{marginTop:'0'}}>
                         • Total Connections : 
-                        <span style={{fontWeight:'bold', marginLeft:'1vh'}}>6</span>
+                        <span style={{fontWeight:'bold', marginLeft:'1vh'}}>{selectedUserDetails.totalConnections}</span>
                     </p>
                     <p  style={{marginTop:'0'}}>
                         • Total Posts : 
-                        <span style={{fontWeight:'bold' , marginLeft:'1vh'}}>6</span>
+                        <span style={{fontWeight:'bold' , marginLeft:'1vh'}}>{selectedUserDetails.totalPosts}</span>
                     </p>
                     <p  style={{marginTop:'0'}}>
                         • Skill Set : 
                         <span style={{fontWeight:'bold' , marginLeft:'1vh'}}> 
-                            hrnl. hbjh, hjsd, jhdgsdl , nsgd, sdvchgd, sjghdchd
+                            {selectedUserDetails.skills ? 
+                                (selectedUserDetails.skills.split(',').map((skill) => (
+                                    <span className='each-skill' style={{marginRight:'1vh'}}>{skill.trim()} </span>
+                                )))
+                                : 
+                                <div>No skils avaialable</div>
+                            }
                         </span>
                     </p>
                     <hr></hr>
                 </ListGroup.Item>
                 <ListGroup.Item as="li" className='activity-item'>
-                    <p  style={{fontWeight:'bold' }}>Browse Tanya's posts</p>
+                    <p  style={{fontWeight:'bold' }}>Browse {selectedUserDetails.name}'s posts</p>
                     <div className='activity-block'>
                         <ListGroup as="ol" className='activity-list'>
-                            <ListGroup.Item as="li" className='activity-list-item'>
-                                <div className="fw-bold" style={{color:'#d84434'}}>sdbv sdcjsdc </div>
-                                <p style={{fontSize:'small'}} >erjhbgejhf ehrf jvef efhfefkve ergkerj ef erfer .....</p>
-                            </ListGroup.Item>
-                            <ListGroup.Item as="li" className='activity-list-item'>
-                                <div className="fw-bold" style={{color:'#d84434'}}>sdbv sdcjsdc </div>
-                                <p style={{fontSize:'small'}} >erjhbgejhf ehrf jvef efhfefkve ergkerj ef erfer .....</p>
-                            </ListGroup.Item>
-                            <ListGroup.Item as="li" className='activity-list-item'>
-                                <div className="fw-bold" style={{color:'#d84434'}}>sdbv sdcjsdc </div>
-                                <p style={{fontSize:'small'}} >erjhbgejhf ehrf jvef efhfefkve ergkerj ef erfer .....</p>
-                            </ListGroup.Item>
-                            <ListGroup.Item as="li" className='activity-list-item'>
-                                <div className="fw-bold" style={{color:'#d84434'}}>sdbv sdcjsdc </div>
-                                <p style={{fontSize:'small'}} >erjhbgejhf ehrf jvef efhfefkve ergkerj ef erfer .....</p>
-                            </ListGroup.Item>
-                            
-                            <ListGroup.Item as="li" className='activity-list-item'>
-                                <div className="fw-bold" style={{color:'#d84434'}}>sdbv sdcjsdc </div>
-                                <p style={{fontSize:'small'}} >erjhbgejhf ehrf jvef efhfefkve ergkerj ef erfer .....</p>
-                            </ListGroup.Item>
-                            <ListGroup.Item as="li" className='activity-list-item'>
-                                <div className="fw-bold" style={{color:'#d84434'}}>sdbv sdcjsdc </div>
-                                <p style={{fontSize:'small'}} >erjhbgejhf ehrf jvef efhfefkve ergkerj ef erfer .....</p>
-                            </ListGroup.Item>
+                        {selectedUserDetails.posts && selectedUserDetails.posts.length > 0 ? (selectedUserDetails.posts.map(post =>(
+                                <ListGroup.Item as="li" className='activity-list-item'>
+                                    <div className="fw-bold" style={{color:'#d84434'}}>{post.channel}</div>
+                                    <p style={{fontSize:'small'}} >{showPreview(post.post,10)}</p>
+                                </ListGroup.Item>
+                            )))
+                            : 
+                            (<ListGroup.Item as="li" className='activity-list-item'>
+                                <div >No activities yet</div>
+                            </ListGroup.Item>)}
                         </ListGroup>
                     </div>
-                    
                 </ListGroup.Item>
             </ListGroup>
         </Offcanvas.Body>
