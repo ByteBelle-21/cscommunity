@@ -55,6 +55,8 @@ function Channels(){
         getAllChannels(setAllChannels);  
     },[fetchAgain]);
 
+    const[selectedChannel, setSelectedChannel] = useState('');
+
     return(
         <div className="channels">
            <div className='left-block'>
@@ -109,7 +111,7 @@ function Channels(){
            </div>
            <div className='middle-block'>
                 <div className='create-post-block'>
-                    <h3>Java Discussion forum</h3>
+                    <h4>{selectedChannel == '' ? "Homepage" : selectedChannel}</h4>
                         <Button className='new-post-btn' onClick={openPostModal}>
                             <span class="material-symbols-outlined" style={{marginRight:'1vh'}}> add</span> 
                             <p style={{margin:'0'}} className='fw-bold'>What's on your mind ?</p>
@@ -162,6 +164,17 @@ function Channels(){
                             </Button>
                         </Modal.Footer>
                     </Modal>
+                </div>
+                <div className='no_channel'>
+                        <h5 style={{fontWeight:'bold'}}>Welcome to CScommunity</h5>
+                        <p>Start engaging with other members by creating channels, posting, replying, and now... messaging!</p>
+                        <ul>
+                            <li><strong>Create a new channel:</strong> Start a fresh topic!</li>
+                            <li><strong>Add a new post:</strong> Share your thoughts in any of the channels.</li>
+                            <li><strong>Reply to posts:</strong> Join in and keep the conversation alive!</li>
+                            <li><strong>Send direct messages:</strong> Want to talk privately? Send a direct message.</li>
+                        </ul>
+                        <p style={{fontWeight:'bold'}}>Start Browsing Now</p>
                 </div>
            </div>
            <div className='right-block'>
