@@ -10,7 +10,7 @@ import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate } from 'react-router-dom';
-import { getUserDeatils, getAllChannels } from './functions.js';
+import { getUserDeatils, getAllChannels, handleChannelCreation } from './functions.js';
 
 function Channels(){
     const navigateTo = useNavigate()
@@ -48,12 +48,22 @@ function Channels(){
         getUserDeatils(setUserDetails);  
     },[]);
 
+
     const [fetchAgain, setFetchAgain] = useState(false);
+    const [channel, setChannel] = useState('');
+    const createChannel = ()=>{
+        closeChannelModal();
+        const username = userDetails.username;
+        const data = { username,channel };
+        handleChannelCreation(setFetchAgain,fetchAgain, data);  
+    }
+
 
     const [allChannels, setAllChannels] = useState([]);
     useEffect(()=>{
         getAllChannels(setAllChannels);  
     },[fetchAgain]);
+
 
     const[selectedChannel, setSelectedChannel] = useState('');
 
@@ -80,6 +90,7 @@ function Channels(){
                                             required
                                             placeholder="Enter name" 
                                             className='mb-3 ' 
+                                            onChange={(e) => {setChannel(e.target.value)}}
                                             style={{fontSize:'calc(0.4em + 1vmin)'}}/>
                         </Form.Group>
                     </Modal.Body>
@@ -87,7 +98,7 @@ function Channels(){
                     <Button className='cancle-channel-btn' onClick={closeChannelModal}>
                         Cancle
                     </Button>
-                    <Button className='create-channel-btn' onClick={closeChannelModal}>
+                    <Button className='create-channel-btn' onClick={createChannel}>
                         Create
                     </Button>
                     </Modal.Footer>
@@ -100,8 +111,8 @@ function Channels(){
                                 as="li"
                                 className="d-flex justify-content-between align-items-start" >
                                 <div className="ms-2 me-auto">
-                                <div className="fw-bold">{channel.channel}</div>
-                                    Created by {channel.username}
+                                    <div className="fw-bold">{channel.channel}</div>
+                                    <span style={{fontSize:'small'}}>Created by {channel.username}</span>
                                 </div>
                                 <Badge className='badge'pill>{channel.totalposts}</Badge>
                             </ListGroup.Item>

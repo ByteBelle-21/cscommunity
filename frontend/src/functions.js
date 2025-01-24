@@ -310,3 +310,19 @@ export async function getAllChannels(setAllChannels){
         console.error("Catched axios error: ",error);
     }
 }
+
+export async function handleChannelCreation(setFetchAgain,fetchAgain, data ){ 
+    try {
+        const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/createchannel', data);
+        if (response.status === 200) {
+            setFetchAgain(!fetchAgain);
+            console.log("Successfully created channel")
+        } 
+        else{
+            console.log(response.message)
+        }
+    } catch (error) {
+        console.error("Catched axios error: ",error);
+    }
+      
+}
