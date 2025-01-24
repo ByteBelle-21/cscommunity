@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
 
 function App() {
-    const [hasAuthentication, setHasAuthentication] = useState(false)
+    const [hasAuthentication, setHasAuthentication] = useState(false);
     const [authenticatedUser, setAuthenticatedUser] = useState(()=>{
         const user = sessionStorage.getItem('auth_user')
         if (user){
@@ -18,6 +18,7 @@ function App() {
         }
         return '';
     })
+
 
     useEffect(() => {
         if(authenticatedUser){
@@ -32,17 +33,18 @@ function App() {
     const authentication = (hasAccess,current_user)=>{
         setHasAuthentication(hasAccess);
         setAuthenticatedUser(current_user);
-    }
+    };
 
     const removeAuthentication = ()=>{
         setHasAuthentication(false);
         setAuthenticatedUser('');
         sessionStorage.removeItem('auth_user');
-    }
+    };
+    
   return (
     <Router >
       <div className='page-layout'>
-          <Navlink removeAuthentication={removeAuthentication}/>
+          <Navlink authentication={authentication} removeAuthentication={removeAuthentication}/>
           <div className='subpages'>
             <Routes>
                 <Route path="/" element={<Homepage authentication={authentication} />}/>

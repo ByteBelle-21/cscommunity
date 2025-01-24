@@ -16,7 +16,7 @@ import {SignInModal} from './functions.js'
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-function Navlink({removeAuthentication}){
+function Navlink({authentication,removeAuthentication}){
     const navigateTo = useNavigate();
 
     const location = useLocation();
@@ -71,7 +71,7 @@ function Navlink({removeAuthentication}){
                         <Nav.Link style={{marginLeft:'5vw', padding:'0'}} >CScommunity</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <SignInModal showSignUpModal={showNavlinkSignInModal} closeSignUpModal={closeNavlinkSignInModal} />
+                        <SignInModal authenticate={authentication} showSignUpModal={showNavlinkSignInModal} closeSignUpModal={closeNavlinkSignInModal} />
                     <Nav.Link className='join-button' onClick={openNavlinkSignInModal}>Join Us</Nav.Link>
                     </Nav.Item>  
                 </>

@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Stack from 'react-bootstrap/Stack';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import { getUserDeatils, getAllChannels, handleChannelCreation } from './functions.js';
 
 function Channels(){
@@ -43,10 +43,13 @@ function Channels(){
         setShowOffCanvas(false);
     }
 
+
+    const location = useLocation();
+    const channelsPage = location.pathname === '/channels';
     const [userDetails, setUserDetails] = useState([]);
-     useEffect(()=>{
+    useEffect(()=>{
         getUserDeatils(setUserDetails);  
-    },[]);
+    },[channelsPage]);
 
 
     const [fetchAgain, setFetchAgain] = useState(false);
@@ -189,24 +192,25 @@ function Channels(){
                 </div>
            </div>
            <div className='right-block'>
-                <ListGroup as="ol" className='profile-list'>
-                    <ListGroup.Item className='list-item first-item' as="li">
-                        <Image src="Group 301.png" className='profile-img' roundedCircle />
-                        <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>{userDetails.name}</p>
-                        <p style={{margin:'0'}}>{userDetails.username}</p>
-                    </ListGroup.Item>
-                    <ListGroup.Item as="li" className='list-item' >
-                        <p style={{margin:'0'}}>Total Posts</p>
-                        <p style={{margin:'0' , fontWeight:'bold'}}>{userDetails.totalPosts}</p>
-                    </ListGroup.Item>
-                    <ListGroup.Item className='list-item' as="li">
-                        <p style={{margin:'0'}}>Total Connections</p>
-                        <p style={{margin:'0', fontWeight:'bold'}}>{userDetails.totalConnections}</p>
-                    </ListGroup.Item>
-                    <ListGroup.Item className='list-item' as="li">
-                        <Link className='profile-link' onClick={()=> navigateTo('/profile')}>View Profile</Link>
-                    </ListGroup.Item>
-                </ListGroup>
+                {userDetails? ( 
+                    <ListGroup as="ol" className='profile-list'>
+                        <ListGroup.Item className='list-item first-item' as="li">
+                            <Image src="Group 301.png" className='profile-img' roundedCircle />
+                            <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>{userDetails.name}</p>
+                            <p style={{margin:'0'}}>{userDetails.username}</p>
+                        </ListGroup.Item>
+                        <ListGroup.Item as="li" className='list-item' >
+                            <p style={{margin:'0'}}>Total Posts</p>
+                            <p style={{margin:'0' , fontWeight:'bold'}}>{userDetails.totalPosts}</p>
+                        </ListGroup.Item>
+                        <ListGroup.Item className='list-item' as="li">
+                            <p style={{margin:'0'}}>Total Connections</p>
+                            <p style={{margin:'0', fontWeight:'bold'}}>{userDetails.totalConnections}</p>
+                        </ListGroup.Item>
+                        <ListGroup.Item className='list-item' as="li">
+                            <Link className='profile-link' onClick={()=> navigateTo('/profile')}>View Profile</Link>
+                        </ListGroup.Item>
+                    </ListGroup>) : <p>Retriving user details</p>}
                 <div className='suggestions'>
                     <ListGroup as="ol" className='suggestions-list'>
                         <ListGroup.Item className='suggestion-item' as="li">
