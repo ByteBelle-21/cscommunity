@@ -190,11 +190,9 @@
 }
 
 
-
-
 .view-link:hover{
-    transform: scale(1.1);
-}
+    transform: scale(1.1) !important;
+} 
 
 .message-link:hover{
     transform: scale(1.1);
@@ -214,6 +212,10 @@
     margin-bottom: 0.5vh;
     align-items: center;
     justify-content: center;
+}
+
+.suggestion-item:hover{
+    background-color: #f2f3fa;
 }
 
 .create-channel-title{

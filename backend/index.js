@@ -473,7 +473,8 @@ app.post('/createchannel', (request, response) => {
 
 
 app.get('/activeusers',(request,response)=>{
-    database.query(`SELECT * FROM userTable ORDER BY totalPosts DESC LIMIT 4`,(error, result)=>{
+    const current_user  = request.query.user;
+    database.query(`SELECT * FROM userTable WHERE username != ? ORDER BY totalPosts DESC LIMIT 7`,[current_user],(error, result)=>{
         if (error){
             response.status(500).send("Server error during retrieving active members");
             return;

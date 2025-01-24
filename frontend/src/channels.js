@@ -10,10 +10,12 @@ import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate,useLocation } from 'react-router-dom';
-import { getUserDeatils, getAllChannels, handleChannelCreation } from './functions.js';
+import { getUserDeatils, getAllChannels, handleChannelCreation,getActiveUsers } from './functions.js';
 
 function Channels(){
-    const navigateTo = useNavigate()
+    const navigateTo = useNavigate();
+    const location = useLocation();
+    const channelsPage = location.pathname === '/channels';
 
     const[showChannelModal, setShowChannnelModal] = useState(false);
     const openChannelModal = ()=>{
@@ -44,8 +46,6 @@ function Channels(){
     }
 
 
-    const location = useLocation();
-    const channelsPage = location.pathname === '/channels';
     const [userDetails, setUserDetails] = useState([]);
     useEffect(()=>{
         getUserDeatils(setUserDetails);  
@@ -66,6 +66,12 @@ function Channels(){
     useEffect(()=>{
         getAllChannels(setAllChannels);  
     },[fetchAgain]);
+
+
+    const [activeMembers, setActiveMembers] = useState([]);
+    useEffect(()=>{
+        getActiveUsers(setActiveMembers);  
+    },[channelsPage]);
 
 
     const[selectedChannel, setSelectedChannel] = useState('');
@@ -216,70 +222,24 @@ function Channels(){
                         <ListGroup.Item className='suggestion-item' as="li">
                             <div className="fw-bold">Top Profiles</div>
                         </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link' onClick={openOffCanvas}>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>
-                        </ListGroup.Item>
+                        {activeMembers.length > 0 && activeMembers.map(member=>(
+                            <ListGroup.Item
+                                as="li"
+                                className="d-flex justify-content-between align-items-start suggestion-item">
+                                <div className="image-container">
+                                    <Image 
+                                        src={member.avatar}
+                                        className="top-user-img" 
+                                        roundedCircle 
+                                    />
+                                </div>
+                                <div className="ms-2 me-auto">
+                                <div className="fw-bold">{member.name}</div>
+                                    <Link className='view-link'>View Profile</Link>
+                                </div>
+                                <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
+                            </ListGroup.Item> 
+                        ))}
                     </ListGroup>
                     <Offcanvas 
                         show={showOffCanvas} 

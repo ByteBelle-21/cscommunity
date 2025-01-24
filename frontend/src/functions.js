@@ -328,3 +328,19 @@ export async function handleChannelCreation(setFetchAgain,fetchAgain, data ){
     }
       
 }
+
+
+export async function getActiveUsers(setActiveMembers){ 
+    const current_user = sessionStorage.getItem('auth_user');
+    try {
+        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/activeusers',{
+            params: {user: current_user}
+        });
+        if (response.status === 200) {
+            setActiveMembers(response.data);
+            console.log("Successfully retrieved active members");
+        } 
+    }catch (error) {
+        console.error("Catched axios error: ",error);    
+    }      
+}
