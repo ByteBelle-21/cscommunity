@@ -56,9 +56,9 @@ function Channels(){
 
     const [userDetails, setUserDetails] = useState([]);
     useEffect(()=>{
-        getUserDeatils(setUserDetails);  
+        getUserDeatils(setUserDetails); 
+        fetchAllPosts();   
     },[channelsPage]);
-
 
     const [fetchAgain, setFetchAgain] = useState(false);
     const [channel, setChannel] = useState('');
@@ -154,6 +154,7 @@ function Channels(){
                 setReplyTo(null);
                 setReplyToUser('');
                 setInputPost('');
+                fetchAllPosts();
                 handleUploadFile(response.data.postId); 
                 closePostModal();
             } 
@@ -165,7 +166,8 @@ function Channels(){
         }
       
     }
-  
+    
+
 
     const handleUploadFile = async (post) =>{
         if (inputFiles.length === 0){
@@ -191,6 +193,53 @@ function Channels(){
         }
     }
 
+    const[allPosts, setAllPosts] = useState([])
+    const fetchAllPosts= async()=>{
+        const channel_name = selectedChannel;
+        try {
+            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/allPosts',
+            { params: {current_channel:channel_name}});
+            if (response.status === 200) {
+                setAllPosts(response.data);
+                console.log("All posts: ",response.data);
+                console.log("Successfully retrieved all posts for channel",channelName);
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+
+    }
+
+    const [allFiles, setAllFiles] = useState([]);
+    useEffect(()=>{
+        const createURL = (fileData, fileType) =>{
+            const processedData = new Uint8Array(fileData.data);
+            const blob = new Blob([processedData], { type: fileType });
+            
+            return URL.createObjectURL(blob);
+        }
+        allPosts.forEach((post)=>{
+            if (post.files && post.files.length > 0) {
+                post.files.forEach(file => {
+                    const fileURL = createURL(file.filedata, file.filetype);
+                    console.log('File URL:', fileURL);
+                    setAllFiles(prevFiles => ({
+                        ...prevFiles,
+                        [file.filename]: fileURL
+                    }));
+                });
+            }
+        })
+
+    },[allPosts]);
+
+
+    useEffect(()=>{
+        fetchAllPosts();  
+    },[selectedChannel]);
 
     return(
         <div className="channels">
@@ -333,8 +382,9 @@ function Channels(){
                 ):(
                 <div className='all-posts'>
                     <div className='individual-post'>
-                    <ListGroup as="ol" className='suggestions-list'>
-                        <ListGroup.Item
+                    {allPosts.length > 0 && allPosts.map(post=>(
+                        <ListGroup as="ol" className='suggestions-list' style={{paddingLeft:`${post.level * 2.5}vw`}}>
+                            <ListGroup.Item
                             as="li"
                             className="d-flex justify-content-between align-items-start"
                             style={{border:'none'}}>
@@ -345,19 +395,18 @@ function Channels(){
                                 />
                           
                             <div className="ms-2 me-auto" >
-                                <p className='post-owner' style={{fontWeight:'bold'}}>username </p>
-                                <p className='post-owner'>23:00 tuesday </p>
+                                <p className='post-owner' style={{fontWeight:'bold'}}>{post.username}</p>
+                                <p className='post-owner'>{post.datetime}</p>
                             </div>
                         </ListGroup.Item> 
                         <ListGroup.Item style={{border:'none'}}>
-                        <p style={{fontWeight:'bold'}}> What is java ? its importatnce give me  ? </p>
-                        <p>Java is a widely used, high-level, object-oriented programming language 
-                            that was developed by Sun Microsystems (which was later acquired by 
-                            Oracle Corporation). It is designed to be platform-independent, 
-                            meaning that once you write a Java program, it can run on any 
-                            device or operating system that has a Java Virtual Machine (JVM). 
-                            This principle is famously known as "Write Once, Run Anywhere" (WORA).
-                        </p>
+                        <p style={{fontWeight:'bold'}}>{post.postTitle}</p>
+                        <p>{post.post}</p>
+                        {post.files.map(file => (                    
+                            <Stack direction="horizontal" gap={1} className="post-file-card">
+                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
+                            </Stack>
+                        ))}
                         </ListGroup.Item>
                         <ListGroup.Item style={{border:'none'}}>
                             <hr></hr> 
@@ -404,37 +453,10 @@ function Channels(){
                                 </span>
                             </FloatingLabel>
                             :<></>}
-                        </ListGroup.Item> 
-                        {postComments == 0 ? <></>:
-                            <>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start"
-                                    style={{border:'none', marginLeft:'4vw'}}>
-                                        <Image 
-                                            src='profile.png'
-                                            className="post-user-img" 
-                                            roundedCircle 
-                                        />
-                                
-                                    <div className="ms-2 me-auto" >
-                                        <p className='post-owner' style={{fontWeight:'bold'}}>username </p>
-                                        <p className='post-owner'>23:00 tuesday </p>
-                                    </div>
-                                </ListGroup.Item> 
-                                <ListGroup.Item style={{border:'none', marginLeft:'4vw', marginTop:'0', paddingTop:'0'}}>
-                                <p style={{marginTop:'0'}}>Java is a widely used, high-level, object-oriented programming language 
-                                    that was developed by Sun Microsystems (which was later acquired by 
-                                    Oracle Corporation). It is designed to be platform-independent, 
-                                    meaning that once you write a Java program, it can run on any 
-                                    device or operating system that has a Java Virtual Machine (JVM). 
-                                    This principle is famously known as "Write Once, Run Anywhere" (WORA).
-                                </p>
-                                <p className='send-reply'>Reply</p> 
-                                </ListGroup.Item>  
-                            </>    
-                        }
-                    </ListGroup>
+                        </ListGroup.Item>  
+                        </ListGroup>
+                        
+                    ))}
                     </div>
                 </div>)}
            </div>

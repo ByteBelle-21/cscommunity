@@ -697,7 +697,6 @@ app.post('/fileupload',upload.array('allFiles'),(request,response)=>{
 
 
 app.get('/allPosts',(request,response)=>{
-    console.log("i am here at back all post");
     const channel = request.query.current_channel;
     console.log(channel);
     database.query(`SELECT id FROM channelsTable WHERE channel=?`,[channel],(error, result)=>{
@@ -719,6 +718,7 @@ app.get('/allPosts',(request,response)=>{
                         u.username,
                         u.avatar,
                         p.datetime,
+                        p.postTitle,
                         p.post,
                         0 AS level,
                         p.id AS root_id,
@@ -736,6 +736,7 @@ app.get('/allPosts',(request,response)=>{
                         u.username,
                         u.avatar,
                         p.datetime,
+                        p.postTitle,
                         p.post,
                         pT.level + 1 AS level,
                         pT.root_id AS root_id,
@@ -752,6 +753,7 @@ app.get('/allPosts',(request,response)=>{
                     username,
                     avatar,
                     datetime,
+                    postTitle,
                     post,
                     level
                 FROM postTree
