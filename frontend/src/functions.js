@@ -284,24 +284,7 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
 export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherUser}){
     const [selectedUserDetails, setSelectedUserDetails] = useState([]);
     useEffect(()=>{
-        const fetchSelectedUserDetails= async()=>{
-            try {
-                const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/selected-user',{
-                    params: {user: otherUser}
-                });
-                if (response.status === 200) {
-                    setSelectedUserDetails(response.data);
-                    console.log(response.data);
-                    console.log("Successfully retrieved selected user details");
-                } 
-                else if(response.status === 401){
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
-        };
-        fetchSelectedUserDetails();
+        fetchSelectedUserDetails(setSelectedUserDetails, otherUser);
     },[]);
 
 
@@ -390,6 +373,25 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
     );
 }
 
+
+
+export async function fetchSelectedUserDetails(setSelectedUserDetails,otherUser){
+    try {
+        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+            params: {user: otherUser}
+        });
+        if (response.status === 200) {
+            setSelectedUserDetails(response.data);
+            console.log(response.data);
+            console.log("Successfully retrieved selected user details");
+        } 
+        else if(response.status === 401){
+            console.log(response.message)
+        }
+    } catch (error) {
+        console.error("Catched axios error: ",error);
+    }
+};
 
 
 export async function getUserDeatils(setUserDetails){

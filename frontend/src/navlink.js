@@ -23,7 +23,7 @@ function Navlink({authentication,removeAuthentication}){
     const homepage = location.pathname === '/';
     const channelsPage = location.pathname === '/channels';
     const profilePage = location.pathname === '/profile';
-    const messagePage = location.pathname === '/messages';
+    const messagePage = location.pathname === '/messages::selectedUser';
 
     const[showAddMediaModal, setShowAddMediaModal] = useState(false);
     const openAddMediaModal = ()=>{
@@ -46,15 +46,15 @@ function Navlink({authentication,removeAuthentication}){
 
 
     const goToChannels = () =>{
-        if(!channelsPage){
+       
             navigateTo('/channels');
-        }
+        
     }
 
     const goToMessages = () =>{
-        if( !messagePage){
-            navigateTo('/messages');
-        }
+        
+            navigateTo('/messages:selectedUser');
+        
     }
 
     const goToProfile = () =>{
@@ -124,9 +124,7 @@ function Navlink({authentication,removeAuthentication}){
                         </Modal.Footer>
                     </Modal>
                     <Nav.Item >
-                        <Nav.Link onClick={goToChannels}> 
-                            Channels
-                        </Nav.Link>
+                        <Nav.Link onClick={()=>{goToChannels()}}> Channels</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link  onClick={goToMessages}> Messages</Nav.Link>

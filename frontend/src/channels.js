@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import Nav from 'react-bootstrap/Nav';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate,useLocation } from 'react-router-dom';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
@@ -247,6 +247,12 @@ function Channels(){
         setPostReply(0);
         setPostComments(0);
     },[selectedChannel]);
+
+
+    const handleMessage=(selectedUser)=>{
+        console.log("i a clicking here ");
+        navigateTo(`/messages/${selectedUser}`);
+    }
 
     return(
         <div className="channels">
@@ -638,7 +644,14 @@ function Channels(){
                                     <Link className='view-link' onClick={openOffCanvas}>View Profile</Link>
                                     <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={member.username} />
                                 </div>
-                                <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
+                                <Nav.Link onClick={() => handleMessage(member.username)} >
+                                    <span 
+                                    class="material-symbols-outlined message-link" 
+                                    style={{fontSize:'1vw'}}
+                                   >
+                                        chat_bubble
+                                    </span>
+                                </Nav.Link>  
                             </ListGroup.Item> 
                         ))}
                     </ListGroup>

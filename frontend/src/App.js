@@ -49,7 +49,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Homepage authentication={authentication} />}/>
                 <Route path="/channels" element={hasAuthentication ? <Channels /> : <Navigate to="/" />} />
-                <Route path="/messages" element={hasAuthentication ? <Messages /> : <Navigate to="/" />} />
+                <Route path="/messages/:selectedUser" element={hasAuthentication ? <Messages /> : <Navigate to="/" />} />
                 <Route path="/profile" element={hasAuthentication ? <Profile /> : <Navigate to="/" />} />
             </Routes>
           </div>  
