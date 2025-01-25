@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate,useLocation } from 'react-router-dom';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { getUserDeatils, getAllChannels, handleChannelCreation,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
 
 function Channels(){
@@ -75,6 +76,10 @@ function Channels(){
 
 
     const[selectedChannel, setSelectedChannel] = useState('');
+    const[postComments, setPostComments] = useState(0);
+    const[postReply, setPostReply] = useState(0);
+    
+
 
     return(
         <div className="channels">
@@ -115,10 +120,21 @@ function Channels(){
                 <div className='channel-list'>
                     <p>All Channels</p>
                     <ListGroup as="ol" >
+                        <ListGroup.Item
+                            as="li"
+                            className="d-flex justify-content-between align-items-start channel-item" 
+                            onClick={()=>setSelectedChannel("")}>
+                            <div className="ms-2 me-auto">
+                                <div className="fw-bold">Homepage</div>
+                                <span style={{fontSize:'small'}}>Created by owner</span>
+                            </div>
+                            <Badge className='badge'pill>1</Badge>
+                        </ListGroup.Item>
                         {allChannels.length > 0 && allChannels.map(channel=>(
                              <ListGroup.Item
                                 as="li"
-                                className="d-flex justify-content-between align-items-start" >
+                                className="d-flex justify-content-between align-items-start channel-item" 
+                                onClick={()=>setSelectedChannel(channel.channel)}>
                                 <div className="ms-2 me-auto">
                                     <div className="fw-bold">{channel.channel}</div>
                                     <span style={{fontSize:'small'}}>Created by {channel.username}</span>
@@ -185,7 +201,8 @@ function Channels(){
                         </Modal.Footer>
                     </Modal>
                 </div>
-                <div className='no_channel'>
+                {selectedChannel == "" ? (
+                    <div className='no_channel'>
                         <h5 style={{fontWeight:'bold'}}>Welcome to CScommunity</h5>
                         <p>Start engaging with other members by creating channels, posting, replying, and now... messaging!</p>
                         <ul>
@@ -195,7 +212,114 @@ function Channels(){
                             <li><strong>Send direct messages:</strong> Want to talk privately? Send a direct message.</li>
                         </ul>
                         <p style={{fontWeight:'bold'}}>Start Browsing Now</p>
-                </div>
+                    </div>
+                ):(
+                <div className='all-posts'>
+                    <div className='individual-post'>
+                    <ListGroup as="ol" className='suggestions-list'>
+                        <ListGroup.Item
+                            as="li"
+                            className="d-flex justify-content-between align-items-start"
+                            style={{border:'none'}}>
+                                <Image 
+                                    src='profile.png'
+                                    className="post-user-img" 
+                                    roundedCircle 
+                                />
+                          
+                            <div className="ms-2 me-auto" >
+                                <p className='post-owner' style={{fontWeight:'bold'}}>username </p>
+                                <p className='post-owner'>23:00 tuesday </p>
+                            </div>
+                        </ListGroup.Item> 
+                        <ListGroup.Item style={{border:'none'}}>
+                        <p style={{fontWeight:'bold'}}> What is java ? its importatnce give me  ? </p>
+                        <p>Java is a widely used, high-level, object-oriented programming language 
+                            that was developed by Sun Microsystems (which was later acquired by 
+                            Oracle Corporation). It is designed to be platform-independent, 
+                            meaning that once you write a Java program, it can run on any 
+                            device or operating system that has a Java Virtual Machine (JVM). 
+                            This principle is famously known as "Write Once, Run Anywhere" (WORA).
+                        </p>
+                        </ListGroup.Item>
+                        <ListGroup.Item style={{border:'none'}}>
+                            <hr></hr> 
+                            <Stack  direction='horizontal' gap={4}>
+                                {postComments == 0 ? 
+                                    <p className='send-reply' style={{color:'#2F3C7E'}} onClick={()=>setPostComments(1)}>Show Comments</p>
+                                :
+                                    <p className='send-reply' style={{color:'#2F3C7E'}} onClick={()=>setPostComments(0)}>Hide Comments</p>
+                                }
+                                {postReply == 0 ? 
+                                <p className='send-reply' onClick={()=>setPostReply(1)}>Reply</p> 
+                                : 
+                                <p className='send-reply me-auto' style={{color:'#2F3C7E'}} onClick={()=>setPostReply(1)}>Send Reply</p> }
+                                {postReply != 0 ? 
+                                 <p className='send-reply ' style={{color:'#2F3C7E'}} onClick={()=>setPostReply(0)}>Cancle</p>
+                                  :<></>}
+                            </Stack>
+                            {postReply != 0 ? 
+                             <FloatingLabel controlId="floatingTextarea2" label="Reply to @post owner">
+                                <Form.Control
+                                as="textarea"
+                                placeholder="Leave a comment here"
+                                style={{ height: '6vw' }}
+                                />
+                                <span class="material-symbols-outlined" 
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '10px',
+                                        right: '10px',
+                                        opacity: 0.7,
+                                        cursor: 'pointer',
+                                        }} >
+                                    attach_file
+                                </span>
+                                <span class="material-symbols-outlined" 
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '10px',
+                                        right: '50px',
+                                        opacity: 0.7,
+                                        cursor: 'pointer',
+                                        }} >
+                                    add_reaction
+                                </span>
+                            </FloatingLabel>
+                            :<></>}
+                        </ListGroup.Item> 
+                        {postComments == 0 ? <></>:
+                            <>
+                                <ListGroup.Item
+                                    as="li"
+                                    className="d-flex justify-content-between align-items-start"
+                                    style={{border:'none', marginLeft:'4vw'}}>
+                                        <Image 
+                                            src='profile.png'
+                                            className="post-user-img" 
+                                            roundedCircle 
+                                        />
+                                
+                                    <div className="ms-2 me-auto" >
+                                        <p className='post-owner' style={{fontWeight:'bold'}}>username </p>
+                                        <p className='post-owner'>23:00 tuesday </p>
+                                    </div>
+                                </ListGroup.Item> 
+                                <ListGroup.Item style={{border:'none', marginLeft:'4vw', marginTop:'0', paddingTop:'0'}}>
+                                <p style={{marginTop:'0'}}>Java is a widely used, high-level, object-oriented programming language 
+                                    that was developed by Sun Microsystems (which was later acquired by 
+                                    Oracle Corporation). It is designed to be platform-independent, 
+                                    meaning that once you write a Java program, it can run on any 
+                                    device or operating system that has a Java Virtual Machine (JVM). 
+                                    This principle is famously known as "Write Once, Run Anywhere" (WORA).
+                                </p>
+                                <p className='send-reply'>Reply</p> 
+                                </ListGroup.Item>  
+                            </>    
+                        }
+                    </ListGroup>
+                    </div>
+                </div>)}
            </div>
            <div className='right-block'>
                 {userDetails? ( 

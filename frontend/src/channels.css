@@ -43,14 +43,14 @@
     justify-content: center;
     align-items: center;
     border-radius: 2vw;
-    background-color:  #6f3be7;
-    border-color:  #6f3be7;
+    background-color:  #2F3C7E;
+    border-color:   #2F3C7E;
 }
 
 .new-post-btn:hover{
     background-color: white;
-    color: #6f3be7;
-    border-color:  #6f3be7;
+    color: #2F3C7E;
+    border-color:  #2F3C7E;
 }
 
 .attach-section{
@@ -100,6 +100,37 @@
 
 .badge{
     background-color: #2F3C7E !important;
+}
+
+.all-posts{
+    margin-top: 2vh;
+}
+
+.individual-post{
+    background-color: white;
+    width: 100;
+}
+
+.post-user-img{
+    height: 2vw;
+    padding: 0;
+    margin: 0;
+    margin-right: 1vh;
+}
+
+.post-owner{
+    margin: 0;
+    font-size: small;
+}
+
+.send-reply{
+    font-size: small;
+    font-weight: bold;
+}
+
+.send-reply:hover{
+    cursor: pointer;
+    transform: scale(1.1);
 }
 
 .list-item{
