@@ -87,16 +87,17 @@ function Channels(){
     const[postReply, setPostReply] = useState(0);
     
     const [replyTo, setReplyTo] = useState(null);
-    const [replyToUser, setReplyToUser] = useState('');
     const [replyToPost, setReplyToPost] = useState('');
-    const handleReplyClick = (Id, user, post) =>{
+
+    const handleReplyClick = (Id, post) =>{
+        setPostReply(Id);
         setReplyTo(Id);
-        setReplyToUser(user);
-        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "..........";
+        const postPreview = "  "+post.split(' ').slice(0, 10).join(' ')+ "..........";
         setReplyToPost(postPreview);
     }
+
     const handleCancelReply = ()=>{
-        setReplyToUser('');
+        setPostReply(0);
         setReplyTo(null);
         setReplyToPost('');
     }
@@ -152,7 +153,6 @@ function Channels(){
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
                 setReplyTo(null);
-                setReplyToUser('');
                 setInputPost('');
                 fetchAllPosts();
                 handleUploadFile(response.data.postId); 
@@ -196,13 +196,16 @@ function Channels(){
     const[allPosts, setAllPosts] = useState([])
     const fetchAllPosts= async()=>{
         const channel_name = selectedChannel;
+        if(channel_name == ""){
+            return;
+        }
         try {
             const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/allPosts',
             { params: {current_channel:channel_name}});
             if (response.status === 200) {
                 setAllPosts(response.data);
                 console.log("All posts: ",response.data);
-                console.log("Successfully retrieved all posts for channel",channelName);
+                console.log("Successfully retrieved all posts for channel",channel_name);
             } 
             else if(response.status === 401){
                 console.log(response.message)
@@ -404,28 +407,31 @@ function Channels(){
                         <p>{post.post}</p>
                         {post.files.map(file => (                    
                             <Stack direction="horizontal" gap={1} className="post-file-card">
-                                <a href={allFiles[file.filename]} target="_blank" rel="noopener noreferrer">{file.filename}</a>
+                                <a href={allFiles[file.filename]} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                style={{fontSize:'small', textDecoration:'none'}}>{file.filename}</a>
                             </Stack>
                         ))}
                         </ListGroup.Item>
                         <ListGroup.Item style={{border:'none'}}>
                             <hr></hr> 
                             <Stack  direction='horizontal' gap={4}>
-                                {postComments == 0 ? 
+                                {postComments != post.id ? 
                                     <p className='send-reply' style={{color:'#2F3C7E'}} onClick={()=>setPostComments(1)}>Show Comments</p>
                                 :
                                     <p className='send-reply' style={{color:'#2F3C7E'}} onClick={()=>setPostComments(0)}>Hide Comments</p>
                                 }
-                                {postReply == 0 ? 
-                                <p className='send-reply' onClick={()=>setPostReply(1)}>Reply</p> 
+                                {postReply != post.id ? 
+                                <p className='send-reply' onClick={()=>handleReplyClick(post.id, post.post)}>Reply</p> 
                                 : 
                                 <p className='send-reply me-auto' style={{color:'#2F3C7E'}} onClick={()=>setPostReply(1)}>Send Reply</p> }
-                                {postReply != 0 ? 
-                                 <p className='send-reply ' style={{color:'#2F3C7E'}} onClick={()=>setPostReply(0)}>Cancle</p>
+                                {postReply == post.id ? 
+                                 <p className='send-reply ' style={{color:'#2F3C7E'}} onClick={()=>handleCancelReply()}>Cancle</p>
                                   :<></>}
                             </Stack>
-                            {postReply != 0 ? 
-                             <FloatingLabel controlId="floatingTextarea2" label="Reply to @post owner">
+                            {postReply == post.id ? 
+                             <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${post.username} for post "${replyToPost}"`}>
                                 <Form.Control
                                 as="textarea"
                                 placeholder="Leave a comment here"
