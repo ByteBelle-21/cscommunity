@@ -13,6 +13,13 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { useParams } from 'react-router-dom';
 import { fetchSelectedUserDetails } from './functions.js';
 import Nav from 'react-bootstrap/Nav';
+import { useRef } from 'react';
+import Popover from 'react-bootstrap/Popover';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import axios from 'axios';
+
 
 function Messages(){
     const {selectedUser} =  useParams();
@@ -23,87 +30,114 @@ function Messages(){
     },[selectedUser, ]);
 
 
+    const [connectedUsers, setConnectedUsers] = useState([]);
+    useEffect(()=>{
+        const current_user = sessionStorage.getItem('auth_user');
+        const fetchConnectedUsers= async()=>{
+            try {
+                const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+                if (response.status === 200) {
+                    setConnectedUsers(response.data);
+                    console.log("Successfully retrieved all connected users");
+                } 
+                else {
+                    console.log(response.message)
+                }
+            } catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+
+        }
+        fetchConnectedUsers();  
+    },[]);
+
+
+
+    const fileMessageRef = useRef(null);
+    const [inputMsgFiles, setInputMsgFiles] = useState([]);
+   
+    const handleMsgFileInput = (event) => {
+        const files = event.target.files;
+        if (files) {
+            setInputMsgFiles(prev =>[...prev,...Array.from(files)]);
+        }
+    };
+    const handleMsgFileDelete=(filename)=>{
+        setInputMsgFiles((prev) => prev.filter((file) => file.name !== filename));
+    }
+
+    const msgtextAreaRef = useRef(null);
+    const handleMsgEmojiSelect = (emoji) =>{
+          const cursor = msgtextAreaRef.current.selectionStart;
+          const newInput = inputMessage.slice(0,cursor) + emoji.native +inputMessage.slice(cursor);
+          setInputMessage(newInput);
+          msgtextAreaRef.current.setSelectionRange(cursor + emoji.native.length, cursor + emoji.native.length);
+          msgtextAreaRef.current.focus();
+    }
+    const msgEmojiPopover = (
+        <Popover id="popover-basic">
+            <Picker data={data} onEmojiSelect={handleMsgEmojiSelect} />
+        </Popover>
+    );
+
+    const [inputMessage, setInputMessage] = useState('');
+    const handleInputChange = (e) =>{
+        setInputMessage(e.target.value);
+    }
+    const handleSendMessage =async(e)=>{
+        const you = sessionStorage.getItem('auth_user');
+        const reciever = selectedUser;
+        const data = {
+            you,
+            reciever,
+            inputMessage
+            
+        }
+        try {
+            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/message', data);
+            if (response.status === 200) {
+                console.log("Uploaded post succesfully");
+                setInputMessage(''); 
+            } 
+            else{
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+      
+    }
+  
+
+
     return(
         <div className="messages">
            <div className='message-left-block'>
                 <p className='fw-bold' style={{margin:'1vh'}}>Other Direct Messages</p>
                 <hr></hr>
                 <ListGroup as="ol" className='direct-messages'>
+                {connectedUsers.length >0 && connectedUsers.map(user=>(
                     <ListGroup.Item
-                        as="li"
-                        className="d-flex justify-content-between align-items-start direct-message-item">
+                    as="li"
+                    className="d-flex justify-content-between align-items-start direct-message-item">
                         <div className="image-container">
                             <Image 
-                                src="Group 301.png" 
+                                src={user.avatar} 
                                 className="top-user-img" 
                                 roundedCircle 
                             />
                         </div>
                         <div className="ms-2 me-auto">
-                        <div className="fw-bold">sdbv sdcjsdc </div>
+                        <div className="fw-bold">{user.name}</div>
                             <Link className='view-link'>View conversations</Link>
                         </div>
                     </ListGroup.Item>
-                    <ListGroup.Item
-                        as="li"
-                        className="d-flex justify-content-between align-items-start direct-message-item">
-                        <div className="image-container">
-                            <Image 
-                                src="Group 301.png" 
-                                className="top-user-img" 
-                                roundedCircle 
-                            />
-                        </div>
-                        <div className="ms-2 me-auto">
-                        <div className="fw-bold">sdbv sdcjsdc </div>
-                            <Link className='view-link'>View conversations</Link>
-                        </div>
+                ))}
+                {connectedUsers.length === 0 &&
+                    <ListGroup.Item  className="d-flex justify-content-center" style={{border:'none'}}>
+                        <p style={{opacity:'0.5'}}>No messages </p>
                     </ListGroup.Item>
-                    <ListGroup.Item
-                        as="li"
-                        className="d-flex justify-content-between align-items-start direct-message-item">
-                        <div className="image-container">
-                            <Image 
-                                src="Group 301.png" 
-                                className="top-user-img" 
-                                roundedCircle 
-                            />
-                        </div>
-                        <div className="ms-2 me-auto">
-                        <div className="fw-bold">sdbv sdcjsdc </div>
-                            <Link className='view-link'>View conversations</Link>
-                        </div>
-                    </ListGroup.Item>
-                    <ListGroup.Item
-                        as="li"
-                        className="d-flex justify-content-between align-items-start direct-message-item">
-                        <div className="image-container">
-                            <Image 
-                                src="Group 301.png" 
-                                className="top-user-img" 
-                                roundedCircle 
-                            />
-                        </div>
-                        <div className="ms-2 me-auto">
-                        <div className="fw-bold">sdbv sdcjsdc </div>
-                            <Link className='view-link'>View conversations</Link>
-                        </div>
-                    </ListGroup.Item>
-                    <ListGroup.Item
-                        as="li"
-                        className="d-flex justify-content-between align-items-start direct-message-item">
-                        <div className="image-container">
-                            <Image 
-                                src="Group 301.png" 
-                                className="top-user-img" 
-                                roundedCircle 
-                            />
-                        </div>
-                        <div className="ms-2 me-auto">
-                        <div className="fw-bold">sdbv sdcjsdc </div>
-                            <Link className='view-link'>ehfkh fb wh</Link>
-                        </div>
-                    </ListGroup.Item> 
+                }
                 </ListGroup>
 
             </div>
@@ -120,15 +154,28 @@ function Messages(){
                     
                </div>
                <div className='textarea-block'>
-                    <Link style={{color:'black', marginRight:'1vh', opacity:'70%'}}>
+                    <input 
+                        type='file' 
+                        style={{ display: 'none' }}
+                        ref={fileMessageRef}
+                        onChange={handleMsgFileInput}
+                    />
+                    <Link style={{color:'black', marginRight:'1vh', opacity:'70%'}}  onClick={() => fileMessageRef.current.click()}>
                         <span class="material-symbols-outlined">attach_file</span>
                     </Link> 
-                    <TextareaAutosize placeholder="Add your message here"  className='text-area-formcontrol' />
-                    <Link style={{color:'black', marginRight:'1vh', opacity:'70%'}}>
-                        <span class="material-symbols-outlined">add_reaction</span>
-                    </Link> 
-                    <Link style={{color:'black', marginLeft:'1vh'}}>
-                        <span class="material-symbols-outlined">send</span>
+                    <TextareaAutosize  
+                        ref={msgtextAreaRef} 
+                        placeholder="Add your message here"  
+                        className='text-area-formcontrol' 
+                        value={inputMessage}
+                        onChange={handleInputChange}/>
+                    <OverlayTrigger trigger="click" placement="top" overlay={msgEmojiPopover}>
+                        <Link style={{color:'black', marginRight:'1vh', opacity:'70%'}} >
+                            <span class="material-symbols-outlined">add_reaction</span>
+                        </Link> 
+                    </OverlayTrigger>
+                    <Link style={{color:'black', marginLeft:'1vh'}} className='text-area-links' onClick={handleSendMessage}>
+                        <span class="material-symbols-outlined" >send</span>
                     </Link> 
                </div>
            </div>
