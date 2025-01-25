@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useParams } from 'react-router-dom';
-import { fetchSelectedUserDetails, getUserDeatils } from './functions.js';
+import { fetchSelectedUserDetails, getUserDeatils,fetchConnectedUsers } from './functions.js';
 import Nav from 'react-bootstrap/Nav';
 import { useRef } from 'react';
 import Popover from 'react-bootstrap/Popover';
@@ -34,23 +34,7 @@ function Messages(){
 
     const [connectedUsers, setConnectedUsers] = useState([]);
     useEffect(()=>{
-        const current_user = sessionStorage.getItem('auth_user');
-        const fetchConnectedUsers= async()=>{
-            try {
-                const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
-                if (response.status === 200) {
-                    setConnectedUsers(response.data);
-                    console.log("Successfully retrieved all connected users");
-                } 
-                else {
-                    console.log(response.message)
-                }
-            } catch (error) {
-                console.error("Catched axios error: ",error);
-            }
-
-        }
-        fetchConnectedUsers();  
+        fetchConnectedUsers(setConnectedUsers);  
     },[]);
 
 
@@ -141,6 +125,10 @@ function Messages(){
     }
 
 
+    const handleMessage=(selectedUser)=>{
+        navigateTo(`/messages/${selectedUser}`);
+    }
+
     return(
         <div className="messages">
            <div className='message-left-block'>
@@ -159,7 +147,7 @@ function Messages(){
                         </div>
                         <div className="ms-2 me-auto">
                         <div className="fw-bold">{user.username}</div>
-                            <Link className='view-link'>View conversations</Link>
+                            <Link className='view-link' onClick={() => {handleMessage(user.username)}}>View conversations</Link>
                         </div>
                     </ListGroup.Item>
                 ))}

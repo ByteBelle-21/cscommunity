@@ -6,15 +6,17 @@ import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import {SignInModal} from './functions.js'
+import {SignInModal, fetchConnectedUsers} from './functions.js'
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 
 function Navlink({authentication,removeAuthentication}){
     const navigateTo = useNavigate();
@@ -45,23 +47,26 @@ function Navlink({authentication,removeAuthentication}){
     }
 
 
-    const goToChannels = () =>{
-       
-            navigateTo('/channels');
-        
+    const goToChannels = () =>{ 
+            navigateTo('/channels');   
     }
 
+
+    const[connectedUsers, setConnectedUsers] = useState(null);
+    useEffect(()=>{
+        fetchConnectedUsers(setConnectedUsers);
+    },[])
+
+    
     const goToMessages = () =>{
-        
-            navigateTo('/messages:selectedUser');
-        
+        const selectedUser = connectedUsers[connectedUsers.length -1].username;
+        navigateTo(`/messages/${selectedUser}`);
     }
 
     const goToProfile = () =>{
-        if(!profilePage){
-            navigateTo('/profile');
-        }
+        navigateTo('/profile');  
     }
+
 
     return(
         <Nav className='navlink' defaultActiveKey="/home">

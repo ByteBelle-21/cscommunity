@@ -459,3 +459,21 @@ export async function getActiveUsers(setActiveMembers){
         console.error("Catched axios error: ",error);    
     }      
 }
+
+
+export async function fetchConnectedUsers(setConnectedUsers){
+    const current_user = sessionStorage.getItem('auth_user');
+    try {
+        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+        if (response.status === 200) {
+            setConnectedUsers(response.data);
+            console.log("Successfully retrieved all connected users");
+        } 
+        else {
+            console.log(response.message)
+        }
+    } catch (error) {
+        console.error("Catched axios error: ",error);
+    }
+
+}

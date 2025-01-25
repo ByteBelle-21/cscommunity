@@ -250,7 +250,6 @@ function Channels(){
 
 
     const handleMessage=(selectedUser)=>{
-        console.log("i a clicking here ");
         navigateTo(`/messages/${selectedUser}`);
     }
 
