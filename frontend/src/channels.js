@@ -11,6 +11,13 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate,useLocation } from 'react-router-dom';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Popover from 'react-bootstrap/Popover';
+import { useRef } from 'react';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
+import axios from 'axios';
 import { getUserDeatils, getAllChannels, handleChannelCreation,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
 
 function Channels(){
@@ -79,6 +86,110 @@ function Channels(){
     const[postComments, setPostComments] = useState(0);
     const[postReply, setPostReply] = useState(0);
     
+    const [replyTo, setReplyTo] = useState(null);
+    const [replyToUser, setReplyToUser] = useState('');
+    const [replyToPost, setReplyToPost] = useState('');
+    const handleReplyClick = (Id, user, post) =>{
+        setReplyTo(Id);
+        setReplyToUser(user);
+        const postPreview =  post.split(' ').slice(0, 10).join(' ')+ "..........";
+        setReplyToPost(postPreview);
+    }
+    const handleCancelReply = ()=>{
+        setReplyToUser('');
+        setReplyTo(null);
+        setReplyToPost('');
+    }
+
+    const [inputPostTitle, setInputPostTitle] = useState('');
+    const handleTitleChange = (e) =>{
+        setInputPostTitle(e.target.value);
+    }
+
+    const [inputPost, setInputPost] = useState('');
+    const handleInputChange = (e) =>{
+        setInputPost(e.target.value);
+    }
+
+    const [inputFiles, setInputFiles] = useState([]);
+    const handleFileInput = (event) => {
+        const files = event.target.files;
+        if (files) {
+            setInputFiles(prev =>[...prev,...Array.from(files)]);
+        }
+        console.log(inputFiles.length);
+    };
+
+    const textAreaRef = useRef(null);
+    const handleEmojiSelect = (emoji) =>{
+          const cursor = textAreaRef.current.selectionStart;
+          const newInput = inputPost.slice(0,cursor) + emoji.native +inputPost.slice(cursor);
+          setInputPost(newInput);
+          textAreaRef.current.setSelectionRange(cursor + emoji.native.length, cursor + emoji.native.length);
+          textAreaRef.current.focus();
+    }
+    const emojiPopover = (
+        <Popover id="popover-basic">
+            <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+        </Popover>
+    );
+    
+    const handleSendPost =async(e)=>{
+        e.preventDefault();
+        const current_user = sessionStorage.getItem('auth_user');
+        const channel = selectedChannel;
+        console.log(replyTo);
+        const data = {
+            current_user,
+            inputPostTitle,
+            inputPost,
+            channel,
+            replyTo
+        }
+       
+        try {
+            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/post', data);
+            if (response.status === 200) {
+                console.log("Uploaded post succesfully");
+                setReplyTo(null);
+                setReplyToUser('');
+                setInputPost('');
+                handleUploadFile(response.data.postId); 
+                closePostModal();
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+      
+    }
+  
+
+    const handleUploadFile = async (post) =>{
+        if (inputFiles.length === 0){
+            return;
+        }
+        const formData = new FormData();
+        formData.append('postId',post)
+        inputFiles.forEach((file)=>{
+            formData.append('allFiles',file)
+        });
+        try {
+            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 200) {
+                setInputFiles([]);
+                console.log("Files uploaded successfully");
+            }
+        } catch (error) {
+            console.error("Error while uploading files:", error);
+        }
+    }
 
 
     return(
@@ -163,39 +274,45 @@ function Channels(){
                                 <span class="material-symbols-outlined" style={{fontSize:'1.5vw', marginRight:'0.5vh'}}>mail</span>
                                 Create a new post
                             </p>
-                            <p><span className='fw-bold'>Channel :</span> java discussion board</p>
+                            <p><span className='fw-bold'>Channel :</span>{selectedChannel}</p>
                             <Form.Group >
                                 <Form.Label>Title</Form.Label>
                                 <Form.Control  type="text" 
                                                 required
                                                 placeholder="Enter title" 
+                                                value={inputPostTitle}
                                                 className='mb-3 ' 
-                                                style={{fontSize:'calc(0.4em + 1vmin)'}}/>
+                                                style={{fontSize:'calc(0.4em + 1vmin)'}}
+                                                onChange={handleTitleChange}/>
                             </Form.Group>
                             <Form.Group  >
                                 <Form.Label style={{display:'flex', flexDirection:'row'}}>
                                     <span className='me-auto'>Overview</span> 
-                                    
-                                    <Link>
-                                        <span class="material-symbols-outlined">add_reaction</span>
-                                    </Link>                                
+                                    <OverlayTrigger trigger="click" placement="right" overlay={emojiPopover} >
+                                        <Link>
+                                            <span class="material-symbols-outlined">add_reaction</span>
+                                        </Link>  
+                                    </OverlayTrigger>                              
                                 </Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     placeholder="Write the overview here"
+                                    ref={textAreaRef}
                                     style={{height:'15vh'}}
-                                    className='mb-3 ' />
+                                    value={inputPost}
+                                    className='mb-3 '
+                                    onChange={handleInputChange} />
                             </Form.Group>
                             <Form.Group controlId="formFileMultiple" >
                                 <Form.Label>Attachments</Form.Label>
-                                <Form.Control type="file" multiple />
+                                <Form.Control type="file" multiple  onChange={handleFileInput}/>
                             </Form.Group>
                         </Modal.Body>
                         <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
                             <Button className='cancle-channel-btn' onClick={closePostModal}>
                                 Cancle
                             </Button>
-                            <Button className='create-channel-btn' onClick={closePostModal}>
+                            <Button className='create-channel-btn' onClick={handleSendPost}>
                                 Add new post
                             </Button>
                         </Modal.Footer>

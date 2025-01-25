@@ -90,6 +90,7 @@ function createPostsTable(){
                         replyTo INT ,
                         username INT,
                         datetime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+                        postTitle VARCHAR(100) NOT NULL,
                         post VARCHAR(1000) NOT NULL,
                         channel INT)`,(error,result)=>{
                             if (error){
@@ -564,6 +565,7 @@ app.post('/post', (request, response) => {
     const input_post = request.body.inputPost;
     const input_channel = request.body.channel;
     const input_user = request.body.current_user;
+    const input_post_title = request.body.inputPostTitle;
     const input_reply_to = request.body.replyTo;
     database.query(`SELECT id FROM userTable WHERE username=?`,[input_user],(error, userId_result)=>{
         if (error){
@@ -582,13 +584,14 @@ app.post('/post', (request, response) => {
                         return;
                     }
                     else{
+                        console.log(channelId_result);
                         if(channelId_result.length===0){
                             response.status(401).send("channel id doesn't exists for current channel in upload post ");
                         }
                         else{
                             const channelId = channelId_result[0].id;
-                            database.query(`INSERT INTO postsTable (replyTo, username, post, channel) VALUES (?, ?, ?, ?)`,
-                            [input_reply_to, userId, input_post, channelId],(error,result)=>{
+                            database.query(`INSERT INTO postsTable (replyTo, username, post, channel,postTitle) VALUES (?, ?, ?, ?,?)`,
+                            [input_reply_to, userId, input_post, channelId,input_post_title],(error,result)=>{
                                 if(error){
                                     response.status(500).send("Server error during uploading the post");
                                     return;
