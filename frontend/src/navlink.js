@@ -48,7 +48,7 @@ function Navlink({authentication,removeAuthentication}){
 
 
     const goToChannels = () =>{ 
-            navigateTo('/channels');   
+            navigateTo('/channels/homepage');   
     }
 
 

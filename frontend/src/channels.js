@@ -18,12 +18,13 @@ import { useRef } from 'react';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import { getUserDeatils, getAllChannels, handleChannelCreation,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
 
 function Channels(){
     const navigateTo = useNavigate();
     const location = useLocation();
-    const channelsPage = location.pathname === '/channels';
+    const {channelsName} =  useParams();
 
     const[showChannelModal, setShowChannnelModal] = useState(false);
     const openChannelModal = ()=>{
@@ -58,7 +59,7 @@ function Channels(){
     useEffect(()=>{
         getUserDeatils(setUserDetails); 
         fetchAllPosts();   
-    },[channelsPage]);
+    },[channelsName]);
 
     const [fetchAgain, setFetchAgain] = useState(false);
     const [channel, setChannel] = useState('');
@@ -66,7 +67,9 @@ function Channels(){
         closeChannelModal();
         const username = userDetails.username;
         const data = { username,channel };
-        handleChannelCreation(setFetchAgain,fetchAgain, data);  
+        handleChannelCreation(setFetchAgain,fetchAgain, data);
+        navigateTo(`/channels/${channel}`);
+        setChannel('');
     }
 
 
@@ -79,10 +82,9 @@ function Channels(){
     const [activeMembers, setActiveMembers] = useState([]);
     useEffect(()=>{
         getActiveUsers(setActiveMembers);  
-    },[channelsPage]);
+    },[channelsName]);
 
 
-    const[selectedChannel, setSelectedChannel] = useState('');
     const[postComments, setPostComments] = useState(0);
     const[postReply, setPostReply] = useState(0);
     
@@ -139,7 +141,7 @@ function Channels(){
     
     const handleSendPost =async(e)=>{
         const current_user = sessionStorage.getItem('auth_user');
-        const channel = selectedChannel;
+        const channel = channelsName;
         console.log(replyTo);
         const data = {
             current_user,
@@ -197,8 +199,8 @@ function Channels(){
 
     const[allPosts, setAllPosts] = useState([])
     const fetchAllPosts= async()=>{
-        const channel_name = selectedChannel;
-        if(channel_name == ""){
+        const channel_name = channelsName;
+        if(channel_name == "homepage"){
             return;
         }
         try {
@@ -246,7 +248,7 @@ function Channels(){
         fetchAllPosts();  
         setPostReply(0);
         setPostComments(0);
-    },[selectedChannel]);
+    },[channelsName]);
 
 
     const handleMessage=(selectedUser)=>{
@@ -295,7 +297,7 @@ function Channels(){
                         <ListGroup.Item
                             as="li"
                             className="d-flex justify-content-between align-items-start channel-item" 
-                            onClick={()=>setSelectedChannel("")}>
+                            onClick={()=>{navigateTo('/channels/homepage')}}>
                             <div className="ms-2 me-auto">
                                 <div className="fw-bold">Homepage</div>
                                 <span style={{fontSize:'small'}}>Created by owner</span>
@@ -306,7 +308,7 @@ function Channels(){
                              <ListGroup.Item
                                 as="li"
                                 className="d-flex justify-content-between align-items-start channel-item" 
-                                onClick={()=>setSelectedChannel(channel.channel)}>
+                                onClick={()=> {navigateTo(`/channels/${channel.channel}`)}}>
                                 <div className="ms-2 me-auto">
                                     <div className="fw-bold">{channel.channel}</div>
                                     <span style={{fontSize:'small'}}>Created by {channel.username}</span>
@@ -319,7 +321,7 @@ function Channels(){
            </div>
            <div className='middle-block'>
                 <div className='create-post-block'>
-                    <h4>{selectedChannel == '' ? "Homepage" : selectedChannel}</h4>
+                    <h4>{channelsName == 'homepage' ? "Homepage" : channelsName}</h4>
                         <Button className='new-post-btn' onClick={openPostModal}>
                             <span class="material-symbols-outlined" style={{marginRight:'1vh'}}> add</span> 
                             <p style={{margin:'0'}} className='fw-bold'>What's on your mind ?</p>
@@ -335,7 +337,7 @@ function Channels(){
                                 <span class="material-symbols-outlined" style={{fontSize:'1.5vw', marginRight:'0.5vh'}}>mail</span>
                                 Create a new post
                             </p>
-                            <p><span className='fw-bold'>Channel :</span>{selectedChannel}</p>
+                            <p><span className='fw-bold'>Channel :</span>{channelsName}</p>
                             <Form.Group >
                                 <Form.Label>Title</Form.Label>
                                 <Form.Control  type="text" 
@@ -379,7 +381,7 @@ function Channels(){
                         </Modal.Footer>
                     </Modal>
                 </div>
-                {selectedChannel == "" ? (
+                {channelsName == "homepage" ? (
                     <div className='no_channel'>
                         <h5 style={{fontWeight:'bold'}}>Welcome to CScommunity</h5>
                         <p>Start engaging with other members by creating channels, posting, replying, and now... messaging!</p>
@@ -409,7 +411,7 @@ function Channels(){
                                         className="d-flex justify-content-between align-items-start"
                                         style={{ border: 'none' }}>
                                         <Image 
-                                            src='profile.png'
+                                            src='/profile.png'
                                             className="post-user-img" 
                                             roundedCircle 
                                         />
@@ -508,7 +510,7 @@ function Channels(){
                                                         style={{ border: 'none', padding:'0' }}>
                                                             <span className="d-flex justify-content-between align-items-start">
                                                                 <Image 
-                                                                    src='profile.png'
+                                                                    src='/profile.png'
                                                                     className="post-user-img" 
                                                                     roundedCircle 
                                                                 />
@@ -606,7 +608,7 @@ function Channels(){
                 {userDetails? ( 
                     <ListGroup as="ol" className='profile-list'>
                         <ListGroup.Item className='list-item first-item' as="li">
-                            <Image src="Group 301.png" className='profile-img' roundedCircle />
+                            <Image src="/Group 301.png" className='profile-img' roundedCircle />
                             <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>{userDetails.name}</p>
                             <p style={{margin:'0'}}>{userDetails.username}</p>
                         </ListGroup.Item>

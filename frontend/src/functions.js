@@ -78,7 +78,7 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
             if (response.status === 200) {  
                 authenticate(true,signupUsername);
                 closeSignUpAlerts();
-                navigateTo('/channels');
+                navigateTo('/channels/homepage');
             } 
         } catch (error) {
                 setShowSignUp401(true);
@@ -108,7 +108,7 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
             if (response.status === 200) {
                 authenticate( true, loginUsername);
                 closeSignUpAlerts();
-                navigateTo('/channels');
+                navigateTo('/channels/homepage');
             }     
         } catch (error) {
             setShowLogIn401(true);

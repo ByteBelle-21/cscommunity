@@ -41,6 +41,10 @@
 }
 
 
+.suggestion-item:hover{
+    cursor: pointer;
+}
+
 .large-block{
     height: 100%;
     width: 78%;

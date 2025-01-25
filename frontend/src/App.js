@@ -48,7 +48,7 @@ function App() {
           <div className='subpages'>
             <Routes>
                 <Route path="/" element={<Homepage authentication={authentication} />}/>
-                <Route path="/channels" element={hasAuthentication ? <Channels /> : <Navigate to="/" />} />
+                <Route path="/channels/:channelsName" element={hasAuthentication ? <Channels /> : <Navigate to="/" />} />
                 <Route path="/messages/:selectedUser" element={hasAuthentication ? <Messages /> : <Navigate to="/" />} />
                 <Route path="/profile" element={hasAuthentication ? <Profile /> : <Navigate to="/" />} />
             </Routes>

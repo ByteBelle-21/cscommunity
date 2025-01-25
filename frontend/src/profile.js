@@ -5,15 +5,19 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Image from 'react-bootstrap/Image';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-
+import { getUserDeatils, getAllChannels, handleChannelCreation,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
+import { useState, useEffect } from 'react';
+import Nav from 'react-bootstrap/Nav';
+import { useNavigate,useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function Profile(){
+    const navigateTo = useNavigate();
 
     const[showDeleteProfileModal, setShowDeleteProfileModal] = useState(false);
     const openDeleteProfileModal = ()=>{
@@ -33,161 +37,94 @@ function Profile(){
         setShowAddMediaModal(false);
     }
 
+
+    const [activeMembers, setActiveMembers] = useState([]);
+    useEffect(()=>{
+        getActiveUsers(setActiveMembers);  
+    },[]);
+
+
+    const[showOffCanvas, setShowOffCanvas] = useState(false);
+    const openOffCanvas = ()=>{
+        setShowOffCanvas(true);
+    }
+
+    const closeOffCanvas = ()=>{
+        setShowOffCanvas(false);
+    }
+
+    const handleMessage=(selectedUser)=>{
+        navigateTo(`/messages/${selectedUser}`);
+    }
+
+    const goToChannel = (channel) =>{
+        navigateTo(`/channels/${channel}`);
+    }
+
+    const [popularChannels, setPopularChannels] = useState([]);
+    useEffect(()=>{
+        const fetchChannels= async()=>{
+            try {
+                const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/popularchannels');
+                if (response.status === 200) {
+                    setPopularChannels(response.data);
+                    console.log("Successfully retrieved popular channels");
+                } 
+            }catch (error) {
+                console.error("Catched axios error: ",error);
+            }
+        }
+        fetchChannels();  
+    },[]);
+
     return(
         <div className="profile">
             <div className='profile-left-block'>
                 <ListGroup as="ol" className='profile-suggestions-list'>
-                        <ListGroup.Item className='suggestion-item' as="li">
-                            <div className="fw-bold">Top Profiles</div>
-                            <hr style={{marginBottom:'0'}}></hr>
-                        </ListGroup.Item>
+                    <p className='fw-bold' style={{padding:'1vh'}}>Top Profiles</p>
+                    <hr style={{margin:'0'}}></hr>
+                    {activeMembers.length > 0 && activeMembers.map(member=>(
                         <ListGroup.Item
                             as="li"
                             className="d-flex justify-content-between align-items-start suggestion-item">
                             <div className="image-container">
                                 <Image 
-                                    src="Group 301.png" 
+                                    src={member.avatar}
                                     className="top-user-img" 
                                     roundedCircle 
                                 />
                             </div>
                             <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
+                            <div className="fw-bold">{member.name}</div>
+                                <Link className='view-link' onClick={openOffCanvas}>View Profile</Link>
+                                <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={member.username} />
                             </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>  
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start suggestion-item">
-                            <div className="image-container">
-                                <Image 
-                                    src="Group 301.png" 
-                                    className="top-user-img" 
-                                    roundedCircle 
-                                />
-                            </div>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">sdbv sdcjsdc </div>
-                                <Link className='view-link'>View Profile</Link>
-                            </div>
-                            <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>chat_bubble</span></Link>
-                        </ListGroup.Item>
+                            <Nav.Link onClick={() => handleMessage(member.username)} >
+                                <span 
+                                class="material-symbols-outlined message-link" 
+                                style={{fontSize:'1vw'}}
+                                >
+                                    chat_bubble
+                                </span>
+                            </Nav.Link>  
+                        </ListGroup.Item> 
+                    ))}
                     </ListGroup>
                     <div className='top-channels-block'>
                             <p className='fw-bold'>Currently Popular Channels</p>
                             <ListGroup as="ol" >
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start" >
-                                    <div className="ms-2 me-auto">
-                                    <div className="fw-bold">Subheading</div>
-                                        Cras justo odio
-                                    </div>
-                                    <Badge className='badge'pill>14 </Badge>
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start">
-                                    <div className="ms-2 me-auto">
-                                    <div className="fw-bold">Subheading</div>
-                                        Cras justo odio
-                                    </div>
-                                    <Badge  pill>14</Badge>
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start channel-item">
-                                    <div className="ms-2 me-auto">
-                                    <div className="fw-bold">Subheading</div>
-                                        Cras justo odio
-                                    </div>
-                                    <Badge  pill>14</Badge>
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start channel-item">
-                                    <div className="ms-2 me-auto">
-                                    <div className="fw-bold">Subheading</div>
-                                        Cras justo odio
-                                    </div>
-                                    <Badge  pill>14</Badge>
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start channel-item">
-                                    <div className="ms-2 me-auto">
-                                    <div className="fw-bold">Subheading</div>
-                                        Cras justo odio
-                                    </div>
-                                    <Badge  pill>14</Badge>
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start channel-item">
-                                    <div className="ms-2 me-auto">
-                                    <div className="fw-bold">Subheading</div>
-                                        Cras justo odio
-                                    </div>
-                                    <Badge  pill>14</Badge>
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start">
-                                    <div className="ms-2 me-auto">
-                                        <div className="fw-bold">Subheading</div>
-                                        Cras justo odio
-                                    </div>
-                                    <Badge  pill>14</Badge>
-                                </ListGroup.Item>
+                                {popularChannels.length > 0 && popularChannels.map(channel=>(
+                                    <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start suggestion-item" 
+                                        onClick={() => {goToChannel(channel.channel)}}>
+                                        <div className="ms-2 me-auto">
+                                        <div className="fw-bold">{channel.channel}</div>
+                                            Created by {channel.username}
+                                        </div>
+                                        <Badge className='badge'pill>{channel.totalposts} </Badge>
+                                    </ListGroup.Item>
+                                ))}
                             </ListGroup>                               
                     </div>
             </div>
