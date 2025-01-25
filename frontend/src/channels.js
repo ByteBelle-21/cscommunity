@@ -112,6 +112,8 @@ function Channels(){
         setInputPost(e.target.value);
     }
 
+
+    const fileRef = useRef(null);
     const [inputFiles, setInputFiles] = useState([]);
     const handleFileInput = (event) => {
         const files = event.target.files;
@@ -136,7 +138,6 @@ function Channels(){
     );
     
     const handleSendPost =async(e)=>{
-        e.preventDefault();
         const current_user = sessionStorage.getItem('auth_user');
         const channel = selectedChannel;
         console.log(replyTo);
@@ -152,6 +153,7 @@ function Channels(){
             const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/post', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
+                setPostReply(0)
                 setReplyTo(null);
                 setInputPost('');
                 fetchAllPosts();
@@ -425,7 +427,7 @@ function Channels(){
                                 {postReply != post.id ? 
                                 <p className='send-reply' onClick={()=>handleReplyClick(post.id, post.post)}>Reply</p> 
                                 : 
-                                <p className='send-reply me-auto' style={{color:'#2F3C7E'}} onClick={()=>setPostReply(1)}>Send Reply</p> }
+                                <p className='send-reply me-auto' style={{color:'#2F3C7E'}} onClick={()=>handleSendPost()}>Send Reply</p> }
                                 {postReply == post.id ? 
                                  <p className='send-reply ' style={{color:'#2F3C7E'}} onClick={()=>handleCancelReply()}>Cancle</p>
                                   :<></>}
@@ -434,9 +436,18 @@ function Channels(){
                              <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${post.username} for post "${replyToPost}"`}>
                                 <Form.Control
                                 as="textarea"
+                                ref={textAreaRef}
                                 placeholder="Leave a comment here"
+                                value={inputPost}
+                                onChange={handleInputChange}
                                 style={{ height: '6vw' }}
                                 />
+                                <input 
+                                    type='file' 
+                                    style={{display:'none'}}
+                                    ref={fileRef}
+                                    onChange={handleFileInput}
+                                    />
                                 <span class="material-symbols-outlined" 
                                     style={{
                                         position: 'absolute',
@@ -444,19 +455,24 @@ function Channels(){
                                         right: '10px',
                                         opacity: 0.7,
                                         cursor: 'pointer',
-                                        }} >
+                                        }} 
+                                    onClick={() => fileRef.current.click()}>
                                     attach_file
                                 </span>
-                                <span class="material-symbols-outlined" 
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: '10px',
-                                        right: '50px',
-                                        opacity: 0.7,
-                                        cursor: 'pointer',
-                                        }} >
-                                    add_reaction
-                                </span>
+                                <OverlayTrigger trigger="click" placement="right" overlay={emojiPopover} >
+                                        <Link>
+                                            <span class="material-symbols-outlined" 
+                                                style={{
+                                                    position: 'absolute',
+                                                    bottom: '10px',
+                                                    right: '50px',
+                                                    opacity: 0.7,
+                                                    cursor: 'pointer',
+                                                    }} >
+                                                add_reaction
+                                            </span>
+                                        </Link>  
+                                </OverlayTrigger>
                             </FloatingLabel>
                             :<></>}
                         </ListGroup.Item>  
