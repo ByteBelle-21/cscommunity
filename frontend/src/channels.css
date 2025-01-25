@@ -104,6 +104,16 @@
 
 .all-posts{
     margin-top: 2vh;
+    overflow-y: auto;
+}
+
+.all-posts::-webkit-scrollbar{
+    width: 0vh;
+    
+}
+
+.all-posts::-webkit-scrollbar-thumb{
+    display: none;
 }
 
 .individual-post{
@@ -115,6 +125,7 @@
     margin-bottom: 1vw ;
     background-color: white;
     overflow-y: auto !important;
+    padding: 1vh;
 }
 
 
@@ -131,13 +142,14 @@
 }
 
 .send-reply{
+    color: #2F3C7E;
     font-size: small;
     font-weight: bold;
 }
 
 .send-reply:hover{
     cursor: pointer;
-    transform: scale(1.1);
+    color:#fd2911;
 }
 
 .list-item{

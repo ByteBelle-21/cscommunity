@@ -244,6 +244,8 @@ function Channels(){
 
     useEffect(()=>{
         fetchAllPosts();  
+        setPostReply(0);
+        setPostComments(0);
     },[selectedChannel]);
 
     return(
@@ -387,7 +389,7 @@ function Channels(){
                 ):(
                 <div className='all-posts'>
                     <div className='individual-post'>
-                    {allPosts.length > 0 && (
+                    {allPosts.length > 0 ? (
                         < span style={{ marginBottom:"2vw"}}>
                          {(()=>{
                              const postsStructure = [];
@@ -429,17 +431,17 @@ function Channels(){
                                         <hr />
                                         <Stack direction='horizontal' gap={4}>
                                             {postComments !== post.id ? 
-                                            <p className='send-reply' style={{ color: '#2F3C7E' }} onClick={() => setPostComments(post.id)}>Show Comments</p>
+                                            <p className='send-reply' onClick={() => setPostComments(post.id)}>Show Comments</p>
                                             :
-                                            <p className='send-reply' style={{ color: '#2F3C7E' }} onClick={() => setPostComments(0)}>Hide Comments</p>
+                                            <p className='send-reply'  onClick={() => setPostComments(0)}>Hide Comments</p>
                                             }
                                             {postReply !== post.id ? 
                                             <p className='send-reply' onClick={() => handleReplyClick(post.id, post.post)}>Reply</p> 
                                             : 
-                                            <p className='send-reply me-auto' style={{ color: '#2F3C7E' }} onClick={() => handleCancelReply()}>Cancel</p>
+                                            <p className='send-reply me-auto'  onClick={() => handleCancelReply()}>Cancel</p>
                                             }
                                             {postReply === post.id ? 
-                                            <p className='send-reply ' style={{ color: '#2F3C7E' }} onClick={() => handleSendPost()}>Send Reply</p>
+                                            <p className='send-reply ' onClick={() => handleSendPost()}>Send Reply</p>
                                             
                                             : <></>
                                             }
@@ -498,7 +500,7 @@ function Channels(){
                                                     < span style={{paddingLeft:`${childPost.level * 3}vw`,  display: postComments === post.id ? '' : 'none'}} className='sfont'>
                                                     <ListGroup.Item
                                                         as="li"
-                                                        style={{border:'none'}}>
+                                                        style={{ border: 'none', padding:'0' }}>
                                                             <span className="d-flex justify-content-between align-items-start">
                                                                 <Image 
                                                                     src='profile.png'
@@ -524,10 +526,10 @@ function Channels(){
                                                             {postReply != childPost.id ? 
                                                             <p className='send-reply' onClick={()=>handleReplyClick(childPost.id, childPost.post)}>Reply</p> 
                                                             : 
-                                                            <p className='send-reply me-auto' style={{color:'#2F3C7E'}} onClick={()=>handleCancelReply()}>Cancle</p>
+                                                            <p className='send-reply me-auto'  onClick={()=>handleCancelReply()}>Cancle</p>
                                                             }
                                                             {postReply == childPost.id ? 
-                                                            <p className='send-reply ' style={{color:'#2F3C7E'}} onClick={()=>handleSendPost()}>Send Reply</p> 
+                                                            <p className='send-reply' onClick={()=>handleSendPost()}>Send Reply</p> 
                                                             :<></>}
                                                         </Stack>
                                                         {postReply == childPost.id ? 
@@ -587,9 +589,11 @@ function Channels(){
                              return postsStructure;
                          })()}
                         </span>
-                    )}
-                        
-                       
+                    ): 
+                        <div className='no_channel'>
+                            <p style={{fontWeight:'bold'}}>No activities on this channel yet. Be the first to start!</p>
+                        </div>
+                    }
                     </div>
                 </div>)}
            </div>
