@@ -387,98 +387,209 @@ function Channels(){
                 ):(
                 <div className='all-posts'>
                     <div className='individual-post'>
-                    {allPosts.length > 0 && allPosts.map(post=>(
-                        <ListGroup as="ol" className='suggestions-list' style={{paddingLeft:`${post.level * 2.5}vw`}}>
-                            <ListGroup.Item
-                            as="li"
-                            className="d-flex justify-content-between align-items-start"
-                            style={{border:'none'}}>
-                                <Image 
-                                    src='profile.png'
-                                    className="post-user-img" 
-                                    roundedCircle 
-                                />
-                          
-                            <div className="ms-2 me-auto" >
-                                <p className='post-owner' style={{fontWeight:'bold'}}>{post.username}</p>
-                                <p className='post-owner'>{post.datetime}</p>
-                            </div>
-                        </ListGroup.Item> 
-                        <ListGroup.Item style={{border:'none'}}>
-                        <p style={{fontWeight:'bold'}}>{post.postTitle}</p>
-                        <p>{post.post}</p>
-                        {post.files.map(file => (                    
-                            <Stack direction="horizontal" gap={1} className="post-file-card">
-                                <a href={allFiles[file.filename]} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                style={{fontSize:'small', textDecoration:'none'}}>{file.filename}</a>
-                            </Stack>
-                        ))}
-                        </ListGroup.Item>
-                        <ListGroup.Item style={{border:'none'}}>
-                            <hr></hr> 
-                            <Stack  direction='horizontal' gap={4}>
-                                {postComments != post.id ? 
-                                    <p className='send-reply' style={{color:'#2F3C7E'}} onClick={()=>setPostComments(1)}>Show Comments</p>
-                                :
-                                    <p className='send-reply' style={{color:'#2F3C7E'}} onClick={()=>setPostComments(0)}>Hide Comments</p>
-                                }
-                                {postReply != post.id ? 
-                                <p className='send-reply' onClick={()=>handleReplyClick(post.id, post.post)}>Reply</p> 
-                                : 
-                                <p className='send-reply me-auto' style={{color:'#2F3C7E'}} onClick={()=>handleSendPost()}>Send Reply</p> }
-                                {postReply == post.id ? 
-                                 <p className='send-reply ' style={{color:'#2F3C7E'}} onClick={()=>handleCancelReply()}>Cancle</p>
-                                  :<></>}
-                            </Stack>
-                            {postReply == post.id ? 
-                             <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${post.username} for post "${replyToPost}"`}>
-                                <Form.Control
-                                as="textarea"
-                                ref={textAreaRef}
-                                placeholder="Leave a comment here"
-                                value={inputPost}
-                                onChange={handleInputChange}
-                                style={{ height: '6vw' }}
-                                />
-                                <input 
-                                    type='file' 
-                                    style={{display:'none'}}
-                                    ref={fileRef}
-                                    onChange={handleFileInput}
-                                    />
-                                <span class="material-symbols-outlined" 
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: '10px',
-                                        right: '10px',
-                                        opacity: 0.7,
-                                        cursor: 'pointer',
-                                        }} 
-                                    onClick={() => fileRef.current.click()}>
-                                    attach_file
-                                </span>
-                                <OverlayTrigger trigger="click" placement="right" overlay={emojiPopover} >
-                                        <Link>
-                                            <span class="material-symbols-outlined" 
+                    {allPosts.length > 0 && (
+                        < span style={{ marginBottom:"2vw"}}>
+                         {(()=>{
+                             const postsStructure = [];
+                             let i = 0;
+                             while (i < allPosts.length) {
+                               const post = allPosts[i];
+                                if (post.level === 0) {
+                                    postsStructure.push(
+                                    <ListGroup as="ol" className='post-list' style={{ paddingLeft: `${post.level * 2.5}vw` }} key={post.id}>
+                                        <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start"
+                                        style={{ border: 'none' }}>
+                                        <Image 
+                                            src='profile.png'
+                                            className="post-user-img" 
+                                            roundedCircle 
+                                        />
+                                        <div className="ms-2 me-auto">
+                                            <p className='post-owner' style={{ fontWeight: 'bold' }}>{post.username}</p>
+                                            <p className='post-owner'>{post.datetime}</p>
+                                        </div>
+                                        </ListGroup.Item>
+                                        <ListGroup.Item style={{ border: 'none' }}>
+                                        <p style={{ fontWeight: 'bold' }}>{post.postTitle}</p>
+                                        <p>{post.post}</p>
+                                        {post.files.map(file => (
+                                            <Stack direction="horizontal" gap={1} className="post-file-card" key={file.filename}>
+                                            <a href={allFiles[file.filename]} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                style={{ fontSize: 'small', textDecoration: 'none' }}>
+                                                {file.filename}
+                                            </a>
+                                            </Stack>
+                                        ))}
+                                        </ListGroup.Item>
+                                        <ListGroup.Item style={{ border: 'none' }}>
+                                        <hr />
+                                        <Stack direction='horizontal' gap={4}>
+                                            {postComments !== post.id ? 
+                                            <p className='send-reply' style={{ color: '#2F3C7E' }} onClick={() => setPostComments(post.id)}>Show Comments</p>
+                                            :
+                                            <p className='send-reply' style={{ color: '#2F3C7E' }} onClick={() => setPostComments(0)}>Hide Comments</p>
+                                            }
+                                            {postReply !== post.id ? 
+                                            <p className='send-reply' onClick={() => handleReplyClick(post.id, post.post)}>Reply</p> 
+                                            : 
+                                            <p className='send-reply me-auto' style={{ color: '#2F3C7E' }} onClick={() => handleCancelReply()}>Cancel</p>
+                                            }
+                                            {postReply === post.id ? 
+                                            <p className='send-reply ' style={{ color: '#2F3C7E' }} onClick={() => handleSendPost()}>Send Reply</p>
+                                            
+                                            : <></>
+                                            }
+                                        </Stack>
+                                        {postReply === post.id ? 
+                                            <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${post.username} for post "${replyToPost}"`}>
+                                            <Form.Control
+                                                as="textarea"
+                                                ref={textAreaRef}
+                                                placeholder="Leave a comment here"
+                                                value={inputPost}
+                                                onChange={handleInputChange}
+                                                style={{ height: '6vw' }}
+                                            />
+                                            <input 
+                                                type='file' 
+                                                style={{ display: 'none' }}
+                                                ref={fileRef}
+                                                onChange={handleFileInput}
+                                            />
+                                            <span className="material-symbols-outlined" 
                                                 style={{
+                                                position: 'absolute',
+                                                bottom: '10px',
+                                                right: '10px',
+                                                opacity: 0.7,
+                                                cursor: 'pointer',
+                                                }} 
+                                                onClick={() => fileRef.current.click()}>
+                                                attach_file
+                                            </span>
+                                            <OverlayTrigger trigger="click" placement="right" overlay={emojiPopover}>
+                                                <Link>
+                                                <span className="material-symbols-outlined" 
+                                                    style={{
                                                     position: 'absolute',
                                                     bottom: '10px',
                                                     right: '50px',
                                                     opacity: 0.7,
                                                     cursor: 'pointer',
                                                     }} >
-                                                add_reaction
-                                            </span>
-                                        </Link>  
-                                </OverlayTrigger>
-                            </FloatingLabel>
-                            :<></>}
-                        </ListGroup.Item>  
-                        </ListGroup>
+                                                    add_reaction
+                                                </span>
+                                                </Link>
+                                            </OverlayTrigger>
+                                            </FloatingLabel>
+                                        : <></>}
+                                        </ListGroup.Item>
+                                            
+                                        {(()=>{
+                                            i = i+1;
+                                            const nestedPosts = [];
+                                            while(i < allPosts.length && allPosts[i].level != 0){
+                                                const childPost = allPosts[i];
+                                                nestedPosts.push(
+                                                    < span style={{paddingLeft:`${childPost.level * 3}vw`,  display: postComments === post.id ? '' : 'none'}} className='sfont'>
+                                                    <ListGroup.Item
+                                                        as="li"
+                                                        style={{border:'none'}}>
+                                                            <span className="d-flex justify-content-between align-items-start">
+                                                                <Image 
+                                                                    src='profile.png'
+                                                                    className="post-user-img" 
+                                                                    roundedCircle 
+                                                                />
+                                                        
+                                                                <div className="ms-2 me-auto" >
+                                                                    <p className='post-owner' style={{fontWeight:'bold'}}>{childPost.username}</p>
+                                                                    <p className='post-owner'>{childPost.datetime}</p>
+                                                                </div>
+                                                        </span>
+                                                        <p>{childPost.post}</p>
+                                                        {childPost.files.map(file => (                    
+                                                            <Stack direction="horizontal" gap={1} className="post-file-card">
+                                                                <a href={allFiles[file.filename]} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer"
+                                                                style={{fontSize:'small', textDecoration:'none'}}>{file.filename}</a>
+                                                            </Stack>
+                                                        ))}
+                                                        <Stack  direction='horizontal' gap={4}>
+                                                            {postReply != childPost.id ? 
+                                                            <p className='send-reply' onClick={()=>handleReplyClick(childPost.id, childPost.post)}>Reply</p> 
+                                                            : 
+                                                            <p className='send-reply me-auto' style={{color:'#2F3C7E'}} onClick={()=>handleCancelReply()}>Cancle</p>
+                                                            }
+                                                            {postReply == childPost.id ? 
+                                                            <p className='send-reply ' style={{color:'#2F3C7E'}} onClick={()=>handleSendPost()}>Send Reply</p> 
+                                                            :<></>}
+                                                        </Stack>
+                                                        {postReply == childPost.id ? 
+                                                        <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${childPost.username} for post "${replyToPost}"`}>
+                                                            <Form.Control
+                                                            as="textarea"
+                                                            ref={textAreaRef}
+                                                            placeholder="Leave a comment here"
+                                                            value={inputPost}
+                                                            onChange={handleInputChange}
+                                                            style={{ height: '4vw' }}
+                                                            />
+                                                            <input 
+                                                                type='file' 
+                                                                style={{display:'none'}}
+                                                                ref={fileRef}
+                                                                onChange={handleFileInput}
+                                                                />
+                                                            <span class="material-symbols-outlined" 
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    bottom: '10px',
+                                                                    right: '10px',
+                                                                    opacity: 0.7,
+                                                                    cursor: 'pointer',
+                                                                    }} 
+                                                                onClick={() => fileRef.current.click()}>
+                                                                attach_file
+                                                            </span>
+                                                            <OverlayTrigger trigger="click" placement="right" overlay={emojiPopover} >
+                                                                    <Link>
+                                                                        <span class="material-symbols-outlined" 
+                                                                            style={{
+                                                                                position: 'absolute',
+                                                                                bottom: '10px',
+                                                                                right: '50px',
+                                                                                opacity: 0.7,
+                                                                                cursor: 'pointer',
+                                                                                }} >
+                                                                            add_reaction
+                                                                        </span>
+                                                                    </Link>  
+                                                            </OverlayTrigger>
+                                                        </FloatingLabel>
+                                                        :<></>}
+                                                    </ListGroup.Item>
+                                                </span>
+                                            );
+                                            i++;
+                                        }
+                                        return nestedPosts;
+                                    })()}
+                                    </ListGroup>
+                                 );
+                               }
+                             }
+                             return postsStructure;
+                         })()}
+                        </span>
+                    )}
                         
-                    ))}
+                       
                     </div>
                 </div>)}
            </div>
