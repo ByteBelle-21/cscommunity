@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useParams } from 'react-router-dom';
-import { fetchSelectedUserDetails } from './functions.js';
+import { fetchSelectedUserDetails, getUserDeatils } from './functions.js';
 import Nav from 'react-bootstrap/Nav';
 import { useRef } from 'react';
 import Popover from 'react-bootstrap/Popover';
@@ -25,8 +25,10 @@ function Messages(){
     const {selectedUser} =  useParams();
 
     const [connectedUserDetails, setConnectedUserDetails] = useState(null);
+    const [loggedInUserDetails, setLoggedInUserDetails] = useState([]);
     useEffect(()=>{
         fetchSelectedUserDetails(setConnectedUserDetails,selectedUser);
+        getUserDeatils(setLoggedInUserDetails);
     },[selectedUser, ]);
 
 
@@ -97,6 +99,7 @@ function Messages(){
             const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/message', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
+                fetchAllMessages();
                 setInputMessage(''); 
             } 
             else{
@@ -107,14 +110,41 @@ function Messages(){
         }
       
     }
-  
+
+    useEffect(()=>{
+        fetchAllMessages();
+    },[])
+
+    const [allMessages, setAllMessages] = useState([]);
+    const fetchAllMessages= async()=>{
+        const you = sessionStorage.getItem('auth_user');
+        const reciever = selectedUser;
+        try {
+            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/allMessages',
+            { params: {loggedIn :you , connected:reciever }});
+            if (response.status === 200) {
+                setAllMessages(response.data);
+                console.log("Successfully retrieved all messages");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+
+    }
+
+    const showPreview =(text, num)=>{
+        const words = text.split(' ');
+        return words.slice(0, num).join(' ')+" . . . . . . . .";
+    }
 
 
     return(
         <div className="messages">
            <div className='message-left-block'>
                 <p className='fw-bold' style={{margin:'1vh'}}>Other Direct Messages</p>
-                <hr></hr>
                 <ListGroup as="ol" className='direct-messages'>
                 {connectedUsers.length >0 && connectedUsers.map(user=>(
                     <ListGroup.Item
@@ -128,7 +158,7 @@ function Messages(){
                             />
                         </div>
                         <div className="ms-2 me-auto">
-                        <div className="fw-bold">{user.name}</div>
+                        <div className="fw-bold">{user.username}</div>
                             <Link className='view-link'>View conversations</Link>
                         </div>
                     </ListGroup.Item>
@@ -150,8 +180,30 @@ function Messages(){
                             <span style={{fontSize:'small', opacity:'70%', fontWeight:'bold'}}>{connectedUserDetails.username}</span>
                         </div>
                     </div> :<></> }
-               <div className='me-auto message-block'>
-                    
+                <div className='message-block'>
+                    {allMessages.length > 0 && allMessages.map(message=>(
+                        message.reciever === loggedInUserDetails.id ?
+                            (<div className='recieved-message'>
+                                <Nav.Link >
+                                    <img src={connectedUserDetails.avatar} style={{height:'1.5vw'}}></img>
+                                    <strong style={{marginLeft:'1vw',opacity:'0.7'}} className='sfont'>{connectedUserDetails.username}</strong>    
+                                </Nav.Link >
+                                <div className='message sfont' >
+                                    {message.message}
+                                </div>
+                            </div>  
+                            ) 
+                        :
+                            (<div className='sent-message'>
+                                <Nav.Link >
+                                    <strong style={{marginRight:'1vw',opacity:'0.7'}} className='sfont'>You</strong> 
+                                    <img src={loggedInUserDetails.avatar} style={{height:'1.5vw'}}></img>   
+                                </Nav.Link >
+                                <div className='message sfont' >
+                                    {message.message}
+                                </div>
+                            </div>)
+                    ))}
                </div>
                <div className='textarea-block'>
                     <input 
