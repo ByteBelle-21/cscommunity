@@ -169,3 +169,20 @@
     margin-top: 2vh;
     padding: 1vh;
 }
+
+.profile-row{
+    display: flex ;
+    justify-content: space-between;
+    gap: 4px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.profile-row-img {
+    width: 12%;
+}
+
+.profile-row-img:hover{
+    cursor: pointer;
+    border: solid 2px  #f02132 ;
+}

@@ -239,6 +239,13 @@ function Profile(){
         setAvatarShow(false);
     }
 
+    const [selectedAvatar, setSelectedAvatar] = useState();
+    const handleAvatarClick=(index,imgNum)=>{
+        setSelectedAvatar(index);
+        setAvatar(`/Group ${imgNum}.png`);
+    }
+
+
     return(
         <div className="profile">
             <div className='profile-left-block'>
@@ -281,8 +288,8 @@ function Profile(){
                                         className="d-flex justify-content-between align-items-start suggestion-item" 
                                         onClick={() => {goToChannel(channel.channel)}}>
                                         <div className="ms-2 me-auto">
-                                        <div className="fw-bold">{channel.channel}</div>
-                                            Created by {channel.username}
+                                            <div className="fw-bold">{channel.channel}</div>
+                                            <span className='sfont'>Created by {channel.username}</span>
                                         </div>
                                         <Badge className='badge'pill>{channel.totalposts} </Badge>
                                     </ListGroup.Item>
@@ -295,26 +302,43 @@ function Profile(){
                     {isEditMode ? 
                         <>
                             <Image src={userDetails.avatar} className='own-profile-img edit-mode-img'  roundedCircle  onClick={() => {openAvatar()}}/>
-                            <Modal size='lg'  backdrop="static" keyboard={false} show={avatarShow} onHide={closeAvatar} centered style={{"--bs-modal-border-radius":'1vw'}} >
-                                    <Modal.Body className='vertical-placement'>
-                                        <h5 className='mb-4'>Choose your Avatar</h5>
-                                        <Form className='from3'>
-                                            <Form.Group controlId="signup-avatar">
-                                                    <Container className='wrap-container'>
-                                                        {[301, 302, 304, 305, 306, 303].map((imgNum, index) => (
-                                                                <Button key={index}>
-                                                                    <img src={`/Group ${imgNum}.png`} alt={`Avatar ${index + 1}`} />
-                                                                </Button>
-                                                        ))}
-                                                    </Container>
-                                                    <Container className='horizontal-placement' style={{gap:5}}>
-                                                        <Button onClick={closeAvatar}>Cancle</Button>
-                                                        <Button  >Done</Button>
-                                                    </Container> 
-                                            </Form.Group>
-                                        </Form>
-                                    </Modal.Body>
-                                </Modal>
+                            <Modal 
+                                size="lg" 
+                                show={avatarShow} 
+                                onHide={setAvatarShow}
+                                centered>
+                                <Modal.Body>
+                                    <p className='mfont create-channel-title' >
+                                        <span 
+                                            class="material-symbols-outlined" 
+                                            style={{fontSize:'1.5vw', 
+                                                    marginRight:'0.5vh',
+                                                    color:'#2F3C7E'}}>
+                                            account_circle
+                                        </span>
+                                       Choose Your profile
+                                    </p>
+                                    <p>Pick your favorite avatar to represent you in this community</p>
+                                    <div className='profile-row'>
+    
+                                        {[301, 302, 303, 304, 306, 305].map((imgNum, index) => (
+                                            <img 
+                                            src={`/Group ${imgNum}.png`} 
+                                            className='profile-row-img' 
+                                            onClick={(()=>{handleAvatarClick(index,imgNum)})}
+                                            style={{border:selectedAvatar  === index ? "solid 2px  #f02132": ""}}/>
+                                        ))}
+                                    </div>
+                                </Modal.Body>
+                                <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
+                                    <Button className='cancle-channel-btn' onClick={closeAvatar}>
+                                        Cancle
+                                    </Button>
+                                    <Button className='edit-profile-btn' onClick={closeAvatar}>
+                                        Save
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
                             <span style={{color:'red', fontSize:'small', marginBottom:'0.5vh'}}> Click on image to edit</span>
                         </>
                     : <Image src={userDetails.avatar} className='own-profile-img' roundedCircle />}
