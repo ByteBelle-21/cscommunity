@@ -77,6 +77,10 @@ function Profile(){
         fetchChannels();  
     },[]);
 
+    useEffect(()=>{
+        fetchUserDetails();
+    },[]);
+
 
     const [id, setId] = useState();
     const [userDetails, setUserDetails] = useState([]);
@@ -87,10 +91,30 @@ function Profile(){
     const [skills, setSkills] = useState('');
     const [avatar, setAvatar] = useState(''); 
 
-    useEffect(()=>{
+    const fetchUserDetails= async()=>{
         const current_user = sessionStorage.getItem('auth_user');
-        fetchSelectedUserDetails(setUserDetails,current_user);
-    },[]);
+        try {
+            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+                params: {user: current_user}
+            });
+            if (response.status === 200) {
+                setId(response.data.id);
+                setUserDetails(response.data);
+                setName(response.data.name);
+                setUsername(response.data.username);
+                setEmail(response.data.email);
+                setOccupation(response.data.occupation);
+                setSkills(response.data.skills);
+                setAvatar(response.data.avatar);
+                console.log("Successfully retrieved current user details");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
 
 
     const [isEditMode, setEditMode] = useState(false);
@@ -103,9 +127,30 @@ function Profile(){
         return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
-    const handleSaveChanges = () => { 
-        setEditMode(!isEditMode);
+    const saveChanges = async(e)=>{
+        const userId = id;
+        const skillsArray = skills.split(',').map(item => item.trim()).join(',');
+        if(skillsArray.length ==0 || !username || !email || !name || !occupation || !avatar){
+            return;
+        }
+        const data = {
+            userId,username, email, name, occupation, skills: skillsArray, avatar
+        }
+        try {
+            const response = await axios.put('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/saveChanges', data);
+            if (response.status === 200) {
+                handleEditButtonClick();
+                fetchUserDetails();
+                console.log("Successfully saved all changes")
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
     }
+
 
     const [mainPost, setMainPost] = useState(null); 
     const goToPost = async (postId,channelName) =>{
@@ -114,6 +159,8 @@ function Profile(){
             navigateTo(`/channels/${encodeURIComponent(channelName)}?postId=${mainPost}`);
         }
     }
+
+
 
 
     return(
@@ -171,7 +218,7 @@ function Profile(){
                 <div className='own-profile-img-block'>
                     <Image src={userDetails.avatar} className='own-profile-img' roundedCircle />
                     {isEditMode ? (
-                        <Button className="edit-profile-btn" onClick={()=>{handleSaveChanges()}} >
+                        <Button className="edit-profile-btn" onClick={()=>{saveChanges()}} >
                             Save Changes
                         </Button>
 
@@ -344,8 +391,9 @@ function Profile(){
                                         placeholder="Name"
                                         defaultValue={userDetails.name}
                                         readOnly={!isEditMode} 
+                                        onChange={(e) => setName( e.target.value)}
                                     />
-                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                  
                                     </Form.Group>
                                     <Form.Group as={Col} md="4" controlId="validationCustomUsername">
                                         <Form.Label>Username</Form.Label>
@@ -357,10 +405,8 @@ function Profile(){
                                             aria-describedby="inputGroupPrepend"
                                             required
                                             readOnly={!isEditMode} 
+                                            onChange={(e) => setUsername( e.target.value)}
                                             />
-                                            <Form.Control.Feedback type="invalid">
-                                            Please choose a username.
-                                            </Form.Control.Feedback>
                                         </InputGroup>
                                     </Form.Group>
                                 </Row>
@@ -368,17 +414,21 @@ function Profile(){
                                     <Form.Group as={Col} md="6" controlId="validationCustom03">
                                         <Form.Label>Email address</Form.Label>
                                         
-                                        <Form.Control type="text" placeholder={userDetails.email} required  readOnly={!isEditMode} />
-                                        <Form.Control.Feedback type="invalid">
-                                            Please provide a valid city.
-                                        </Form.Control.Feedback>
+                                        <Form.Control 
+                                        type="text" 
+                                        placeholder={userDetails.email} 
+                                        required  
+                                        readOnly={!isEditMode}
+                                        onChange={(e) => setEmail( e.target.value)} />
                                         </Form.Group>
                                         <Form.Group as={Col} md="3" controlId="validationCustom04">
                                         <Form.Label>Occupation</Form.Label>
-                                        <Form.Control type="text" placeholder={userDetails.occupation} required  readOnly={!isEditMode} />
-                                        <Form.Control.Feedback type="invalid">
-                                            Please provide a valid state.
-                                        </Form.Control.Feedback>
+                                        <Form.Control 
+                                        type="text" 
+                                        placeholder={userDetails.occupation} 
+                                        required  
+                                        readOnly={!isEditMode} 
+                                        onChange={(e) => setOccupation( e.target.value)}/>
                                     </Form.Group>
                                 </Row>
                                 <Row>
@@ -393,10 +443,8 @@ function Profile(){
                                                 )
                                             } 
                                         required  
-                                        readOnly={!isEditMode} />
-                                        <Form.Control.Feedback type="invalid">
-                                            Please provide a valid city.
-                                        </Form.Control.Feedback>
+                                        readOnly={!isEditMode}
+                                        onChange={(e) => setSkills( e.target.value)} />
                                     </Form.Group>
                                 </Row>
                             </Form>
