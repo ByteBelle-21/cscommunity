@@ -166,7 +166,7 @@
 .profile-link{
     font-weight: bold;
     text-decoration: none;
-    color: #d84434;
+    color: #d84434 !important;
     padding: 1vh;
 }
 
@@ -188,7 +188,7 @@
     left: 0;
     width: 100%; 
     height: 50%; 
-    background-color: #b2fcec; 
+    background-color: #2F3C7E; 
 }
 
 .profile-img{

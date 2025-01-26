@@ -342,60 +342,73 @@ function Channels(){
                             <span class="material-symbols-outlined" style={{marginRight:'1vh'}}> add</span> 
                             <p style={{margin:'0'}} className='fw-bold'>What's on your mind ?</p>
                         </Button>
-                    <Modal 
-                    size="md" 
-                    backdrop="static"
-                    show={showPostModal} 
-                    onHide={closePostModal}
-                    centered>
-                        <Modal.Body>
-                            <p className='mfont create-channel-title' >
-                                <span class="material-symbols-outlined" style={{fontSize:'1.5vw', marginRight:'0.5vh'}}>mail</span>
-                                Create a new post
-                            </p>
-                            <p><span className='fw-bold'>Channel :</span>{channelsName}</p>
-                            <Form.Group >
-                                <Form.Label>Title</Form.Label>
-                                <Form.Control  type="text" 
-                                                required
-                                                placeholder="Enter title" 
-                                                value={inputPostTitle}
-                                                className='mb-3 ' 
-                                                style={{fontSize:'calc(0.4em + 1vmin)'}}
-                                                onChange={handleTitleChange}/>
-                            </Form.Group>
-                            <Form.Group  >
-                                <Form.Label style={{display:'flex', flexDirection:'row'}}>
-                                    <span className='me-auto'>Overview</span> 
-                                    <OverlayTrigger trigger="click" placement="right" overlay={emojiPopover} >
-                                        <Link>
-                                            <span class="material-symbols-outlined">add_reaction</span>
-                                        </Link>  
-                                    </OverlayTrigger>                              
-                                </Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Write the overview here"
-                                    ref={textAreaRef}
-                                    style={{height:'15vh'}}
-                                    value={inputPost}
-                                    className='mb-3 '
-                                    onChange={handleInputChange} />
-                            </Form.Group>
-                            <Form.Group controlId="formFileMultiple" >
-                                <Form.Label>Attachments</Form.Label>
-                                <Form.Control type="file" multiple  onChange={handleFileInput}/>
-                            </Form.Group>
-                        </Modal.Body>
-                        <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
-                            <Button className='cancle-channel-btn' onClick={closePostModal}>
-                                Cancle
-                            </Button>
-                            <Button className='create-channel-btn' onClick={handleSendPost}>
-                                Add new post
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
+                        <Modal 
+                            size="md" 
+                            backdrop="static"
+                            show={showPostModal} 
+                            onHide={closePostModal}
+                            centered>
+                            <Modal.Body>
+                                <p className='mfont create-channel-title' >
+                                    <span class="material-symbols-outlined" style={{fontSize:'1.5vw', marginRight:'0.5vh'}}>mail</span>
+                                    {channelsName != 'homepage' ? <span>Create a new post</span> : <span>How to create new post ?</span>}
+                                </p>
+                                {channelsName != 'homepage' ? <p><span className='fw-bold'>Channel :</span>{channelsName}</p> 
+                                : <p style={{textAlign:'center'}}>Let's get the overview how you can create new post. Go to the channel where you want to create you new post.</p>}
+                                <Form.Group >
+                                    <Form.Label>Title</Form.Label>
+                                    <Form.Control  type="text" 
+                                                    required
+                                                    placeholder= {channelsName != 'homepage' ?"Enter title" : "Add title of your post here"}
+                                                    value={inputPostTitle}
+                                                    className='mb-3 ' 
+                                                    style={{fontSize:'calc(0.4em + 1vmin)'}}
+                                                    onChange={handleTitleChange}
+                                                    readOnly = {channelsName == 'homepage'}/>
+                                </Form.Group>
+                                <Form.Group  >
+                                    <Form.Label style={{display:'flex', flexDirection:'row'}}>
+                                        <span className='me-auto'>Overview</span> 
+                                        <OverlayTrigger trigger="click" placement="right" overlay={emojiPopover} >
+                                            <Link>
+                                                <span class="material-symbols-outlined">add_reaction</span>
+                                            </Link>  
+                                        </OverlayTrigger>                              
+                                    </Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        placeholder={channelsName != 'homepage' ?
+                                        "Write the overview here" 
+                                        : "Add the details of your post here. You can also add reactions to your post. Click the emoji icon and choose reactions of your choice!"}
+                                        ref={textAreaRef}
+                                        style={{height:'15vh'}}
+                                        value={inputPost}
+                                        className='mb-3 '
+                                        onChange={handleInputChange} 
+                                        readOnly = {channelsName == 'homepage'}/>
+                                </Form.Group>
+                                <Form.Group controlId="formFileMultiple" >
+                                    <Form.Label>Attachments</Form.Label>
+                                    <Form.Control type="file" multiple  onChange={handleFileInput}  readOnly ={channelsName == 'homepage'}/>
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
+                                {channelsName != 'homepage' ?
+                                <>
+                                    <Button className='cancle-channel-btn' onClick={closePostModal}>
+                                        Cancle
+                                    </Button> 
+                                    <Button className='create-channel-btn' onClick={handleSendPost}>
+                                        Add new post
+                                    </Button>
+                                </>
+                                :
+                                <Button className='create-channel-btn' onClick={closePostModal}>
+                                    Close Overview
+                                </Button>
+                                }
+                            </Modal.Footer>
+                        </Modal>
                 </div>
                 {channelsName == "homepage" ? (
                     <div className='no_channel'>
@@ -624,7 +637,7 @@ function Channels(){
                 {userDetails? ( 
                     <ListGroup as="ol" className='profile-list'>
                         <ListGroup.Item className='list-item first-item' as="li">
-                            <Image src="/Group 301.png" className='profile-img' roundedCircle />
+                            <Image src={userDetails.avatar} className='profile-img' roundedCircle />
                             <p className='rfont' style={{margin:'0', fontWeight:'bold'}}>{userDetails.name}</p>
                             <p style={{margin:'0'}}>{userDetails.username}</p>
                         </ListGroup.Item>
@@ -637,14 +650,12 @@ function Channels(){
                             <p style={{margin:'0', fontWeight:'bold'}}>{userDetails.totalConnections}</p>
                         </ListGroup.Item>
                         <ListGroup.Item className='list-item' as="li">
-                            <Link className='profile-link' onClick={()=> navigateTo('/profile')}>View Profile</Link>
+                            <Nav.Link className='profile-link sfont' onClick={()=> navigateTo('/profile')}>View Profile</Nav.Link>
                         </ListGroup.Item>
                     </ListGroup>) : <p>Retriving user details</p>}
                 <div className='suggestions'>
                     <ListGroup as="ol" className='suggestions-list'>
-                        <ListGroup.Item className='suggestion-item' as="li">
-                            <div className="fw-bold">Top Profiles</div>
-                        </ListGroup.Item>
+                        <p className='fw-bold' style={{padding:'1vh'}}>Top Profiles</p>
                         {activeMembers.length > 0 && activeMembers.map(member=>(
                             <ListGroup.Item
                                 as="li"
