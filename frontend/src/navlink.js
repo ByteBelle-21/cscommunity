@@ -41,10 +41,12 @@ function Navlink({authentication,removeAuthentication}){
     }
 
     const closeSearchModal = ()=>{
-        setSearchChannelResult([]);
         setShowSearchModal(false);
         setSearchSelect('');
         setSearchText('');
+        setSearchChannelResult([]);
+        setSearchPostResult([]);
+        setSearchPeopleResult([]);
     }
 
 
@@ -94,6 +96,9 @@ function Navlink({authentication,removeAuthentication}){
     useEffect(()=>{
         if(searchSelect === '' || searchSelect === '0'){
             setShowSearchError(true);
+            setSearchChannelResult([]);
+            setSearchPostResult([]);
+            setSearchPeopleResult([]);
             setSearchText('');
         }
     }, [searchSelect]);
@@ -151,10 +156,10 @@ function Navlink({authentication,removeAuthentication}){
 
 
     const[showOffCanvas, setShowOffCanvas] = useState(false);
-    const openOffCanvas = (personId)=>{
-        if(personId !== userDetails.id){
-            closeSearchModal();
-            setShowOffCanvas(true);
+    const openOffCanvas = (username)=>{
+        closeSearchModal();
+        if(username !== userDetails.username){
+            navigateTo(`/messages/${username}`);
         }
         else{
             navigateTo('/profile');  
@@ -256,8 +261,8 @@ function Navlink({authentication,removeAuthentication}){
                                                     </div>
                                                     <div className="ms-2 me-auto">
                                                     <div className="fw-bold">{person.name}</div>
-                                                        <Link className='view-link' onClick={openOffCanvas(person.id)}>View Profile</Link>
-                                                        <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={person.username} />
+                                                        <Nav.Link className='view-link' onClick={() =>openOffCanvas(person.username)}>View Profile</Nav.Link>
+                                                        
                                                     </div>
                                                 </ListGroup.Item> 
                                             ))}

@@ -228,7 +228,7 @@
 .view-link{
     font-size: small;
     text-decoration: none;
-    color: #d84434;
+    color: #d84434 !important; 
     font-weight: bold;
 }
 

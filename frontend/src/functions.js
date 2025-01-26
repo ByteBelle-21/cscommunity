@@ -285,6 +285,8 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
     const [selectedUserDetails, setSelectedUserDetails] = useState([]);
     useEffect(()=>{
         fetchSelectedUserDetails(setSelectedUserDetails, otherUser);
+        console.log("i am here in offcamavs");
+        console.log(showOffCanvas);
     },[]);
 
 
