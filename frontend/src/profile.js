@@ -10,7 +10,7 @@ import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import { getMainPost, fetchSelectedUserDetails,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
+import { getMainPost, fetchSelectedUserDetails,getActiveUsers,SelectedUserDetailsCanvas,fetchUserMedia } from './functions.js';
 import { useState, useEffect } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { useNavigate,useLocation } from 'react-router-dom';

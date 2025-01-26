@@ -29,16 +29,17 @@ function Channels(){
     const urlParams = new URLSearchParams(location.search);
     const postId = urlParams.get('postId');
 
-    const[postComments, setPostComments] = useState(0);
 
+    const[postComments, setPostComments] = useState(0);
     useEffect(()=>{
         if(postId){
             const searchedPost = document.getElementById(postId);
             if(searchedPost){
+                setPostComments(postId);
                 searchedPost.scrollIntoView({behavior:'smooth'});
             }
         }
-    },[postId])
+    },[])
 
 
 
@@ -80,6 +81,12 @@ function Channels(){
         getUserDeatils(setUserDetails); 
         fetchAllPosts();   
     },[channelsName]);
+
+    useEffect(()=>{
+        getUserDeatils(setUserDetails); 
+        fetchAllPosts();   
+    },[]);
+
 
     const [fetchAgain, setFetchAgain] = useState(false);
     const [channel, setChannel] = useState('');
@@ -137,13 +144,23 @@ function Channels(){
 
     const fileRef = useRef(null);
     const [inputFiles, setInputFiles] = useState([]);
+    const [gotFile, setGotFiles] = useState(false);
     const handleFileInput = (event) => {
         const files = event.target.files;
         if (files) {
+             setGotFiles(true);
             setInputFiles(prev =>[...prev,...Array.from(files)]);
         }
         console.log(inputFiles.length);
     };
+
+    const handleFileDelete=(filename)=>{
+        setInputFiles((prev) => prev.filter((file) => file.name !== filename));
+        if(inputFiles.length===0){
+            setGotFiles(false);
+        }
+    }
+
 
     const textAreaRef = useRef(null);
     const handleEmojiSelect = (emoji) =>{
@@ -159,10 +176,14 @@ function Channels(){
         </Popover>
     );
     
-    const handleSendPost =async(e)=>{
+    const handleSendPost =async(seeComments)=>{
+        if(seeComments !== 0) {
+            setPostComments(seeComments);
+        }{
+            
+        }
         const current_user = sessionStorage.getItem('auth_user');
         const channel = channelsName;
-        console.log(replyTo);
         const data = {
             current_user,
             inputPostTitle,
@@ -402,7 +423,7 @@ function Channels(){
                                     <Button className='cancle-channel-btn' onClick={closePostModal}>
                                         Cancle
                                     </Button> 
-                                    <Button className='create-channel-btn' onClick={handleSendPost}>
+                                    <Button className='create-channel-btn' onClick={() =>handleSendPost(0)}>
                                         Add new post
                                     </Button>
                                 </>
@@ -444,7 +465,7 @@ function Channels(){
                                         className="d-flex justify-content-between align-items-start"
                                         style={{ border: 'none' }}>
                                         <Image 
-                                            src='/profile.png'
+                                            src={post.avatar}
                                             className="post-user-img" 
                                             roundedCircle 
                                         />
@@ -481,12 +502,27 @@ function Channels(){
                                             <p className='send-reply me-auto'  onClick={() => handleCancelReply()}>Cancel</p>
                                             }
                                             {postReply === post.id ? 
-                                            <p className='send-reply ' onClick={() => handleSendPost()}>Send Reply</p>
+                                            <p className='send-reply ' onClick={() => {handleSendPost(post.id)}}>Send Reply</p>
                                             
                                             : <></>
                                             }
                                         </Stack>
                                         {postReply === post.id  ? 
+                                           <>
+                                           <Stack direction="horizontal" gap={4}>
+                                            {gotFile && inputFiles.map(file =>(
+                                                    <Stack direction="horizontal" gap={1}>
+                                                    <span class="material-symbols-outlined" 
+                                                    style={{ fontSize: 'small', cursor:'pointer'}} 
+                                                    onClick={()=>{handleFileDelete(file.name)}}>close</span>
+                                                        <p
+                                                            style={{ fontSize: 'small', color:'#2F3C7E', marginBottom:'0.2vh' }}>
+                                                            {file.name}
+                                                        </p>
+                                                    </Stack>
+                                                ))}
+                                           
+                                            </Stack>
                                             <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${post.username} for post "${replyToPost}"`}>
                                             <Form.Control
                                                 as="textarea"
@@ -528,6 +564,7 @@ function Channels(){
                                                 </Link>
                                             </OverlayTrigger>
                                             </FloatingLabel>
+                                            </>
                                         : <></>}
                                         </ListGroup.Item>
                                             
@@ -535,15 +572,16 @@ function Channels(){
                                             i = i+1;
                                             const nestedPosts = [];
                                             while(i < allPosts.length && allPosts[i].level != 0){
+                                                const isIdThere = postId === post.id;
                                                 const childPost = allPosts[i];
                                                 nestedPosts.push(
-                                                    < span style={{paddingLeft:`${childPost.level * 3}vw`,  display: postComments === post.id ? '' : 'none'}} className='sfont'>
+                                                    < span style={{paddingLeft:`${childPost.level * 3}vw`,  display: (postComments === post.id || isIdThere) ? '' : 'none'}} className='sfont'>
                                                     <ListGroup.Item
                                                         as="li"
                                                         style={{ border: 'none', padding:'0' }}>
                                                             <span className="d-flex justify-content-between align-items-start">
                                                                 <Image 
-                                                                    src='/profile.png'
+                                                                     src={childPost.avatar}
                                                                     className="post-user-img" 
                                                                     roundedCircle 
                                                                 />
@@ -569,10 +607,25 @@ function Channels(){
                                                             <p className='send-reply me-auto'  onClick={()=>handleCancelReply()}>Cancle</p>
                                                             }
                                                             {postReply == childPost.id ? 
-                                                            <p className='send-reply' onClick={()=>handleSendPost()}>Send Reply</p> 
+                                                            <p className='send-reply' onClick={()=>handleSendPost(post.id)}>Send Reply</p> 
                                                             :<></>}
                                                         </Stack>
                                                         {postReply == childPost.id ? 
+                                                        <>
+                                                        <Stack direction="horizontal" gap={4}>
+                                                            {gotFile && inputFiles.map(file =>(
+                                                                    <Stack direction="horizontal" gap={1}>
+                                                                    <span class="material-symbols-outlined" 
+                                                                    style={{ fontSize: 'small', cursor:'pointer'}} 
+                                                                    onClick={()=>{handleFileDelete(file.name)}}>close</span>
+                                                                        <p
+                                                                            style={{ fontSize: 'small', color:'#2F3C7E', marginBottom:'0.2vh' }}>
+                                                                            {file.name}
+                                                                        </p>
+                                                                    </Stack>
+                                                                ))}
+                                                        
+                                                        </Stack>
                                                         <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${childPost.username} for post "${replyToPost}"`}>
                                                             <Form.Control
                                                             as="textarea"
@@ -580,7 +633,7 @@ function Channels(){
                                                             placeholder="Leave a comment here"
                                                             value={inputPost}
                                                             onChange={handleInputChange}
-                                                            style={{ height: '4vw' }}
+                                                            style={{ height: '4vw' , marginBottom:'4vh'}}
                                                             />
                                                             <input 
                                                                 type='file' 
@@ -614,6 +667,7 @@ function Channels(){
                                                                     </Link>  
                                                             </OverlayTrigger>
                                                         </FloatingLabel>
+                                                        </>
                                                         :<></>}
                                                     </ListGroup.Item>
                                                 </span>
