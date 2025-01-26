@@ -68,8 +68,10 @@ function Navlink({authentication,removeAuthentication}){
     const[connectedUsers, setConnectedUsers] = useState(null);
     useEffect(()=>{
         fetchConnectedUsers(setConnectedUsers);
-    },[])
+    })
 
+    
+   
     
     const goToMessages = () =>{
         const selectedUser = connectedUsers[connectedUsers.length -1].username;
@@ -303,9 +305,10 @@ function Navlink({authentication,removeAuthentication}){
                     <Nav.Item >
                         <Nav.Link onClick={()=>{goToChannels()}}> Channels</Nav.Link>
                     </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link  onClick={goToMessages}> Messages</Nav.Link>
-                    </Nav.Item>
+                    {connectedUsers  && connectedUsers.length > 0 ?
+                        <Nav.Item>
+                            <Nav.Link  onClick={goToMessages}> Messages</Nav.Link>
+                        </Nav.Item> :<></> }
                     <Nav.Item>
                         <Nav.Link  onClick={goToProfile}> Profile</Nav.Link>
                     </Nav.Item>

@@ -163,35 +163,23 @@ function Profile(){
         }
     }
 
-   useEffect(()=>{
-    fetchUserMedia();
-   },[userDetails]);
 
-    const[ userSocialMedia, setUserSocialMedia] = useState([]);
-    const [socialMedialLimit, setSocialMediaLimit] = useState(false);
-    const fetchUserMedia= async()=>{
-        try {
-            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/socialMedia',{
-                params: {user: userDetails.id}
-            });
-            if (response.status === 200) {
-                setUserSocialMedia(response.data);
-                if(response.data.length === 3){
-                    setSocialMediaLimit(true);
-                }
-                else{
-                    setSocialMediaLimit(false);
-                }
-                console.log(response.data);
-                console.log("Successfully retrieved current user social media");
-            } 
-            else if(response.status === 401){
-                console.log(response.message)
+   const[ userSocialMedia, setUserSocialMedia] = useState([]);
+   const [socialMedialLimit, setSocialMediaLimit] = useState(false);
+    useEffect(()=>{
+        if(userDetails != []){
+            fetchUserMedia(userDetails.id, setUserSocialMedia);
+            if(userSocialMedia.length === 3){
+                setSocialMediaLimit(true);
             }
-        } catch (error) {
-            console.error("Catched axios error: ",error);
+            else{
+                setSocialMediaLimit(false);
+            }
         }
-    }
+    },[userDetails]);
+
+  
+   
 
     const handleMediaDeletion = async (mediaID, selectedMediaType) => {
         try {

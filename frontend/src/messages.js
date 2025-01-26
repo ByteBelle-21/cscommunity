@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useParams } from 'react-router-dom';
-import { fetchSelectedUserDetails, getUserDeatils,fetchConnectedUsers,getMainPost } from './functions.js';
+import { fetchSelectedUserDetails, getUserDeatils,fetchConnectedUsers,getMainPost,fetchUserMedia } from './functions.js';
 import Nav from 'react-bootstrap/Nav';
 import { useRef } from 'react';
 import Popover from 'react-bootstrap/Popover';
@@ -29,7 +29,7 @@ function Messages(){
     useEffect(()=>{
         fetchSelectedUserDetails(setConnectedUserDetails,selectedUser);
         getUserDeatils(setLoggedInUserDetails);
-    },[selectedUser, ]);
+    },[]);
 
 
     const [connectedUsers, setConnectedUsers] = useState([]);
@@ -137,6 +137,17 @@ function Messages(){
             navigateTo(`/channels/${encodeURIComponent(channelName)}?postId=${mainPost}`);
         }
     }
+    
+   
+    const[ userSocialMedia, setUserSocialMedia] = useState([]);
+    useEffect(()=>{
+        if(connectedUserDetails != null){
+            fetchUserMedia(connectedUserDetails.id, setUserSocialMedia)
+        }
+    },[connectedUserDetails]);
+   
+
+
 
     return(
         <div className="messages">
@@ -239,20 +250,15 @@ function Messages(){
                         </ListGroup.Item>
                         <ListGroup.Item as="li"  className='social-media-item'>
                             <Stack direction='horizontal' gap={4}>
-                                <Nav.Link >
-                                    <Image  src="/facebook.png"  className="social-media-img"  roundedCircle />
+                                {userSocialMedia.length > 0 && userSocialMedia.map(media=>(
+                                    <Nav.Link >
+                                        <Image  src={`/${media.type}.png`}  className="social-media-img"  roundedCircle />
+                                    </Nav.Link>
+                                ))}
+                                <Nav.Link>
+                                    <Image  src="/message.png"  className="social-media-img" roundedCircle  onClick={() => {navigateTo(`/messages/${connectedUserDetails.username}`)}}/>
                                 </Nav.Link>
-                                <Link>
-                                    <Image  src="/instagram.png"  className="social-media-img"  roundedCircle />
-                                </Link>
-                                <Link>
-                                    <Image  src="/linkedin.png"  className="social-media-img"  roundedCircle />
-                                </Link>
-                                <Link>
-                                    <Image  src="/message.png"  className="social-media-img" roundedCircle />
-                                </Link>
                             </Stack>
-                        
                         </ListGroup.Item>
                         <ListGroup.Item className='profile-skills-item' as="li">
                             <hr></hr>

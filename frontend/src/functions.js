@@ -288,9 +288,10 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
         fetchSelectedUserDetails(setSelectedUserDetails, otherUser);
     },[]);
 
+    const[ userSocialMedia, setUserSocialMedia] = useState([]);
     useEffect(()=>{
         if(selectedUserDetails != []){
-            fetchUserMedia();
+            fetchUserMedia(selectedUserDetails.id, setUserSocialMedia);
         }
     },[selectedUserDetails]);
 
@@ -300,25 +301,6 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
         return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
-    const[ userSocialMedia, setUserSocialMedia] = useState([]);
-    const fetchUserMedia= async()=>{
-       
-        try {
-            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/socialMedia',{
-                params: {user: selectedUserDetails.id}
-            });
-            if (response.status === 200) {
-                setUserSocialMedia(response.data);
-                console.log(response.data);
-                console.log("Successfully retrieved current user social media");
-            } 
-            else if(response.status === 401){
-                console.log(response.message)
-            }
-        } catch (error) {
-            console.error("Catched axios error: ",error);
-        }
-    }
 
     const navigateTo = useNavigate();
     return(
@@ -516,3 +498,20 @@ export async function getMainPost(postId,setMainPost){
 }
 
 
+export async function fetchUserMedia(selectedPerson,setUserSocialMedia ){  
+    try {
+        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/socialMedia',{
+            params: {user: selectedPerson}
+        });
+        if (response.status === 200) {
+            setUserSocialMedia(response.data);
+            console.log(response.data);
+            console.log("Successfully retrieved current user social media");
+        } 
+        else if(response.status === 401){
+            console.log(response.message)
+        }
+    } catch (error) {
+        console.error("Catched axios error: ",error);
+    }
+}
