@@ -16,7 +16,7 @@ import Nav from 'react-bootstrap/Nav';
 import { useNavigate,useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
-
+import Container from 'react-bootstrap/Container';
 function Profile(){
     const navigateTo = useNavigate();
 
@@ -179,6 +179,9 @@ function Profile(){
                 if(response.data.length === 3){
                     setSocialMediaLimit(true);
                 }
+                else{
+                    setSocialMediaLimit(false);
+                }
                 console.log(response.data);
                 console.log("Successfully retrieved current user social media");
             } 
@@ -228,7 +231,13 @@ function Profile(){
         }
     }
 
-
+    const [avatarShow, setAvatarShow] = useState(false);
+    const openAvatar=()=>{
+        setAvatarShow(true);
+    }
+    const closeAvatar= ()=>{
+        setAvatarShow(false);
+    }
 
     return(
         <div className="profile">
@@ -283,7 +292,32 @@ function Profile(){
             </div>
             <div className='large-block'>
                 <div className='own-profile-img-block'>
-                    <Image src={userDetails.avatar} className='own-profile-img' roundedCircle />
+                    {isEditMode ? 
+                        <>
+                            <Image src={userDetails.avatar} className='own-profile-img edit-mode-img'  roundedCircle  onClick={() => {openAvatar()}}/>
+                            <Modal size='lg'  backdrop="static" keyboard={false} show={avatarShow} onHide={closeAvatar} centered style={{"--bs-modal-border-radius":'1vw'}} >
+                                    <Modal.Body className='vertical-placement'>
+                                        <h5 className='mb-4'>Choose your Avatar</h5>
+                                        <Form className='from3'>
+                                            <Form.Group controlId="signup-avatar">
+                                                    <Container className='wrap-container'>
+                                                        {[301, 302, 304, 305, 306, 303].map((imgNum, index) => (
+                                                                <Button key={index}>
+                                                                    <img src={`/Group ${imgNum}.png`} alt={`Avatar ${index + 1}`} />
+                                                                </Button>
+                                                        ))}
+                                                    </Container>
+                                                    <Container className='horizontal-placement' style={{gap:5}}>
+                                                        <Button onClick={closeAvatar}>Cancle</Button>
+                                                        <Button  >Done</Button>
+                                                    </Container> 
+                                            </Form.Group>
+                                        </Form>
+                                    </Modal.Body>
+                                </Modal>
+                            <span style={{color:'red', fontSize:'small', marginBottom:'0.5vh'}}> Click on image to edit</span>
+                        </>
+                    : <Image src={userDetails.avatar} className='own-profile-img' roundedCircle />}
                     {isEditMode ? (
                         <Button className="edit-profile-btn" onClick={()=>{saveChanges()}} >
                             Save Changes

@@ -63,9 +63,18 @@
 }
 
 .own-profile-img{
-    width: 50%;
+    width: 8vw;
+    height: 8vw;
     margin-bottom: 2vh;
     margin-top: 2vh;
+}
+
+.edit-mode-img{
+    border: 2px solid black;
+}
+
+.edit-mode-img:hover{
+    cursor: pointer;
 }
 
 .edit-profile-btn{
