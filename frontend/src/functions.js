@@ -13,6 +13,7 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from 'react-router-dom';
 import Image from 'react-bootstrap/Image';
+import Nav from 'react-bootstrap/Nav';
 
 export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
     const navigateTo = useNavigate();
@@ -285,9 +286,13 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
     const [selectedUserDetails, setSelectedUserDetails] = useState([]);
     useEffect(()=>{
         fetchSelectedUserDetails(setSelectedUserDetails, otherUser);
-        console.log("i am here in offcamavs");
-        console.log(showOffCanvas);
     },[]);
+
+    useEffect(()=>{
+        if(selectedUserDetails != []){
+            fetchUserMedia();
+        }
+    },[selectedUserDetails]);
 
 
     const showPreview =(text, num)=>{
@@ -295,6 +300,27 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
         return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
+    const[ userSocialMedia, setUserSocialMedia] = useState([]);
+    const fetchUserMedia= async()=>{
+       
+        try {
+            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/socialMedia',{
+                params: {user: selectedUserDetails.id}
+            });
+            if (response.status === 200) {
+                setUserSocialMedia(response.data);
+                console.log(response.data);
+                console.log("Successfully retrieved current user social media");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
+
+    const navigateTo = useNavigate();
     return(
         <Offcanvas 
         show={showOffCanvas} 
@@ -314,18 +340,14 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
                 </ListGroup.Item>
                 <ListGroup.Item as="li"  className='social-media-item'>
                     <Stack direction='horizontal' gap={4}>
-                        <Link >
-                            <Image  src="facebook.png"  className="social-media-img"  roundedCircle />
-                        </Link>
-                        <Link>
-                            <Image  src="instagram.png"  className="social-media-img"  roundedCircle />
-                        </Link>
-                        <Link>
-                            <Image  src="linkedin.png"  className="social-media-img"  roundedCircle />
-                        </Link>
-                        <Link>
-                            <Image  src="message.png"  className="social-media-img" roundedCircle />
-                        </Link>
+                        {userSocialMedia.length > 0 && userSocialMedia.map(media=>(
+                            <Nav.Link >
+                                <Image  src={`/${media.type}.png`}  className="social-media-img"  roundedCircle />
+                            </Nav.Link>
+                        ))}
+                        <Nav.Link>
+                            <Image  src="/message.png"  className="social-media-img" roundedCircle  onClick={() => {navigateTo(`/messages/${selectedUserDetails.username}`)}}/>
+                        </Nav.Link>
                     </Stack>
                 </ListGroup.Item>
                 <ListGroup.Item className='profile-skills-item' as="li">
