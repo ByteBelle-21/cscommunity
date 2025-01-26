@@ -35,6 +35,8 @@ function Profile(){
 
     const closeAddMediaModal = ()=>{
         setShowAddMediaModal(false);
+        setMediaType("");
+        setMediaLink("");
     }
 
 
@@ -160,6 +162,66 @@ function Profile(){
         }
     }
 
+   useEffect(()=>{
+    fetchUserMedia();
+   },[userDetails]);
+
+    const[ userSocialMedia, setUserSocialMedia] = useState([]);
+    const fetchUserMedia= async()=>{
+        try {
+            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/socialMedia',{
+                params: {user: userDetails.id}
+            });
+            if (response.status === 200) {
+                setUserSocialMedia(response.data);
+                console.log(response.data);
+                console.log("Successfully retrieved current user social media");
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
+
+    const handleMediaDeletion = async (mediaID, selectedMediaType) => {
+        try {
+            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/removeSocialMedia',{
+                params: {user: mediaID , type : selectedMediaType}
+            });
+            if (response.status === 200) {
+                console.log("Successfully deleted current user social media");
+                fetchUserMedia();
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
+
+    const[mediaType, setMediaType] = useState("");
+    const[mediaLink, setMediaLink] = useState("");
+    const handleMediaAddition = async () => {
+        const data = {id ,mediaType,mediaLink}
+        try {
+            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/addSocialMedia',data);
+            if (response.status === 200) {
+                console.log("Successfully added current user social media");
+                setMediaType("");
+                setMediaLink("");
+                closeAddMediaModal();
+                fetchUserMedia();
+            } 
+            else if(response.status === 401){
+                console.log(response.message)
+            }
+        } catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
 
 
 
@@ -300,12 +362,11 @@ function Profile(){
                                         </p>
                                         <p>Remeber, You can link upto 4 social media accounts.</p>
                                         <Form.Label htmlFor="inputPassword5">Choose Media Type</Form.Label>
-                                        <Form.Select aria-label="Default select example"  className="mb-3">
+                                        <Form.Select aria-label="Default select example"  className="mb-3"  onChange={(e) => setMediaType( e.target.value)}>
                                             <option>Select media</option>
                                             <option value="1">Instagram</option>
                                             <option value="2">Facebook</option>
                                             <option value="3">LinkedIn</option>
-                                            <option value="3">GitHub</option>
                                             <option value="3">SnapChat</option>
                                             <option value="3">Twitter</option>
                                             <option value="3">Youtube</option>
@@ -315,63 +376,35 @@ function Profile(){
                                             <InputGroup.Text id="basic-addon3">
                                             https:
                                             </InputGroup.Text>
-                                            <Form.Control id="basic-url" aria-describedby="basic-addon3" />
+                                            <Form.Control id="basic-url" aria-describedby="basic-addon3"  onChange={(e) => setMediaLink( e.target.value)}/>
                                         </InputGroup>
                                     </Modal.Body>
                                     <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
                                         <Button className='cancle-channel-btn' onClick={closeAddMediaModal}>
                                             Cancle
                                         </Button>
-                                        <Button className='edit-profile-btn' onClick={closeAddMediaModal}>
+                                        <Button className='edit-profile-btn' onClick={()=>{handleMediaAddition()}}>
                                             Link Account
                                         </Button>
                                     </Modal.Footer>
                                 </Modal>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start suggestion-item">
-                                    <div className="image-container">
-                                        <Image 
-                                            src="linkedin.png" 
-                                            className="top-user-img" 
-                                            roundedCircle 
-                                        />
-                                    </div>
-                                    <div className="ms-2 me-auto">
-                                        <div className="fw-bold">tanya. sdjhjk</div>
-                                    </div>
-                                    <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>delete</span></Link>  
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start suggestion-item">
-                                    <div className="image-container">
-                                        <Image 
-                                            src="instagram.png" 
-                                            className="top-user-img" 
-                                            roundedCircle 
-                                        />
-                                    </div>
-                                    <div className="ms-2 me-auto">
-                                        <div className="fw-bold">tanya. sdjhjk</div>
-                                    </div>
-                                    <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>delete</span></Link>  
-                                </ListGroup.Item>
-                                <ListGroup.Item
-                                    as="li"
-                                    className="d-flex justify-content-between align-items-start suggestion-item">
-                                    <div className="image-container">
-                                        <Image 
-                                            src="facebook.png" 
-                                            className="top-user-img" 
-                                            roundedCircle 
-                                        />
-                                    </div>
-                                    <div className="ms-2 me-auto">
-                                        <div className="fw-bold">tanya. sdjhjk</div>
-                                    </div>
-                                    <Link><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>delete</span></Link>  
-                                </ListGroup.Item>
+                                {userSocialMedia.length > 0 && userSocialMedia.map(media=>(
+                                     <ListGroup.Item
+                                        as="li"
+                                        className="d-flex justify-content-between align-items-start suggestion-item">
+                                        <div className="image-container">
+                                            <Image 
+                                                src={`/${media.type}.png`}
+                                                className="top-user-img" 
+                                                roundedCircle 
+                                            />
+                                        </div>
+                                        <div className="ms-2 me-auto">
+                                            <div className="fw-bold">{media.link}</div>
+                                        </div>
+                                        <Nav.Link onClick={() => {handleMediaDeletion(id,media.type)}} ><span class="material-symbols-outlined message-link" style={{fontSize:'1vw'}}>delete</span></Nav.Link>  
+                                    </ListGroup.Item>
+                                ))}
                             </ListGroup>
                         </div> 
                     </div> 

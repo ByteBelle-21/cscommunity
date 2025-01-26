@@ -58,7 +58,7 @@ function useDatabase(){
         createFilesTable();
         createChannelsTable();
         createMessagesTable();
-       
+        createSocialMediaTable();
     })
 }
 
@@ -81,6 +81,22 @@ function createUserTable(){
                                 return;
                             }
                             console.log('Successfully created table userTable');
+                        })
+}
+
+
+
+function createSocialMediaTable(){
+    database.query(`CREATE TABLE IF NOT EXISTS socialMediaTable 
+                        (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+                        userId INT NOT NULL, 
+                        type VARCHAR(100) NOT NULL,
+                        link VARCHAR(100) NOT NULL)`,(error,result)=>{
+                            if (error){
+                                console.error('Error while creating the table socialMediaTable: ',error);
+                                return;
+                            }
+                            console.log('Successfully created table socialMediaTable');
                         })
 }
 
@@ -422,8 +438,43 @@ app.get('/user',(request,response)=>{
 })
 
 
+app.get('/socialMedia',(request,response)=>{
+    const userID  = request.query.user;
+    database.query(`SELECT * FROM socialMediaTable WHERE userId=? `,[userID],(error, result)=>{
+    if (error){
+        response.status(500).send("Server error during retrieving social media");
+        return;
+    }
+    response.status(200).json(result);
+})
+})
 
 
+app.get('/removeSocialMedia',(request,response)=>{
+    const userID  = request.query.user;
+    const type  = request.query.type;
+    database.query(`DELETE FROM socialMediaTable WHERE userId=? AND type=?`,[userID,type],(error, result)=>{
+    if (error){
+        response.status(500).send("Server error during deleting social media");
+        return;
+    }
+    response.status(200).json(result);
+})
+})
+
+
+app.post('/addSocialMedia',(request,response)=>{
+    const userID  = request.body.id;
+    const type  = request.body.mediaType;
+    const link = request.body.mediaLink;
+    database.query(`INSERT INTO socialMediaTable (userId,type,link) VALUES (?, ?, ?)`,[userID,type, link],(error, result)=>{
+    if (error){
+        response.status(500).send("Server error during deleting social media");
+        return;
+    }
+    response.status(200).json(result);
+})
+})
 
 
 
