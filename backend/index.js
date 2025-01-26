@@ -1056,11 +1056,12 @@ app.get('/searchPost',(request,response)=>{
                            u.username AS username, 
                            u.avatar AS avatar,
                            p.post AS post,
+                           p.postTitle AS title,
                            p.id AS id
                            FROM postsTable p 
                            JOIN userTable u ON p.username = u.id
                            JOIN channelsTable c ON p.channel = c.id
-                           WHERE p.post LIKE ?`,[`%${post}%`],(error, result)=>{
+                           WHERE p.post LIKE ? OR p.postTitle LIKE ? `,[`%${post}%`, `%${post}%`],(error, result)=>{
         if (error){
             response.status(500).send("Server error during search for post");
             return;

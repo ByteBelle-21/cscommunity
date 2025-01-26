@@ -13,7 +13,7 @@ import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import {SignInModal, fetchConnectedUsers,getUserDeatils,SelectedUserDetailsCanvas} from './functions.js'
+import {SignInModal, fetchConnectedUsers,getUserDeatils,getMainPost} from './functions.js'
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -154,21 +154,23 @@ function Navlink({authentication,removeAuthentication}){
     },[searchText]);
 
 
-
-    const[showOffCanvas, setShowOffCanvas] = useState(false);
-    const openOffCanvas = (username)=>{
+    const [mainPost, setMainPost] = useState(null); 
+    const [channelName, setChannelName] = useState(null); 
+    const goToPost = async (postId,channelName) =>{
         closeSearchModal();
-        if(username !== userDetails.username){
-            navigateTo(`/messages/${username}`);
-        }
-        else{
-            navigateTo('/profile');  
-        }
-       
+        setChannelName(channelName);
+        getMainPost(postId,setMainPost);
     }
 
-    const closeOffCanvas = ()=>{
-        setShowOffCanvas(false);
+    useEffect(()=>{
+        if(mainPost !== null && channelName != null){
+            navigateTo(`/channels/${encodeURIComponent(channelName)}?postId=${mainPost}`);
+        }
+    },[mainPost, channelName]);
+
+    const showPreview =(text, num)=>{
+        const words = text.split(' ');
+        return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
     return(
@@ -271,17 +273,24 @@ function Navlink({authentication,removeAuthentication}){
                                     } 
                                     {searchPostResult.length > 0 && searchSelect ==='1' ?
                                         searchPostResult.map((post)=>(
-                                            <div className='result-block' onClick={()=>goToPost(post.channel,post.id)}>
-                                                <strong>{post.channel}</strong> <br></br>
-                                                <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
-                                                <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>
-                                            </div>  
+                                            <>
+                                            <ListGroup.Item
+                                                as="li"
+                                                className="d-flex justify-content-between align-items-start history-item" 
+                                                onClick={()=>{goToPost(post.id,post.channel )}}>
+                                                <div className="ms-2 me-auto">
+                                                <div className="fw-bold">{post.channel}</div>
+                                                    {showPreview(post.post,10)}
+                                                </div>
+                                            </ListGroup.Item> 
+                                              <hr></hr>
+                                            </>
                                         ))   
                                         :  ""
                                     } 
                                     
                             </div>
-                        </Modal.Body>
+                        </Modal.Body>s
                         <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
                             <Button className='cancle-channel-btn' onClick={closeSearchModal}>
                                 Cancle
