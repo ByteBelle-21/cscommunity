@@ -1,6 +1,7 @@
 import Nav from 'react-bootstrap/Nav';
 import './Uniformstyle.css';
 import './profile.css';
+import './channels.css';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -12,13 +13,20 @@ import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import {SignInModal, fetchConnectedUsers} from './functions.js'
+import {SignInModal, fetchConnectedUsers,getUserDeatils,SelectedUserDetailsCanvas} from './functions.js'
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
 function Navlink({authentication,removeAuthentication}){
+
+    const [userDetails, setUserDetails] = useState([]);
+    useEffect(()=>{
+        getUserDeatils(setUserDetails);    
+    },[]);
+
+
     const navigateTo = useNavigate();
 
     const location = useLocation();
@@ -140,6 +148,24 @@ function Navlink({authentication,removeAuthentication}){
         handleSearch();  
     },[searchText]);
 
+
+
+    const[showOffCanvas, setShowOffCanvas] = useState(false);
+    const openOffCanvas = (personId)=>{
+        if(personId !== userDetails.id){
+            closeSearchModal();
+            setShowOffCanvas(true);
+        }
+        else{
+            navigateTo('/profile');  
+        }
+       
+    }
+
+    const closeOffCanvas = ()=>{
+        setShowOffCanvas(false);
+    }
+
     return(
         <Nav className='navlink' defaultActiveKey="/home">
             {homepage ? (
@@ -216,18 +242,26 @@ function Navlink({authentication,removeAuthentication}){
                                         :  ""
                                     } 
                                     {searchPeopleResult.length > 0 && searchSelect ==='2' ?
-                                        searchPeopleResult.map((person)=>(
-                                            <div className='result-block' 
-                                                onClick={()=> {
-                                                    if(person.username=== userDetails.username){
-                                                        navigateTo('/profile');
-                                                    }else{
-                                                        showProfile(person.username)
-                                                    }
-                                                }}>
-                                                <img src={person.avatar} style={{height:'2vw'}}/><span> {person.username}</span>  
-                                            </div>  
-                                        ))   
+                                        <ListGroup as="ol" >
+                                            {searchPeopleResult.map((person)=>(
+                                                <ListGroup.Item
+                                                    as="li"
+                                                    className="d-flex justify-content-between align-items-start suggestion-item">
+                                                    <div className="image-container">
+                                                        <Image 
+                                                            src={person.avatar}
+                                                            className="top-user-img" 
+                                                            roundedCircle 
+                                                        />
+                                                    </div>
+                                                    <div className="ms-2 me-auto">
+                                                    <div className="fw-bold">{person.name}</div>
+                                                        <Link className='view-link' onClick={openOffCanvas(person.id)}>View Profile</Link>
+                                                        <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={person.username} />
+                                                    </div>
+                                                </ListGroup.Item> 
+                                            ))}
+                                        </ListGroup>
                                         :  ""
                                     } 
                                     {searchPostResult.length > 0 && searchSelect ==='1' ?
