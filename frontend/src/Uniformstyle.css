@@ -55,6 +55,17 @@
 
 .search-results{
     width: 100%;
-    height: fit-content;
+    height: 30vh !important;
+    overflow:auto;
+
+}
+
+.search-results::-webkit-scrollbar{
+    width: 0.5vh;
+    background-color:#eef0f7;
+}
+
+.search-results::-webkit-scrollbar-thumb{
+    background-color:#abb8f8;
 }
 

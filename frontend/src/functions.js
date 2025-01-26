@@ -490,3 +490,5 @@ export async function getMainPost(postId,setMainPost){
         console.error("Catched axios error: ",error);
     }
 }
+
+

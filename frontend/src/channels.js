@@ -60,6 +60,9 @@ function Channels(){
 
     const closePostModal = ()=>{
         setShowPostModal(false);
+        setInputPostTitle('');
+        setInputPost('');
+        setInputFiles([]);
     }
 
     const[showOffCanvas, setShowOffCanvas] = useState(false);
@@ -175,6 +178,7 @@ function Channels(){
                 setPostReply(0)
                 setReplyTo(null);
                 setInputPost('');
+                setInputPostTitle('');
                 fetchAllPosts();
                 handleUploadFile(response.data.postId); 
                 closePostModal();

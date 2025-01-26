@@ -27,13 +27,16 @@ function Navlink({authentication,removeAuthentication}){
     const profilePage = location.pathname === '/profile';
     const messagePage = location.pathname === '/messages::selectedUser';
 
-    const[showAddMediaModal, setShowAddMediaModal] = useState(false);
-    const openAddMediaModal = ()=>{
-        setShowAddMediaModal(true);
+    const[showSearchModal, setShowSearchModal] = useState(false);
+    const openSearchModal = ()=>{
+        setShowSearchModal(true);
     }
 
-    const closeAddMediaModal = ()=>{
-        setShowAddMediaModal(false);
+    const closeSearchModal = ()=>{
+        setSearchChannelResult([]);
+        setShowSearchModal(false);
+        setSearchSelect('');
+        setSearchText('');
     }
 
 
@@ -68,6 +71,75 @@ function Navlink({authentication,removeAuthentication}){
     }
 
 
+    const goToChannel = (channel) =>{
+        closeSearchModal();
+        navigateTo(`/channels/${channel}`);
+    }
+
+    const [searchText, setSearchText] = useState('');
+    const [searchSelect, setSearchSelect] = useState('');
+    const [showSearchError, setShowSearchError] = useState(false);
+    const [searchChannelResult, setSearchChannelResult] = useState([]);
+    const [searchPostResult, setSearchPostResult] = useState([]);
+    const [searchPeopleResult, setSearchPeopleResult] = useState([]);
+
+    useEffect(()=>{
+        if(searchSelect === '' || searchSelect === '0'){
+            setShowSearchError(true);
+            setSearchText('');
+        }
+    }, [searchSelect]);
+
+
+    useEffect(()=>{
+        const handleSearch= async()=>{
+            if (searchSelect === '' || searchSelect === '0'){
+                setShowSearchError(true);
+                return;
+            }else if (searchSelect === '3'){
+                try {
+                    const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/searchChannel',
+                        {params:{search_input :searchText}} );
+                    if (response.status === 200) {
+                        setSearchChannelResult(response.data);
+                        console.log("Successfully retrieved search result for channels");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }else if (searchSelect === '1'){
+                if(searchText.length < 3){
+                    return;
+                }
+                try {
+                    const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/searchPost',
+                    {params:{search_input :searchText}});
+                    if (response.status === 200) {
+                        setSearchPostResult(response.data);
+                        console.log("Successfully retrieved search result for posts");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            
+            }else if (searchSelect === '2'){
+                try {
+                    const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/searchPeople',
+                    {params:{search_input :searchText}});
+                    if (response.status === 200) {
+                        setSearchPeopleResult(response.data);
+                        console.log(response.data);
+                        console.log("Successfully retrieved search result for people");
+                    } 
+                } catch (error) {
+                    console.error("Catched axios error: ",error);
+                }
+            }
+        }
+        handleSearch();  
+    },[searchText]);
+
     return(
         <Nav className='navlink' defaultActiveKey="/home">
             {homepage ? (
@@ -86,13 +158,14 @@ function Navlink({authentication,removeAuthentication}){
                         <Nav.Link style={{marginLeft:'5vw', padding:'0'}} >CScommunity</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link onClick={openAddMediaModal}> Search</Nav.Link>
+                        <Nav.Link onClick={openSearchModal}> Search</Nav.Link>
                     </Nav.Item>
                     <Modal 
                         size="md" 
-                        show={showAddMediaModal} 
-                        onHide={closeAddMediaModal}
-                        centered>
+                        show={showSearchModal} 
+                        onHide={closeSearchModal}
+                        centered 
+                        backdrop="static">
                         <Modal.Body>
                             <p className='mfont create-channel-title' >
                                 <span 
@@ -106,24 +179,75 @@ function Navlink({authentication,removeAuthentication}){
                                 Search Posts, Channels or Other Users
                             </p>
                             <Form.Label htmlFor="inputPassword5">Choose Search Criteria</Form.Label>
-                            <Form.Select aria-label="Default select example"  className="mb-3">
-                                <option>Select Criteria</option>
+                            <Form.Select 
+                            aria-label="Default select example"  
+                            className="mb-3" 
+                            onChange={(e) => {setSearchSelect(e.target.value);setShowSearchError(false)}}>
+                                <option value="0">Select Criteria</option>
                                 <option value="1">Post</option>
                                 <option value="2">People</option>
                                 <option value="3">Channel</option>
                             </Form.Select>
                             <Form.Label htmlFor="basic-url">What are you looking for ?</Form.Label>
-                            <Form.Control type="text" placeholder="Enter what you remember" />
+                            <Form.Control type="text" placeholder="Enter what you remember" value={searchText} onChange={(e) => setSearchText( e.target.value)}/>
                             <div className='search-results'>
                                     <hr></hr>
-                                    <p className='fw-bold'>Search Results</p>
+                                    {(!showSearchError && searchChannelResult.length === 0 && searchPeopleResult.length === 0 && searchPostResult.length ===0) ?
+                                        <p className='fw-bold'>No Search Result</p> : <p className='fw-bold'>Search Results</p>
+                                    }
+                                    {showSearchError && 
+                                        <div style={{display:'flex',flexWrap:'wrap', opacity:'0.5', fontSize:'small'}}>Please select an option from the dropdown menu to continue.</div>
+                                    }
+                                     {searchChannelResult.length > 0  && searchSelect ==='3' ?
+                                        <ListGroup as="ol" >
+                                            {searchChannelResult.map((channel)=>(
+                                                <ListGroup.Item
+                                                    as="li"
+                                                    className="d-flex justify-content-between align-items-start suggestion-item" 
+                                                    onClick={() => {goToChannel(channel.channel)}}>
+                                                    <div className="ms-2 me-auto">
+                                                        <div className="fw-bold">{channel.channel}</div>
+                                                        <span className='sfont'>Created by {channel.username}</span>
+                                                    </div>
+                                                </ListGroup.Item>
+                                            ))}
+                                        </ListGroup> 
+        
+                                        :  ""
+                                    } 
+                                    {searchPeopleResult.length > 0 && searchSelect ==='2' ?
+                                        searchPeopleResult.map((person)=>(
+                                            <div className='result-block' 
+                                                onClick={()=> {
+                                                    if(person.username=== userDetails.username){
+                                                        navigateTo('/profile');
+                                                    }else{
+                                                        showProfile(person.username)
+                                                    }
+                                                }}>
+                                                <img src={person.avatar} style={{height:'2vw'}}/><span> {person.username}</span>  
+                                            </div>  
+                                        ))   
+                                        :  ""
+                                    } 
+                                    {searchPostResult.length > 0 && searchSelect ==='1' ?
+                                        searchPostResult.map((post)=>(
+                                            <div className='result-block' onClick={()=>goToPost(post.channel,post.id)}>
+                                                <strong>{post.channel}</strong> <br></br>
+                                                <img src={post.avatar} style={{height:'1.5vw'}}/><span style={{fontSize:'0.8vw'}} > {post.username}</span>
+                                                <p style={{fontSize:'0.8vw', marginBottom:'0.2vw'}}>{post.post}</p>
+                                            </div>  
+                                        ))   
+                                        :  ""
+                                    } 
+                                    
                             </div>
                         </Modal.Body>
                         <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
-                            <Button className='cancle-channel-btn' onClick={closeAddMediaModal}>
+                            <Button className='cancle-channel-btn' onClick={closeSearchModal}>
                                 Cancle
                             </Button>
-                            <Button className='edit-profile-btn' onClick={closeAddMediaModal}>
+                            <Button className='edit-profile-btn' onClick={closeSearchModal}>
                                 Search
                             </Button>
                         </Modal.Footer>
