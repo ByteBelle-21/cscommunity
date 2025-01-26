@@ -15,6 +15,7 @@ import { useState, useEffect } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { useNavigate,useLocation } from 'react-router-dom';
 import axios from 'axios';
+import Alert from 'react-bootstrap/Alert';
 
 function Profile(){
     const navigateTo = useNavigate();
@@ -167,6 +168,7 @@ function Profile(){
    },[userDetails]);
 
     const[ userSocialMedia, setUserSocialMedia] = useState([]);
+    const [socialMedialLimit, setSocialMediaLimit] = useState(false);
     const fetchUserMedia= async()=>{
         try {
             const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/socialMedia',{
@@ -174,6 +176,9 @@ function Profile(){
             });
             if (response.status === 200) {
                 setUserSocialMedia(response.data);
+                if(response.data.length === 3){
+                    setSocialMediaLimit(true);
+                }
                 console.log(response.data);
                 console.log("Successfully retrieved current user social media");
             } 
@@ -336,11 +341,17 @@ function Profile(){
                             <ListGroup as="ol" className='profile-suggestions-list'>
                                 <ListGroup.Item className='suggestion-item' as="li">
                                     <div className="fw-bold" style={{display:'flex', justifyContent:'space-between'}}>
-                                        Linked Social Media Accounts 
+                                        Linked Social Media Accounts
+                                        {socialMedialLimit ? 
+                                        <span class="material-symbols-outlined" style={{opacity:'60%'}}>add</span>
+                                        :
                                         <Link onClick={openAddMediaModal}>
                                             <span class="material-symbols-outlined">add</span>
                                         </Link>
+                                        } 
+                                        
                                     </div>
+                                    {socialMedialLimit ? <p style={{color:'red', fontSize:'small'}}>You can link upto 3 socila media accounts</p> :<></>}
                                     <hr style={{marginBottom:'0'}}></hr>
                                 </ListGroup.Item>
                                 <Modal 
@@ -360,16 +371,16 @@ function Profile(){
                                             </span>
                                             Link New Social Media Account
                                         </p>
-                                        <p>Remeber, You can link upto 4 social media accounts.</p>
+                                        <p>Remeber, You can link upto 3 social media accounts.</p>
                                         <Form.Label htmlFor="inputPassword5">Choose Media Type</Form.Label>
                                         <Form.Select aria-label="Default select example"  className="mb-3"  onChange={(e) => setMediaType( e.target.value)}>
                                             <option>Select media</option>
                                             <option value="1">Instagram</option>
                                             <option value="2">Facebook</option>
                                             <option value="3">LinkedIn</option>
-                                            <option value="3">SnapChat</option>
-                                            <option value="3">Twitter</option>
-                                            <option value="3">Youtube</option>
+                                            <option value="4">SnapChat</option>
+                                            <option value="5">Reddit</option>
+                                            <option value="6">Youtube</option>
                                         </Form.Select>
                                         <Form.Label htmlFor="basic-url">Add URL to your Account</Form.Label>
                                         <InputGroup className="mb-3">
