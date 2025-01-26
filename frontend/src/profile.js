@@ -10,7 +10,7 @@ import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import { getUserDeatils, fetchSelectedUserDetails,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
+import { getMainPost, fetchSelectedUserDetails,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
 import { useState, useEffect } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { useNavigate,useLocation } from 'react-router-dom';
@@ -107,15 +107,11 @@ function Profile(){
         setEditMode(!isEditMode);
     }
 
+    const [mainPost, setMainPost] = useState(null); 
     const goToPost = async (postId,channelName) =>{
-        try {
-            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/mainPost',{ params: { post: postId} });
-            if (response.status === 200) {
-                navigateTo(`/channels/${encodeURIComponent(channelName)}?postId=${parseInt(response.data)}`)
-                console.log("Successfully retrieved main post");
-            } 
-        }catch (error) {
-            console.error("Catched axios error: ",error);
+        getMainPost(postId,setMainPost);
+        if(mainPost){
+            navigateTo(`/channels/${encodeURIComponent(channelName)}?postId=${mainPost}`);
         }
     }
 

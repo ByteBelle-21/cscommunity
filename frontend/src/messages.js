@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useParams } from 'react-router-dom';
-import { fetchSelectedUserDetails, getUserDeatils,fetchConnectedUsers } from './functions.js';
+import { fetchSelectedUserDetails, getUserDeatils,fetchConnectedUsers,getMainPost } from './functions.js';
 import Nav from 'react-bootstrap/Nav';
 import { useRef } from 'react';
 import Popover from 'react-bootstrap/Popover';
@@ -19,11 +19,11 @@ import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import axios from 'axios';
-
+import { useNavigate,useLocation } from 'react-router-dom';
 
 function Messages(){
     const {selectedUser} =  useParams();
-
+    const navigateTo = useNavigate();
     const [connectedUserDetails, setConnectedUserDetails] = useState(null);
     const [loggedInUserDetails, setLoggedInUserDetails] = useState([]);
     useEffect(()=>{
@@ -127,6 +127,15 @@ function Messages(){
 
     const handleMessage=(selectedUser)=>{
         navigateTo(`/messages/${selectedUser}`);
+    }
+
+
+    const [mainPost, setMainPost] = useState(null); 
+    const goToPost = async (postId,channelName) =>{
+        getMainPost(postId,setMainPost);
+        if(mainPost){
+            navigateTo(`/channels/${encodeURIComponent(channelName)}?postId=${mainPost}`);
+        }
     }
 
     return(
@@ -274,7 +283,8 @@ function Messages(){
                             <div className='activity-block'>
                                 <ListGroup as="ol" className='activity-list'>
                                 {connectedUserDetails.posts && connectedUserDetails.posts.length > 0 ? (connectedUserDetails.posts.map(post =>(
-                                        <ListGroup.Item as="li" className='activity-list-item'>
+                                        <ListGroup.Item as="li" className='activity-list-item'
+                                         onClick={()=>{goToPost(post.id,post.channel)}}>
                                             <div className="fw-bold" style={{color:'#d84434'}}>{post.channel}</div>
                                             <p style={{fontSize:'small'}} >{showPreview(post.post,10)}</p>
                                         </ListGroup.Item>

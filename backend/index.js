@@ -865,7 +865,7 @@ app.get('/allMessages',(request,response)=>{
                             const connected_user_id = secondIdResult[0].id;
                             console.log(connected_user_id);
                             database.query(`SELECT * FROM  messagesTable
-                                            WHERE (sender=? AND reciever=?) OR (sender=? AND reciever=?) `,[you_id,connected_user_id,connected_user_id,you_id],(error, result)=>{
+                                            WHERE (sender=? AND reciever=?) OR (sender=? AND reciever=?) ORDER BY datetime`,[you_id,connected_user_id,connected_user_id,you_id],(error, result)=>{
                                             if (error){
                                                 response.status(500).send("Server error during retrieving direct messages");
                                                 return;

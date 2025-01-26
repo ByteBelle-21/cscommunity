@@ -477,3 +477,16 @@ export async function fetchConnectedUsers(setConnectedUsers){
     }
 
 }
+
+
+export async function getMainPost(postId,setMainPost){
+    try {
+        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/mainPost',{ params: { post: postId} });
+        if (response.status === 200) {
+            setMainPost(response.data);
+            console.log("Successfully retrieved main post");
+        } 
+    }catch (error) {
+        console.error("Catched axios error: ",error);
+    }
+}
