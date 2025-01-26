@@ -818,10 +818,10 @@ app.get('/selected-user',(request,response)=>{
         else{
             const userDetails = userResult[0];
             const userId = userDetails.id;
-            database.query(`SELECT p.post AS post, c.channel AS channel 
+            database.query(`SELECT p.id AS id, p.post AS post, c.channel AS channel 
                             FROM postsTable p JOIN channelsTable c 
                             ON p.channel = c.id   
-                            WHERE p.username=? `,[userId],(error, postsResult)=>{
+                            WHERE p.username=?  `,[userId],(error, postsResult)=>{
                 if (error){
                     response.status(500).send("Server error during retrieving selected user details");
                     return;
@@ -1032,6 +1032,34 @@ app.get('/searchPeople',(request,response)=>{
 })
 
 
+
+app.get('/mainPost', async (request, response) => {
+    let current_post_id = request.query.post;
+    try {
+        while (current_post_id != 0) {
+            const result = await new Promise((resolve, reject) => {
+                database.query('SELECT id, replyTo FROM postsTable WHERE id = ?', [current_post_id], (error, result) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+            if (result.length === 0) {
+                return response.status(404).send("Post not found");
+            }
+            if (result[0].replyTo === null) {
+                break;
+            } else {
+                current_post_id = result[0].replyTo;
+            }
+        }
+        response.status(200).json(current_post_id);
+    } catch (error) {
+        response.status(500).send("Server error during main post");
+    }
+});
 
 
 

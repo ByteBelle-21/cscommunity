@@ -10,7 +10,7 @@ import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import { getUserDeatils, getAllChannels, handleChannelCreation,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
+import { getUserDeatils, fetchSelectedUserDetails,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
 import { useState, useEffect } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { useNavigate,useLocation } from 'react-router-dom';
@@ -77,6 +77,49 @@ function Profile(){
         fetchChannels();  
     },[]);
 
+
+    const [id, setId] = useState();
+    const [userDetails, setUserDetails] = useState([]);
+    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [occupation, setOccupation] = useState('');
+    const [skills, setSkills] = useState('');
+    const [avatar, setAvatar] = useState(''); 
+
+    useEffect(()=>{
+        const current_user = sessionStorage.getItem('auth_user');
+        fetchSelectedUserDetails(setUserDetails,current_user);
+    },[]);
+
+
+    const [isEditMode, setEditMode] = useState(false);
+    const handleEditButtonClick = ()=>{
+        setEditMode(!isEditMode);
+    }
+
+    const showPreview =(text, num)=>{
+        const words = text.split(' ');
+        return words.slice(0, num).join(' ')+" . . . . . . . .";
+    }
+
+    const handleSaveChanges = () => { 
+        setEditMode(!isEditMode);
+    }
+
+    const goToPost = async (postId,channelName) =>{
+        try {
+            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/mainPost',{ params: { post: postId} });
+            if (response.status === 200) {
+                navigateTo(`/channels/${encodeURIComponent(channelName)}?postId=${parseInt(response.data)}`)
+                console.log("Successfully retrieved main post");
+            } 
+        }catch (error) {
+            console.error("Catched axios error: ",error);
+        }
+    }
+
+
     return(
         <div className="profile">
             <div className='profile-left-block'>
@@ -130,11 +173,17 @@ function Profile(){
             </div>
             <div className='large-block'>
                 <div className='own-profile-img-block'>
-                    <Image src="Group 301.png" className='own-profile-img' roundedCircle />
-                    <Button className="edit-profile-btn" >
-                    <span class="material-symbols-outlined " style={{marginRight:'1vh'}}> edit </span>
+                    <Image src={userDetails.avatar} className='own-profile-img' roundedCircle />
+                    {isEditMode ? (
+                        <Button className="edit-profile-btn" onClick={()=>{handleSaveChanges()}} >
+                            Save Changes
+                        </Button>
+
+                    ):
+                    <Button className="edit-profile-btn" onClick={() => {handleEditButtonClick()}} >
+                        <span class="material-symbols-outlined " style={{marginRight:'1vh'}}> edit </span>
                         Edit Profile
-                    </Button>
+                    </Button>}
                     <Button className="delete-profile-btn" onClick={openDeleteProfileModal}>
                         <span class="material-symbols-outlined " style={{marginRight:'1vh'}}> edit </span>
                         Delete Profile
@@ -170,11 +219,11 @@ function Profile(){
                     <div className='social-media-details'>
                         <Stack direction='horizontal' gap={1} style={{marginTop:'4vh'}}>
                             <Stack direction='vertical' style={{alignItems:'center'}}>
-                                <span style={{fontWeight:'bold'}}>6</span>
+                                <span style={{fontWeight:'bold'}}>{userDetails.totalPosts}</span>
                                 <span style={{fontSize:'small'}}>Total Posts</span>
                             </Stack>
                             <Stack direction='vertical' style={{alignItems:'center'}}>
-                                <span style={{fontWeight:'bold'}}>6</span>
+                                <span style={{fontWeight:'bold'}}>{userDetails.totalConnections}</span>
                                 <span style={{fontSize:'small'}}>Total Connections</span>
                             </Stack>
                         </Stack>
@@ -296,20 +345,11 @@ function Profile(){
                                     <Form.Control
                                         required
                                         type="text"
-                                        placeholder="First name"
-                                        defaultValue="Mark"
+                                        placeholder="Name"
+                                        defaultValue={userDetails.name}
+                                        readOnly={!isEditMode} 
                                     />
                                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} md="4" controlId="validationCustom02">
-                                        <Form.Label>Last name</Form.Label>
-                                        <Form.Control
-                                            required
-                                            type="text"
-                                            placeholder="Last name"
-                                            defaultValue="Otto"
-                                        />
-                                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} md="4" controlId="validationCustomUsername">
                                         <Form.Label>Username</Form.Label>
@@ -317,9 +357,10 @@ function Profile(){
                                             <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
                                             <Form.Control
                                             type="text"
-                                            placeholder="Username"
+                                            placeholder={userDetails.username}
                                             aria-describedby="inputGroupPrepend"
                                             required
+                                            readOnly={!isEditMode} 
                                             />
                                             <Form.Control.Feedback type="invalid">
                                             Please choose a username.
@@ -330,14 +371,15 @@ function Profile(){
                                 <Row className="mb-3">
                                     <Form.Group as={Col} md="6" controlId="validationCustom03">
                                         <Form.Label>Email address</Form.Label>
-                                        <Form.Control type="text" placeholder="abc@gmail.com" required />
+                                        
+                                        <Form.Control type="text" placeholder={userDetails.email} required  readOnly={!isEditMode} />
                                         <Form.Control.Feedback type="invalid">
                                             Please provide a valid city.
                                         </Form.Control.Feedback>
                                         </Form.Group>
                                         <Form.Group as={Col} md="3" controlId="validationCustom04">
                                         <Form.Label>Occupation</Form.Label>
-                                        <Form.Control type="text" placeholder="Student" required />
+                                        <Form.Control type="text" placeholder={userDetails.occupation} required  readOnly={!isEditMode} />
                                         <Form.Control.Feedback type="invalid">
                                             Please provide a valid state.
                                         </Form.Control.Feedback>
@@ -346,7 +388,16 @@ function Profile(){
                                 <Row>
                                     <Form.Group as={Col} md="9" >
                                         <Form.Label>Skills</Form.Label>
-                                        <Form.Control type="text" placeholder="HTML, react, C++, .." required />
+                                        <Form.Control 
+                                        type="text" 
+                                        placeholder={
+                                                (userDetails.skills ? 
+                                                    userDetails.skills.split(',').map(skill => skill.trim()).join(', ') : 
+                                                    "No skills available"
+                                                )
+                                            } 
+                                        required  
+                                        readOnly={!isEditMode} />
                                         <Form.Control.Feedback type="invalid">
                                             Please provide a valid city.
                                         </Form.Control.Feedback>
@@ -364,54 +415,19 @@ function Profile(){
                             </p>
                             <div className='history-block'>
                                 <ListGroup as="ol" >
-                                    <ListGroup.Item
-                                        as="li"
-                                        className="d-flex justify-content-between align-items-start history-item" >
-                                        <div className="ms-2 me-auto">
-                                        <div className="fw-bold">Subheading</div>
-                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
-                                        </div>
-                                        <Link className='view-post-link'>View Post</Link>
-                                    </ListGroup.Item>
-                                    <ListGroup.Item
-                                        as="li"
-                                        className="d-flex justify-content-between align-items-start channel-item history-item">
-                                        <div className="ms-2 me-auto">
-                                        <div className="fw-bold">Subheading</div>
-                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
-                                        </div>
-                                        <Link className='view-post-link'>View Post</Link>
-                                    </ListGroup.Item>
-                                    <ListGroup.Item
-                                        as="li"
-                                        className="d-flex justify-content-between align-items-start channel-item history-item">
-                                        <div className="ms-2 me-auto">
-                                        <div className="fw-bold">Subheading</div>
-                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
-                                        </div>
-                                        <Link className='view-post-link'>View Post</Link>
-                                    </ListGroup.Item>
-                                    <ListGroup.Item
-                                        as="li"
-                                        className="d-flex justify-content-between align-items-start channel-item history-item">
-                                        <div className="ms-2 me-auto">
-                                        <div className="fw-bold">Subheading</div>
-                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
-                                        </div>
-                                        <Link className='view-post-link'>View Post</Link>
-                                    </ListGroup.Item>
-                                    <ListGroup.Item
-                                        as="li"
-                                        className="d-flex justify-content-between align-items-start channel-item history-item">
-                                        <div className="ms-2 me-auto">
-                                        <div className="fw-bold">Subheading</div>
-                                        ernhvvkergbkeh hkrfh erkehrer w fhfukjf w kwfk.......
-                                        </div>
-                                        <Link className='view-post-link'>View Post</Link>
-                                    </ListGroup.Item>
-                                    
-
-
+                                    {userDetails.posts ? ( userDetails.posts.map(post =>(
+                                        <ListGroup.Item
+                                            as="li"
+                                            className="d-flex justify-content-between align-items-start history-item" 
+                                            onClick={()=>{goToPost(post.id,post.channel )}}>
+                                            <div className="ms-2 me-auto">
+                                            <div className="fw-bold">{post.channel}</div>
+                                                {showPreview(post.post,10)}
+                                            </div>
+                                            <Link className='view-post-link' onClick={()=>{goToPost(post.id,post.channel)}}>View Post</Link>
+                                        </ListGroup.Item>
+                                        )))
+                                        : <div>No activities yet</div>}
                                 </ListGroup>                   
                             </div>
                         </div>

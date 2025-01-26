@@ -136,6 +136,11 @@
     margin: 0.5vh;
 }
 
+.history-item:hover{
+    cursor: pointer;
+    background-color:#eef0f7;
+}
+
 .view-post-link{
     text-decoration: none;
      font-size: small;

@@ -26,6 +26,23 @@ function Channels(){
     const location = useLocation();
     const {channelsName} =  useParams();
 
+    const urlParams = new URLSearchParams(location.search);
+    const postId = urlParams.get('postId');
+
+    const[postComments, setPostComments] = useState(0);
+
+    useEffect(()=>{
+        if(postId){
+            const searchedPost = document.getElementById(postId);
+            if(searchedPost){
+                searchedPost.scrollIntoView({behavior:'smooth'});
+            }
+        }
+    },[postId])
+
+
+
+
     const[showChannelModal, setShowChannnelModal] = useState(false);
     const openChannelModal = ()=>{
         setShowChannnelModal(true);
@@ -85,7 +102,7 @@ function Channels(){
     },[channelsName]);
 
 
-    const[postComments, setPostComments] = useState(0);
+   
     const[postReply, setPostReply] = useState(0);
     
     const [replyTo, setReplyTo] = useState(null);
@@ -247,7 +264,6 @@ function Channels(){
     useEffect(()=>{
         fetchAllPosts();  
         setPostReply(0);
-        setPostComments(0);
     },[channelsName]);
 
 
@@ -405,7 +421,7 @@ function Channels(){
                                const post = allPosts[i];
                                 if (post.level === 0) {
                                     postsStructure.push(
-                                    <ListGroup as="ol" className='post-list' style={{ paddingLeft: `${post.level * 2.5}vw` }} key={post.id}>
+                                    <ListGroup id={post.id}  key={post.id} as="ol" className='post-list' style={{ paddingLeft: `${post.level * 2.5}vw` }}>
                                         <ListGroup.Item
                                         as="li"
                                         className="d-flex justify-content-between align-items-start"
@@ -453,7 +469,7 @@ function Channels(){
                                             : <></>
                                             }
                                         </Stack>
-                                        {postReply === post.id ? 
+                                        {postReply === post.id  ? 
                                             <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${post.username} for post "${replyToPost}"`}>
                                             <Form.Control
                                                 as="textarea"
