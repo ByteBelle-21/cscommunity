@@ -720,7 +720,7 @@ function Channels(){
                                 </div>
                                 <div className="ms-2 me-auto">
                                 <div className="fw-bold">{member.name}</div>
-                                    <Nav.Link className='view-link' onClick={()=>{openOffCanvas(member.username)}}>{member.username}</Nav.Link>
+                                    <Nav.Link className='view-link' onClick={()=>{openOffCanvas(member.username)}}>View Profile</Nav.Link>
                                     {selectedUser === member.username && <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={selectedUser} /> }
                                 </div>
                                 <Nav.Link onClick={() => handleMessage(member.username)} >

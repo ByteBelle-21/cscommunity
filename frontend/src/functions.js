@@ -472,6 +472,7 @@ export async function fetchConnectedUsers(setConnectedUsers){
         const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
         if (response.status === 200) {
             setConnectedUsers(response.data);
+            console.log(response.data);
             console.log("Successfully retrieved all connected users");
         } 
         else {

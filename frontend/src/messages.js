@@ -213,21 +213,23 @@ function Messages(){
                 <p className='fw-bold' style={{margin:'1vh'}}>Other Direct Messages</p>
                 <ListGroup as="ol" className='direct-messages'>
                 {connectedUsers.length >0 && connectedUsers.map(user=>(
-                    <ListGroup.Item
-                    as="li"
-                    className="d-flex justify-content-between align-items-start direct-message-item">
-                        <div className="image-container">
-                            <Image 
-                                src={user.avatar} 
-                                className="top-user-img" 
-                                roundedCircle 
-                            />
-                        </div>
-                        <div className="ms-2 me-auto">
-                        <div className="fw-bold">{user.username}</div>
-                            <Link className='view-link' onClick={() => {handleMessage(user.username)}}>View conversations</Link>
-                        </div>
-                    </ListGroup.Item>
+                      user.username !== null && 
+                        <ListGroup.Item
+                        as="li"
+                        className="d-flex justify-content-between align-items-start direct-message-item">
+                            <div className="image-container">
+                                <Image 
+                                    src={user.avatar} 
+                                    className="top-user-img" 
+                                    roundedCircle 
+                                />
+                            </div>
+                            <div className="ms-2 me-auto">
+                            <div className="fw-bold">{user.username}</div>
+                                <Link className='view-link' onClick={() => {handleMessage(user.username)}}>View conversations</Link>
+                            </div>
+                        </ListGroup.Item>
+                    
                 ))}
                 {connectedUsers.length === 0 &&
                     <ListGroup.Item  className="d-flex justify-content-center" style={{border:'none'}}>
