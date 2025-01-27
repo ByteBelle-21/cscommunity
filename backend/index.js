@@ -921,8 +921,25 @@ app.get('/allMessages',(request,response)=>{
                                                 response.status(500).send("Server error during retrieving direct messages");
                                                 return;
                                             }
-                                            console.log(result);
-                                            response.status(200).json(result)
+                                            const msgPromises = result.map((msg) => {
+                                                return new Promise((resolve, reject) => {
+                                                    database.query(`SELECT filename, filetype, filedata FROM filesTable WHERE messageId=?`, [msg.id], (error, fileResult) => {
+                                                        if (error) {
+                                                            reject("Server error during retrieving files");
+                                                        } else {
+                                                            resolve({ ...msg, files: fileResult.length > 0 ? fileResult : [] });
+                                                        }
+                                                    });
+                                                });
+                                            });
+                                            Promise.all(msgPromises)
+                                            .then(allMsgWithFiles => {
+                                                response.status(200).json(allMsgWithFiles);
+                                            })
+                                            .catch((error) => {
+                                                console.error(error);
+                                                response.status(500).send(error);
+                                            });
 
                             })
                         }
@@ -969,7 +986,7 @@ app.post('/message', (request, response) => {
                                     response.status(500).send("Server error during uploading the message");
                                     return;
                                 }
-                                response.status(200).send("Successfully uploaded message ");         
+                                response.status(200).json({ msgId: result.insertId });         
                             });
 
                         }

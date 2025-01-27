@@ -41,16 +41,22 @@ function Messages(){
 
     const fileMessageRef = useRef(null);
     const [inputMsgFiles, setInputMsgFiles] = useState([]);
-   
+    const [gotFile, setGotFiles] = useState(false);
     const handleMsgFileInput = (event) => {
         const files = event.target.files;
         if (files) {
+            setGotFiles(true);
             setInputMsgFiles(prev =>[...prev,...Array.from(files)]);
         }
     };
+
     const handleMsgFileDelete=(filename)=>{
         setInputMsgFiles((prev) => prev.filter((file) => file.name !== filename));
+        if(inputMsgFiles.length===0){
+            setGotFiles(false);
+        }
     }
+
 
     const msgtextAreaRef = useRef(null);
     const handleMsgEmojiSelect = (emoji) =>{
@@ -83,6 +89,7 @@ function Messages(){
             const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/message', data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
+                handleUploadFile(response.data.msgId); 
                 fetchAllMessages();
                 setInputMessage(''); 
             } 
@@ -93,6 +100,32 @@ function Messages(){
             console.error("Catched axios error: ",error);
         }
       
+    }
+
+    const handleUploadFile = async (msg) =>{
+        if (inputMsgFiles.length === 0){
+            return;
+        }
+        const formData = new FormData();
+        formData.append('messageId',msg)
+        inputMsgFiles.forEach((file)=>{
+            formData.append('allFiles',file)
+        });
+        try {
+            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 200) {
+                setInputMsgFiles([]);
+                setGotFiles(false);
+                setInputMsgFiles([]);
+                console.log("Files uploaded successfully");
+            }
+        } catch (error) {
+            console.error("Error while uploading files:", error);
+        }
     }
 
     useEffect(()=>{
@@ -118,6 +151,29 @@ function Messages(){
         }
 
     }
+
+    const [allFiles, setAllFiles] = useState([]);
+    useEffect(()=>{
+        const createURL = (fileData, fileType) =>{
+            const processedData = new Uint8Array(fileData.data);
+            const blob = new Blob([processedData], { type: fileType });
+            
+            return URL.createObjectURL(blob);
+        }
+        allMessages.forEach((msg)=>{
+            if (msg.files && msg.files.length > 0) {
+                msg.files.forEach(file => {
+                    const fileURL = createURL(file.filedata, file.filetype);
+                    console.log('File URL:', fileURL);
+                    setAllFiles(prevFiles => ({
+                        ...prevFiles,
+                        [file.filename]: fileURL
+                    }));
+                });
+            }
+        })
+
+    },[allMessages]);
 
     const showPreview =(text, num)=>{
         const words = text.split(' ');
@@ -208,11 +264,38 @@ function Messages(){
                                     <img src={loggedInUserDetails.avatar} style={{height:'1.5vw'}}></img>   
                                 </Nav.Link >
                                 <div className='message sfont' >
-                                    {message.message}
+                                    <Stack direction='vertical'>
+                                        <div>{message.message}</div>
+                                        {message.files.map(file => (
+                                            <Stack direction="horizontal" gap={1} className="post-file-card" key={file.filename}>
+                                            <a   href={allFiles[file.filename]} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                style={{ fontSize: 'small', textDecoration: 'none' }}>
+                                                {file.filename}
+                                            </a>
+                                            </Stack>
+                                        ))}
+                                    </Stack>
+                                   
                                 </div>
                             </div>)
                     ))}
                </div>
+               <Stack direction="horizontal" gap={4}>
+                    {gotFile && inputMsgFiles.map(file =>(
+                            <Stack direction="horizontal" gap={1}>
+                            <span class="material-symbols-outlined" 
+                            style={{ fontSize: 'small', cursor:'pointer'}} 
+                            onClick={()=>{handleMsgFileDelete(file.name)}}>close</span>
+                                <p
+                                    style={{ fontSize: 'small', color:'#2F3C7E', marginBottom:'0.2vh' }}>
+                                    {file.name}
+                                </p>
+                            </Stack>
+                        ))}
+                    
+                </Stack>
                <div className='textarea-block'>
                     <input 
                         type='file' 
