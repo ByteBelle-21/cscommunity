@@ -70,7 +70,7 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
             return;
         }
         closeSignUpModal();
-        const signupAvatar = '/profile.png'
+        const signupAvatar = '/Avatars.png'
         const data = {
             signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skills: skillsArray, signupAvatar
         }
