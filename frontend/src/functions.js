@@ -87,7 +87,6 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
         }
     }
     
-    
     // Log in functionality
     const [loginUsername, setLoginUsername] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
@@ -295,14 +294,13 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
         }
     },[selectedUserDetails]);
 
-
     const showPreview =(text, num)=>{
         const words = text.split(' ');
         return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
-
     const navigateTo = useNavigate();
+
     return(
         <Offcanvas 
         show={showOffCanvas} 
@@ -433,6 +431,7 @@ export async function getAllChannels(setAllChannels){
         console.error("Catched axios error: ",error);
     }
 }
+
 
 export async function handleChannelCreation(setFetchAgain,fetchAgain, data ){ 
     try {

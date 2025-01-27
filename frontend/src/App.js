@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
 
 function App() {
+    // functionality to authenticate user
     const [hasAuthentication, setHasAuthentication] = useState(false);
     const [authenticatedUser, setAuthenticatedUser] = useState(()=>{
         const user = sessionStorage.getItem('auth_user')
@@ -18,7 +19,6 @@ function App() {
         }
         return '';
     })
-
 
     useEffect(() => {
         if(authenticatedUser){

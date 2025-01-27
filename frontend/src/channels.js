@@ -12,7 +12,6 @@ import Stack from 'react-bootstrap/Stack';
 import { useNavigate,useLocation } from 'react-router-dom';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import Popover from 'react-bootstrap/Popover';
 import { useRef } from 'react';
 import Picker from '@emoji-mart/react';
@@ -22,60 +21,12 @@ import { useParams } from 'react-router-dom';
 import { getUserDeatils, getAllChannels, handleChannelCreation,getActiveUsers,SelectedUserDetailsCanvas } from './functions.js';
 
 function Channels(){
+    // to navigate between pages
     const navigateTo = useNavigate();
     const location = useLocation();
     const {channelsName} =  useParams();
 
-    const urlParams = new URLSearchParams(location.search);
-    const postId = urlParams.get('postId');
-
-
-    const[postComments, setPostComments] = useState(0);
-    useEffect(()=>{
-        if(postId){
-            const searchedPost = document.getElementById(postId);
-            if(searchedPost){
-                setPostComments(postId);
-                searchedPost.scrollIntoView({behavior:'smooth'});
-            }
-        }
-    },[])
-
-
-
-
-    const[showChannelModal, setShowChannnelModal] = useState(false);
-    const openChannelModal = ()=>{
-        setShowChannnelModal(true);
-    }
-
-    const closeChannelModal = ()=>{
-        setShowChannnelModal(false);
-    }
-
-
-    const[showPostModal, setShowPostModal] = useState(false);
-    const openPostModal = ()=>{
-        setShowPostModal(true);
-    }
-
-    const closePostModal = ()=>{
-        setShowPostModal(false);
-        setInputPostTitle('');
-        setInputPost('');
-        setInputFiles([]);
-    }
-
-    const[showOffCanvas, setShowOffCanvas] = useState(false);
-    const openOffCanvas = ()=>{
-        setShowOffCanvas(true);
-    }
-
-    const closeOffCanvas = ()=>{
-        setShowOffCanvas(false);
-    }
-
-
+    // get current user details  and all posts
     const [userDetails, setUserDetails] = useState([]);
     useEffect(()=>{
         getUserDeatils(setUserDetails); 
@@ -88,6 +39,32 @@ function Channels(){
     },[]);
 
 
+    // for search functionality- to scroll to required post
+    const urlParams = new URLSearchParams(location.search);
+    const postId = urlParams.get('postId');
+
+    const[postComments, setPostComments] = useState(0);
+    useEffect(()=>{
+        if(postId){
+            const searchedPost = document.getElementById(postId);
+            if(searchedPost){
+                setPostComments(postId);
+                searchedPost.scrollIntoView({behavior:'smooth'});
+            }
+        }
+    },[])
+
+    
+    //functionality to create new channel
+    const[showChannelModal, setShowChannnelModal] = useState(false);
+    const openChannelModal = ()=>{
+        setShowChannnelModal(true);
+    }
+
+    const closeChannelModal = ()=>{
+        setShowChannnelModal(false);
+    }
+
     const [fetchAgain, setFetchAgain] = useState(false);
     const [channel, setChannel] = useState('');
     const createChannel = ()=>{
@@ -99,22 +76,20 @@ function Channels(){
         setChannel('');
     }
 
+    // functionality to create new post
+    const[showPostModal, setShowPostModal] = useState(false);
+    const openPostModal = ()=>{
+        setShowPostModal(true);
+    }
 
-    const [allChannels, setAllChannels] = useState([]);
-    useEffect(()=>{
-        getAllChannels(setAllChannels);  
-    },[fetchAgain]);
+    const closePostModal = ()=>{
+        setShowPostModal(false);
+        setInputPostTitle('');
+        setInputPost('');
+        setInputFiles([]);
+    }
 
-
-    const [activeMembers, setActiveMembers] = useState([]);
-    useEffect(()=>{
-        getActiveUsers(setActiveMembers);  
-    },[channelsName]);
-
-
-   
     const[postReply, setPostReply] = useState(0);
-    
     const [replyTo, setReplyTo] = useState(null);
     const [replyToPost, setReplyToPost] = useState('');
 
@@ -141,7 +116,6 @@ function Channels(){
         setInputPost(e.target.value);
     }
 
-
     const fileRef = useRef(null);
     const [inputFiles, setInputFiles] = useState([]);
     const [gotFile, setGotFiles] = useState(false);
@@ -161,7 +135,6 @@ function Channels(){
         }
     }
 
-
     const textAreaRef = useRef(null);
     const handleEmojiSelect = (emoji) =>{
           const cursor = textAreaRef.current.selectionStart;
@@ -175,7 +148,7 @@ function Channels(){
             <Picker data={data} onEmojiSelect={handleEmojiSelect} />
         </Popover>
     );
-    
+
     const handleSendPost =async(seeComments)=>{
         if(seeComments !== 0) {
             setPostComments(seeComments);
@@ -212,8 +185,6 @@ function Channels(){
         }
       
     }
-    
-
 
     const handleUploadFile = async (post) =>{
         if (inputFiles.length === 0){
@@ -238,7 +209,9 @@ function Channels(){
             console.error("Error while uploading files:", error);
         }
     }
+    
 
+    // functionality to retrieve all posts
     const[allPosts, setAllPosts] = useState([])
     const fetchAllPosts= async()=>{
         const channel_name = channelsName;
@@ -259,7 +232,6 @@ function Channels(){
         } catch (error) {
             console.error("Catched axios error: ",error);
         }
-
     }
 
     const [allFiles, setAllFiles] = useState([]);
@@ -282,16 +254,37 @@ function Channels(){
                 });
             }
         })
-
     },[allPosts]);
 
+    
+    //functionality to display the offcanvas to show other user's derails
+    const[showOffCanvas, setShowOffCanvas] = useState(false);
+    const openOffCanvas = ()=>{
+        setShowOffCanvas(true);
+    }
+
+    const closeOffCanvas = ()=>{
+        setShowOffCanvas(false);
+    }
+
+    // get all channels 
+    const [allChannels, setAllChannels] = useState([]);
+    useEffect(()=>{
+        getAllChannels(setAllChannels);  
+    },[fetchAgain]);
+
+    // get all active memebers
+    const [activeMembers, setActiveMembers] = useState([]);
+    useEffect(()=>{
+        getActiveUsers(setActiveMembers);  
+    },[channelsName]);
 
     useEffect(()=>{
         fetchAllPosts();  
         setPostReply(0);
     },[channelsName]);
 
-
+    // navigate to direct messages 
     const handleMessage=(selectedUser)=>{
         navigateTo(`/messages/${selectedUser}`);
     }
@@ -521,7 +514,6 @@ function Channels(){
                                                         </p>
                                                     </Stack>
                                                 ))}
-                                           
                                             </Stack>
                                             <FloatingLabel controlId="floatingTextarea2" label={`Reply to user ${post.username} for post "${replyToPost}"`}>
                                             <Form.Control
@@ -567,7 +559,6 @@ function Channels(){
                                             </>
                                         : <></>}
                                         </ListGroup.Item>
-                                            
                                         {(()=>{
                                             i = i+1;
                                             const nestedPosts = [];
@@ -741,10 +732,7 @@ function Channels(){
                             </ListGroup.Item> 
                         ))}
                     </ListGroup>
-
                 </div>
-               
-                
            </div>
         </div>
     );

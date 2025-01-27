@@ -986,6 +986,7 @@ app.post('/message', (request, response) => {
                                     response.status(500).send("Server error during uploading the message");
                                     return;
                                 }
+                                afterMsgUpload(loggedIn_user_Id,recieverId);
                                 response.status(200).json({ msgId: result.insertId });         
                             });
 
@@ -997,6 +998,22 @@ app.post('/message', (request, response) => {
     });   
 });
 
+function afterMsgUpload(sender,reciever){
+    database.query(` UPDATE userTable SET totalConnections = IFNULL(totalConnections, 0) + 1 WHERE id = ?`,[sender],(error,result)=>{
+        if(error){
+            console.error("Server error during updating total connections for sender");
+            return;
+        }
+        console.log("Successfully updated total connections for sender");
+    });
+    database.query(` UPDATE userTable SET totalConnections = IFNULL(totalConnections, 0) + 1 WHERE id = ?`,[reciever],(error,result)=>{
+        if(error){
+            console.error("Server error during updating total connections for sender");
+            return;
+        }
+        console.log("Successfully updated total connections for sender");
+    });
+}
 
 
 app.put('/saveChanges', (request, response) => {

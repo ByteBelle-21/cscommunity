@@ -1,22 +1,14 @@
 import './Homepage.css';
 import './Uniformstyle.css';
 import Stack from 'react-bootstrap/Stack';
-import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/Container';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import { useState, useEffect } from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Carousel from 'react-bootstrap/Carousel';
-import { useRef } from 'react';
-import Alert from 'react-bootstrap/Alert';
+import { useState } from 'react';
 import {SignInModal} from './functions.js';
 
 
 function Homepage({authentication}){
+
+    // to open the signin modal defined in other file
     const [signupShow, setSignupShow] = useState(false);
     const openSignUp=()=>{
         setSignupShow(true);

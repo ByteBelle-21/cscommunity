@@ -22,8 +22,12 @@ import axios from 'axios';
 import { useNavigate,useLocation } from 'react-router-dom';
 
 function Messages(){
+
+    // get selected user
     const {selectedUser} =  useParams();
     const navigateTo = useNavigate();
+
+    // fetch selected user's details 
     const [connectedUserDetails, setConnectedUserDetails] = useState(null);
     const [loggedInUserDetails, setLoggedInUserDetails] = useState([]);
     useEffect(()=>{
@@ -31,14 +35,14 @@ function Messages(){
         getUserDeatils(setLoggedInUserDetails);
     },[]);
 
-
+    // fetch other connectedd users
     const [connectedUsers, setConnectedUsers] = useState([]);
     useEffect(()=>{
         fetchConnectedUsers(setConnectedUsers);  
     },[]);
 
 
-
+    // functionality to add new message
     const fileMessageRef = useRef(null);
     const [inputMsgFiles, setInputMsgFiles] = useState([]);
     const [gotFile, setGotFiles] = useState(false);
@@ -56,7 +60,6 @@ function Messages(){
             setGotFiles(false);
         }
     }
-
 
     const msgtextAreaRef = useRef(null);
     const handleMsgEmojiSelect = (emoji) =>{
@@ -128,6 +131,8 @@ function Messages(){
         }
     }
 
+
+    // functionality to fetch all messages 
     useEffect(()=>{
         fetchAllMessages();
     },[])
@@ -175,16 +180,15 @@ function Messages(){
 
     },[allMessages]);
 
+    // functionality for search feature
     const showPreview =(text, num)=>{
         const words = text.split(' ');
         return words.slice(0, num).join(' ')+" . . . . . . . .";
     }
 
-
     const handleMessage=(selectedUser)=>{
         navigateTo(`/messages/${selectedUser}`);
     }
-
 
     const [mainPost, setMainPost] = useState(null); 
     const goToPost = async (postId,channelName) =>{
@@ -194,7 +198,7 @@ function Messages(){
         }
     }
     
-   
+    // fetch all social media of selected user
     const[ userSocialMedia, setUserSocialMedia] = useState([]);
     useEffect(()=>{
         if(connectedUserDetails != null){
@@ -202,8 +206,6 @@ function Messages(){
         }
     },[connectedUserDetails]);
    
-
-
 
     return(
         <div className="messages">
@@ -233,7 +235,6 @@ function Messages(){
                     </ListGroup.Item>
                 }
                 </ListGroup>
-
             </div>
             <div className='message-middle-block'>
                 {connectedUserDetails ? 
@@ -294,7 +295,6 @@ function Messages(){
                                 </p>
                             </Stack>
                         ))}
-                    
                 </Stack>
                <div className='textarea-block'>
                     <input 

@@ -10,25 +10,17 @@ import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import { getMainPost, fetchSelectedUserDetails,getActiveUsers,SelectedUserDetailsCanvas,fetchUserMedia } from './functions.js';
+import { getMainPost,getActiveUsers,SelectedUserDetailsCanvas,fetchUserMedia } from './functions.js';
 import { useState, useEffect } from 'react';
 import Nav from 'react-bootstrap/Nav';
-import { useNavigate,useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Alert from 'react-bootstrap/Alert';
-import Container from 'react-bootstrap/Container';
+
 function Profile(){
+
     const navigateTo = useNavigate();
 
-    const[showDeleteProfileModal, setShowDeleteProfileModal] = useState(false);
-    const openDeleteProfileModal = ()=>{
-        setShowDeleteProfileModal(true);
-    }
-
-    const closeDeleteProfileModal = ()=>{
-        setShowDeleteProfileModal(false);
-    }
-
+    // to open the modal for media addition
     const[showAddMediaModal, setShowAddMediaModal] = useState(false);
     const openAddMediaModal = ()=>{
         setShowAddMediaModal(true);
@@ -40,13 +32,14 @@ function Profile(){
         setMediaLink("");
     }
 
-
+    // get all actiive memebers
     const [activeMembers, setActiveMembers] = useState([]);
     useEffect(()=>{
         getActiveUsers(setActiveMembers);  
     },[]);
 
 
+    // functionality to show user's profile
     const[showOffCanvas, setShowOffCanvas] = useState(false);
     const openOffCanvas = ()=>{
         setShowOffCanvas(true);
@@ -56,6 +49,7 @@ function Profile(){
         setShowOffCanvas(false);
     }
 
+    // navigate to oter pages 
     const handleMessage=(selectedUser)=>{
         navigateTo(`/messages/${selectedUser}`);
     }
@@ -64,6 +58,7 @@ function Profile(){
         navigateTo(`/channels/${channel}`);
     }
 
+    // fetch popular channels 
     const [popularChannels, setPopularChannels] = useState([]);
     useEffect(()=>{
         const fetchChannels= async()=>{
@@ -85,6 +80,7 @@ function Profile(){
     },[]);
 
 
+    // fetch current user details 
     const [id, setId] = useState();
     const [userDetails, setUserDetails] = useState([]);
     const [name, setName] = useState('');
@@ -120,6 +116,7 @@ function Profile(){
     }
 
 
+    // functionality to edit profile 
     const [isEditMode, setEditMode] = useState(false);
     const handleEditButtonClick = ()=>{
         setEditMode(!isEditMode);
@@ -155,6 +152,7 @@ function Profile(){
     }
 
 
+    // functionality for searching post
     const [mainPost, setMainPost] = useState(null); 
     const goToPost = async (postId,channelName) =>{
         getMainPost(postId,setMainPost);
@@ -164,6 +162,7 @@ function Profile(){
     }
 
 
+    // fetch user's media accounts 
    const[ userSocialMedia, setUserSocialMedia] = useState([]);
    const [socialMedialLimit, setSocialMediaLimit] = useState(false);
     useEffect(()=>{
@@ -176,11 +175,9 @@ function Profile(){
                 setSocialMediaLimit(false);
             }
         }
-    },[userDetails]);
+    },[userDetails, userSocialMedia]);
 
-  
-   
-
+    // handle media addtion and deletion
     const handleMediaDeletion = async (mediaID, selectedMediaType) => {
         try {
             const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/removeSocialMedia',{
@@ -219,6 +216,8 @@ function Profile(){
         }
     }
 
+
+    // functionality to change profile picture
     const [avatarShow, setAvatarShow] = useState(false);
     const openAvatar=()=>{
         setAvatarShow(true);
@@ -232,7 +231,6 @@ function Profile(){
         setSelectedAvatar(index);
         setAvatar(`/Group ${imgNum}.png`);
     }
-
 
     return(
         <div className="profile">
@@ -340,38 +338,6 @@ function Profile(){
                         <span class="material-symbols-outlined " style={{marginRight:'1vh'}}> edit </span>
                         Edit Profile
                     </Button>}
-                    <Button className="delete-profile-btn" onClick={openDeleteProfileModal}>
-                        <span class="material-symbols-outlined " style={{marginRight:'1vh'}}> edit </span>
-                        Delete Profile
-                    </Button>
-                    <Modal 
-                        size="md" 
-                        show={showDeleteProfileModal} 
-                        onHide={closeDeleteProfileModal}
-                        centered>
-                        <Modal.Body>
-                            <p className='mfont create-channel-title' >
-                                <span 
-                                    class="material-symbols-outlined" 
-                                    style={{fontSize:'1.5vw', 
-                                            marginRight:'0.5vh',
-                                            color:'red'}}>
-                                    error
-                                </span>
-                                Delete Your Profile ?
-                            </p>
-                            <p>Remeber, This action <span style={{color:'red', fontWeight:'bold'}}> CANNOT </span> 
-                                be undone. You will loose your data, posts,connections, everything !</p>
-                        </Modal.Body>
-                        <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
-                            <Button className='cancle-channel-btn' onClick={closeDeleteProfileModal}>
-                                Cancle
-                            </Button>
-                            <Button className='delete-modal-btn' onClick={closeDeleteProfileModal}>
-                                Delete
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
                     <div className='social-media-details'>
                         <Stack direction='horizontal' gap={1} style={{marginTop:'4vh'}}>
                             <Stack direction='vertical' style={{alignItems:'center'}}>
@@ -397,7 +363,7 @@ function Profile(){
                                         } 
                                         
                                     </div>
-                                    {socialMedialLimit ? <p style={{color:'red', fontSize:'small'}}>You can link upto 3 socila media accounts</p> :<></>}
+                                    {socialMedialLimit ? <p style={{color:'red', fontSize:'small'}}>You can link upto 3 social media accounts</p> :<></>}
                                     <hr style={{marginBottom:'0'}}></hr>
                                 </ListGroup.Item>
                                 <Modal 

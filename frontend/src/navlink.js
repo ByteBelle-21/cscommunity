@@ -3,38 +3,32 @@ import './Uniformstyle.css';
 import './profile.css';
 import './channels.css';
 import Button from 'react-bootstrap/Button';
-import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
 import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import Stack from 'react-bootstrap/Stack';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
 import {SignInModal, fetchConnectedUsers,getUserDeatils,getMainPost} from './functions.js'
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
 function Navlink({authentication,removeAuthentication}){
 
-    const [userDetails, setUserDetails] = useState([]);
-    useEffect(()=>{
-        getUserDeatils(setUserDetails);    
-    },[]);
-
-
+    // functionality to navigate between pages 
     const navigateTo = useNavigate();
-
     const location = useLocation();
     const homepage = location.pathname === '/';
-    const channelsPage = location.pathname === '/channels';
-    const profilePage = location.pathname === '/profile';
-    const messagePage = location.pathname === '/messages::selectedUser';
 
+    // functionality to get connected users
+    const[connectedUsers, setConnectedUsers] = useState(null);
+    useEffect(()=>{
+        fetchConnectedUsers(setConnectedUsers);
+    })
+
+
+    // functionality for search modal
     const[showSearchModal, setShowSearchModal] = useState(false);
     const openSearchModal = ()=>{
         setShowSearchModal(true);
@@ -47,45 +41,6 @@ function Navlink({authentication,removeAuthentication}){
         setSearchChannelResult([]);
         setSearchPostResult([]);
         setSearchPeopleResult([]);
-    }
-
-
-    const[showNavlinkSignInModal, setShowNavlinkSignInModal] = useState(false);
-    const openNavlinkSignInModal = ()=>{
-        setShowNavlinkSignInModal(true);
-    }
-
-    const closeNavlinkSignInModal = ()=>{
-        setShowNavlinkSignInModal(false);
-    }
-
-
-    const goToChannels = () =>{ 
-            navigateTo('/channels/homepage');   
-    }
-
-
-    const[connectedUsers, setConnectedUsers] = useState(null);
-    useEffect(()=>{
-        fetchConnectedUsers(setConnectedUsers);
-    })
-
-    
-   
-    
-    const goToMessages = () =>{
-        const selectedUser = connectedUsers[connectedUsers.length -1].username;
-        navigateTo(`/messages/${selectedUser}`);
-    }
-
-    const goToProfile = () =>{
-        navigateTo('/profile');  
-    }
-
-
-    const goToChannel = (channel) =>{
-        closeSearchModal();
-        navigateTo(`/channels/${channel}`);
     }
 
     const [searchText, setSearchText] = useState('');
@@ -104,7 +59,6 @@ function Navlink({authentication,removeAuthentication}){
             setSearchText('');
         }
     }, [searchSelect]);
-
 
     useEffect(()=>{
         const handleSearch= async()=>{
@@ -155,7 +109,6 @@ function Navlink({authentication,removeAuthentication}){
         handleSearch();  
     },[searchText]);
 
-
     const [mainPost, setMainPost] = useState(null); 
     const [channelName, setChannelName] = useState(null); 
     const goToPost = async (postId,channelName) =>{
@@ -173,6 +126,37 @@ function Navlink({authentication,removeAuthentication}){
     const showPreview =(text, num)=>{
         const words = text.split(' ');
         return words.slice(0, num).join(' ')+" . . . . . . . .";
+    }
+
+
+    // functionality for sign in modal
+    const[showNavlinkSignInModal, setShowNavlinkSignInModal] = useState(false);
+    const openNavlinkSignInModal = ()=>{
+        setShowNavlinkSignInModal(true);
+    }
+
+    const closeNavlinkSignInModal = ()=>{
+        setShowNavlinkSignInModal(false);
+    }
+
+
+    // functionality to naviagte after clicking on menu
+    const goToChannels = () =>{ 
+            navigateTo('/channels/homepage');   
+    }
+
+    const goToMessages = () =>{
+        const selectedUser = connectedUsers[connectedUsers.length -1].username;
+        navigateTo(`/messages/${selectedUser}`);
+    }
+
+    const goToProfile = () =>{
+        navigateTo('/profile');  
+    }
+
+    const goToChannel = (channel) =>{
+        closeSearchModal();
+        navigateTo(`/channels/${channel}`);
     }
 
     return(
@@ -289,8 +273,7 @@ function Navlink({authentication,removeAuthentication}){
                                             </>
                                         ))   
                                         :  ""
-                                    } 
-                                    
+                                    }   
                             </div>
                         </Modal.Body>s
                         <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
