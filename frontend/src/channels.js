@@ -259,7 +259,9 @@ function Channels(){
     
     //functionality to display the offcanvas to show other user's derails
     const[showOffCanvas, setShowOffCanvas] = useState(false);
-    const openOffCanvas = ()=>{
+    const [selectedUser, setSelectedUser] = useState(null);
+    const openOffCanvas = (user)=>{
+        setSelectedUser(user);
         setShowOffCanvas(true);
     }
 
@@ -718,8 +720,8 @@ function Channels(){
                                 </div>
                                 <div className="ms-2 me-auto">
                                 <div className="fw-bold">{member.name}</div>
-                                    <Link className='view-link' onClick={openOffCanvas}>View Profile</Link>
-                                    <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={member.username} />
+                                    <Nav.Link className='view-link' onClick={()=>{openOffCanvas(member.username)}}>{member.username}</Nav.Link>
+                                    {selectedUser === member.username && <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={selectedUser} /> }
                                 </div>
                                 <Nav.Link onClick={() => handleMessage(member.username)} >
                                     <span 
