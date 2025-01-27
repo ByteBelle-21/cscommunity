@@ -188,7 +188,7 @@ function Profile(){
             });
             if (response.status === 200) {
                 console.log("Successfully deleted current user social media");
-                fetchUserMedia();
+                fetchUserMedia(userDetails.id, setUserSocialMedia);
             } 
             else if(response.status === 401){
                 console.log(response.message)
@@ -209,7 +209,7 @@ function Profile(){
                 setMediaType("");
                 setMediaLink("");
                 closeAddMediaModal();
-                fetchUserMedia();
+                fetchUserMedia(userDetails.id, setUserSocialMedia);
             } 
             else if(response.status === 401){
                 console.log(response.message)
