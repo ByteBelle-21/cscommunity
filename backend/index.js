@@ -64,7 +64,6 @@ function useDatabase(){
 
 
 function createUserTable(){
-    //skills JSON,
     database.query(`CREATE TABLE IF NOT EXISTS userTable 
                         (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                         username VARCHAR(50) NOT NULL, 
@@ -167,9 +166,6 @@ function createMessagesTable(){
                         })
 }
 
-
-
- 
  
 function addForeignkeys(){
     database.query(`ALTER TABLE postsTable 
@@ -226,115 +222,6 @@ function addForeignkeys(){
 
 }
 
-
-
-
-
-
-
-
-/**
-function addForeignkeys(){
-    database.query(`ALTER TABLE postsTable 
-        DROP FOREIGN KEY fk_replyTo_posttable`,(error,result)=>{
-            if (error){
-                console.error('Error while deleting foreign key fk_replyTo_posttable from table postsTable: ',error);
-                return;
-            }
-            else{
-                database.query(`ALTER TABLE postsTable
-                DROP FOREIGN KEY fk_username_posttable`,(error,result)=>{
-                    if (error){
-                        console.error('Error while deleting foreign key fk_username_posttable from table postsTable: ',error);
-                        return;
-                    }
-                    else{
-                        database.query(`ALTER TABLE postsTable
-                        DROP FOREIGN KEY fk_channel_posttable`,(error,result)=>{
-                            if (error){
-                                console.error('Error while deleting foreign key fk_channel_posttable from table postsTable: ',error);
-                                return;
-                            }
-                            else{
-                                database.query(`ALTER TABLE postsTable 
-                                ADD CONSTRAINT fk_replyTo_posttable
-                                FOREIGN KEY (replyTo) REFERENCES postsTable(id) ON DELETE SET NULL,
-                                ADD CONSTRAINT fk_username_posttable
-                                FOREIGN KEY (username) REFERENCES userTable(id) ON DELETE SET NULL,
-                                ADD CONSTRAINT fk_channel_posttable
-                                FOREIGN KEY (channel) REFERENCES channelsTable(id) ON DELETE SET NULL`,(error, result)=>{
-                                    if (error){
-                                        console.error('Error while adding foreign key to table postsTable: ',error);
-                                        return;
-                                    }
-                                    console.log('Successfully added foreign key to table postsTable');
-                                    
-                                });
-
-                            }
-                        })
-
-                    }
-                })
-            }
-    })
-
-    
-    database.query(`ALTER TABLE channelsTable 
-                    DROP FOREIGN KEY fk_username_channelstable`,(error,result)=>{
-                        if (error){
-                            console.error('Error while deleting foreign key fk_username_channelstable from table postsTable: ',error);
-                            return;
-                        }
-                        else{
-                            database.query(`ALTER TABLE channelsTable 
-                                            ADD CONSTRAINT fk_username_channelstable
-                                            FOREIGN KEY (username) REFERENCES userTable(id) ON DELETE SET NULL`,(error, result)=>{
-                                                if (error){
-                                                    console.error('Error while adding foreign key to table channelsTable: ',error);
-                                                    return;
-                                                }
-                                                console.log('Successfully added foreign key to table channelsTable');
-                                                
-                                            });
-
-                        }
-    });
-
-    database.query(`ALTER TABLE messagesTable 
-                    DROP FOREIGN KEY fk_sender_messagestable`,(error,result)=>{
-                        if (error){
-                            console.error('Error while deleting foreign key fk_sender_messagestable from table messagesTable: ',error);
-                            return;
-                        }
-                        else{
-                            database.query(`ALTER TABLE messagesTable 
-                            DROP FOREIGN KEY fk_reciever_messagestable`,(error,result)=>{
-                                if (error){
-                                    console.error('Error while deleting foreign key fk_reciever_messagestable from table messagesTable: ',error);
-                                    return;
-                                }
-                                else{
-                                    database.query(`ALTER TABLE messagesTable 
-                                            ADD CONSTRAINT fk_sender_messagestable
-                                            FOREIGN KEY (sender) REFERENCES userTable(id) ON DELETE SET NULL, 
-                                            ADD CONSTRAINT fk_reciever_messagestable
-                                            FOREIGN KEY (reciever) REFERENCES userTable(id) ON DELETE SET NULL`,(error, result)=>{
-                                                if (error){
-                                                    console.error('Error while adding foreign key to table messagesTable: ',error);
-                                                    return;
-                                                }
-                                                console.log('Successfully added foreign key to table messagesTable');
-                                                
-                                            })
-
-                                }
-                            })
-                        }
-                    });    
-}
-
-*/
 
 app.post('/signup', (request, response) => {
     const input_username = request.body.signupUsername;
@@ -425,7 +312,6 @@ app.post('/login', (request, response) => {
 
 
 
-
 app.get('/user',(request,response)=>{
     const user  = request.query.user;
     database.query(`SELECT * FROM userTable WHERE username=? `,[user],(error, result)=>{
@@ -475,8 +361,6 @@ app.post('/addSocialMedia',(request,response)=>{
     response.status(200).json(result);
 })
 })
-
-
 
 
 app.post('/createchannel', (request, response) => {
@@ -844,21 +728,6 @@ app.get('/allPosts',(request,response)=>{
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.get('/selected-user',(request,response)=>{
     const user  = request.query.user;
     database.query(`SELECT * FROM userTable WHERE username=? `,[user],(error, userResult)=>{
@@ -883,9 +752,6 @@ app.get('/selected-user',(request,response)=>{
         }
     })
 })
-
-
-
 
 
 app.get('/allMessages',(request,response)=>{
@@ -997,6 +863,8 @@ app.post('/message', (request, response) => {
         }
     });   
 });
+
+
 
 function afterMsgUpload(sender,reciever){
     database.query(` UPDATE userTable SET totalConnections = IFNULL(totalConnections, 0) + 1 WHERE id = ?`,[sender],(error,result)=>{
@@ -1146,11 +1014,6 @@ app.get('/mainPost', async (request, response) => {
         response.status(500).send("Server error during main post");
     }
 });
-
-
-
-
-
 
 
 app.listen(PORT, () => {

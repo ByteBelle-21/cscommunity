@@ -16,6 +16,12 @@ import axios from 'axios';
 
 function Navlink({authentication,removeAuthentication}){
 
+    // get current user details 
+    const [userDetails, setUserDetails] = useState([]);
+    useEffect(()=>{
+        getUserDeatils(setUserDetails);    
+    },[]);
+
     // functionality to navigate between pages 
     const navigateTo = useNavigate();
     const location = useLocation();
@@ -159,6 +165,18 @@ function Navlink({authentication,removeAuthentication}){
         navigateTo(`/channels/${channel}`);
     }
 
+    // functionality to directly connect searched person
+    const openOffCanvas = (username)=>{
+        closeSearchModal();
+        if(username !== userDetails.username){
+            navigateTo(`/messages/${username}`);
+        }
+        else{
+            navigateTo('/profile');  
+        }
+       
+    }
+
     return(
         <Nav className='navlink' defaultActiveKey="/home">
             {homepage ? (
@@ -275,7 +293,7 @@ function Navlink({authentication,removeAuthentication}){
                                         :  ""
                                     }   
                             </div>
-                        </Modal.Body>s
+                        </Modal.Body>
                         <Modal.Footer style={{border:'none', backgroundColor:'#f0f5fa'}}>
                             <Button className='cancle-channel-btn' onClick={closeSearchModal}>
                                 Cancle
