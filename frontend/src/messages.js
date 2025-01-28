@@ -33,7 +33,7 @@ function Messages(){
     useEffect(()=>{
         fetchSelectedUserDetails(setConnectedUserDetails,selectedUser);
         getUserDeatils(setLoggedInUserDetails);
-    },[]);
+    },[selectedUser]);
 
     // fetch other connectedd users
     const [connectedUsers, setConnectedUsers] = useState([]);
@@ -135,7 +135,7 @@ function Messages(){
     // functionality to fetch all messages 
     useEffect(()=>{
         fetchAllMessages();
-    },[])
+    },[selectedUser])
 
     const [allMessages, setAllMessages] = useState([]);
     const fetchAllMessages= async()=>{
@@ -226,7 +226,7 @@ function Messages(){
                             </div>
                             <div className="ms-2 me-auto">
                             <div className="fw-bold">{user.username}</div>
-                                <Link className='view-link' onClick={() => {handleMessage(user.username)}}>View conversations</Link>
+                                <Nav.Link className='view-link' onClick={() => {handleMessage(user.username)}}>View conversations</Nav.Link>
                             </div>
                         </ListGroup.Item>
                     
