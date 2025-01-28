@@ -306,7 +306,7 @@ function Navlink({authentication,removeAuthentication}){
                     <Nav.Item >
                         <Nav.Link onClick={()=>{goToChannels()}}> Channels</Nav.Link>
                     </Nav.Item>
-                    {connectedUsers  && connectedUsers.length > 0 ?
+                    {connectedUsers  && connectedUsers.length > 0 && connectedUsers[0].username != null ?
                         <Nav.Item>
                             <Nav.Link  onClick={goToMessages}> Messages</Nav.Link>
                         </Nav.Item> :<></> }

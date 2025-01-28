@@ -41,7 +41,9 @@ function Profile(){
 
     // functionality to show user's profile
     const[showOffCanvas, setShowOffCanvas] = useState(false);
-    const openOffCanvas = ()=>{
+    const [selectedUser, setSelectedUser] = useState(null);
+    const openOffCanvas = (user)=>{
+        setSelectedUser(user);
         setShowOffCanvas(true);
     }
 
@@ -251,8 +253,8 @@ function Profile(){
                             </div>
                             <div className="ms-2 me-auto">
                             <div className="fw-bold">{member.name}</div>
-                                <Link className='view-link' onClick={openOffCanvas}>View Profile</Link>
-                                <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={member.username} />
+                                <Nav.Link className='view-link' onClick={()=>{openOffCanvas(member.username)}}>View Profile</Nav.Link>
+                                {selectedUser === member.username && <SelectedUserDetailsCanvas showOffCanvas={showOffCanvas} closeOffCanvas={closeOffCanvas} otherUser={selectedUser} /> }
                             </div>
                             <Nav.Link onClick={() => handleMessage(member.username)} >
                                 <span 
