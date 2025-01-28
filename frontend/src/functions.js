@@ -75,7 +75,7 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
             signupUsername, signupEmail, signupPassword, signupName, signupOccupation, skills: skillsArray, signupAvatar
         }
         try {
-            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/signup', data);
+            const response = await axios.post(`${window.BASE_URL}/signup`, data);
             if (response.status === 200) {  
                 authenticate(true,signupUsername);
                 closeSignUpAlerts();
@@ -104,7 +104,7 @@ export function SignInModal({authenticate,showSignUpModal, closeSignUpModal}){
             loginUsername, loginPassword
         }
         try {
-            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/login', data);
+            const response = await axios.post(`${window.BASE_URL}/login`, data);
             if (response.status === 200) {
                 authenticate( true, loginUsername);
                 closeSignUpAlerts();
@@ -381,7 +381,7 @@ export function SelectedUserDetailsCanvas({showOffCanvas, closeOffCanvas, otherU
 
 export async function fetchSelectedUserDetails(setSelectedUserDetails,otherUser){
     try {
-        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+        const response = await axios.get(`${window.BASE_URL}/selected-user`,{
             params: {user: otherUser}
         });
         if (response.status === 200) {
@@ -401,7 +401,7 @@ export async function fetchSelectedUserDetails(setSelectedUserDetails,otherUser)
 export async function getUserDeatils(setUserDetails){
     const current_user = sessionStorage.getItem('auth_user');
     try {
-        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/user',{
+        const response = await axios.get(`${window.BASE_URL}/user`,{
             params: {user: current_user}
         });
         if (response.status === 200) {
@@ -419,7 +419,7 @@ export async function getUserDeatils(setUserDetails){
 
 export async function getAllChannels(setAllChannels){
     try {
-        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/allchannels');
+        const response = await axios.get(`${window.BASE_URL}/allchannels`);
         if (response.status === 200) {
             setAllChannels(response.data);
             console.log("Successfully retrieved all channels");
@@ -435,7 +435,7 @@ export async function getAllChannels(setAllChannels){
 
 export async function handleChannelCreation(setFetchAgain,fetchAgain, data ){ 
     try {
-        const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/createchannel', data);
+        const response = await axios.post(`${window.BASE_URL}/createchannel`, data);
         if (response.status === 200) {
             setFetchAgain(!fetchAgain);
             console.log("Successfully created channel")
@@ -453,7 +453,7 @@ export async function handleChannelCreation(setFetchAgain,fetchAgain, data ){
 export async function getActiveUsers(setActiveMembers){ 
     const current_user = sessionStorage.getItem('auth_user');
     try {
-        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/activeusers',{
+        const response = await axios.get(`${window.BASE_URL}/activeusers`,{
             params: {user: current_user}
         });
         if (response.status === 200) {
@@ -469,7 +469,7 @@ export async function getActiveUsers(setActiveMembers){
 export async function fetchConnectedUsers(setConnectedUsers){
     const current_user = sessionStorage.getItem('auth_user');
     try {
-        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/connectedusers',{ params: { user: current_user} });
+        const response = await axios.get(`${window.BASE_URL}/connectedusers`,{ params: { user: current_user} });
         if (response.status === 200) {
             setConnectedUsers(response.data);
             console.log(response.data);
@@ -487,7 +487,7 @@ export async function fetchConnectedUsers(setConnectedUsers){
 
 export async function getMainPost(postId,setMainPost){
     try {
-        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/mainPost',{ params: { post: postId} });
+        const response = await axios.get(`${window.BASE_URL}/mainPost`,{ params: { post: postId} });
         if (response.status === 200) {
             setMainPost(response.data);
             console.log("Successfully retrieved main post");
@@ -500,7 +500,7 @@ export async function getMainPost(postId,setMainPost){
 
 export async function fetchUserMedia(selectedPerson,setUserSocialMedia ){  
     try {
-        const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/socialMedia',{
+        const response = await axios.get(`${window.BASE_URL}/socialMedia`,{
             params: {user: selectedPerson}
         });
         if (response.status === 200) {

@@ -9,6 +9,8 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
 
 function App() {
+    window.BASE_URL = 'https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai';
+
     // functionality to authenticate user
     const [hasAuthentication, setHasAuthentication] = useState(false);
     const [authenticatedUser, setAuthenticatedUser] = useState(()=>{

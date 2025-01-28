@@ -65,7 +65,7 @@ function Profile(){
     useEffect(()=>{
         const fetchChannels= async()=>{
             try {
-                const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/popularchannels');
+                const response = await axios.get(`${window.BASE_URL}/popularchannels`);
                 if (response.status === 200) {
                     setPopularChannels(response.data);
                     console.log("Successfully retrieved popular channels");
@@ -95,7 +95,7 @@ function Profile(){
     const fetchUserDetails= async()=>{
         const current_user = sessionStorage.getItem('auth_user');
         try {
-            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/selected-user',{
+            const response = await axios.get(`${window.BASE_URL}/selected-user`,{
                 params: {user: current_user}
             });
             if (response.status === 200) {
@@ -139,7 +139,7 @@ function Profile(){
             userId,username, email, name, occupation, skills: skillsArray, avatar
         }
         try {
-            const response = await axios.put('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/saveChanges', data);
+            const response = await axios.put(`${window.BASE_URL}/saveChanges`, data);
             if (response.status === 200) {
                 handleEditButtonClick();
                 fetchUserDetails();
@@ -182,7 +182,7 @@ function Profile(){
     // handle media addtion and deletion
     const handleMediaDeletion = async (mediaID, selectedMediaType) => {
         try {
-            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/removeSocialMedia',{
+            const response = await axios.get(`${window.BASE_URL}/removeSocialMedia`,{
                 params: {user: mediaID , type : selectedMediaType}
             });
             if (response.status === 200) {
@@ -202,7 +202,7 @@ function Profile(){
     const handleMediaAddition = async () => {
         const data = {id ,mediaType,mediaLink}
         try {
-            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/addSocialMedia',data);
+            const response = await axios.post(`${window.BASE_URL}/addSocialMedia`,data);
             if (response.status === 200) {
                 console.log("Successfully added current user social media");
                 setMediaType("");

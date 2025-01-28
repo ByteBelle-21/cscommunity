@@ -73,7 +73,7 @@ function Navlink({authentication,removeAuthentication}){
                 return;
             }else if (searchSelect === '3'){
                 try {
-                    const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/searchChannel',
+                    const response = await axios.get(`${window.BASE_URL}/searchChannel`,
                         {params:{search_input :searchText}} );
                     if (response.status === 200) {
                         setSearchChannelResult(response.data);
@@ -88,7 +88,7 @@ function Navlink({authentication,removeAuthentication}){
                     return;
                 }
                 try {
-                    const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/searchPost',
+                    const response = await axios.get(`${window.BASE_URL}/searchPost`,
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPostResult(response.data);
@@ -100,7 +100,7 @@ function Navlink({authentication,removeAuthentication}){
             
             }else if (searchSelect === '2'){
                 try {
-                    const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/searchPeople',
+                    const response = await axios.get(`${window.BASE_URL}/searchPeople`,
                     {params:{search_input :searchText}});
                     if (response.status === 200) {
                         setSearchPeopleResult(response.data);

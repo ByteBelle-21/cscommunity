@@ -166,7 +166,7 @@ function Channels(){
         }
        
         try {
-            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/post', data);
+            const response = await axios.post(`${window.BASE_URL}/post`, data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
                 setPostReply(0)
@@ -196,7 +196,7 @@ function Channels(){
             formData.append('allFiles',file)
         });
         try {
-            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+            const response = await axios.post(`${window.BASE_URL}/fileupload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -219,7 +219,7 @@ function Channels(){
             return;
         }
         try {
-            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/allPosts',
+            const response = await axios.get(`${window.BASE_URL}/allPosts`,
             { params: {current_channel:channel_name}});
             if (response.status === 200) {
                 setAllPosts(response.data);

@@ -89,7 +89,7 @@ function Messages(){
             
         }
         try {
-            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/message', data);
+            const response = await axios.post(`${window.BASE_URL}/message`, data);
             if (response.status === 200) {
                 console.log("Uploaded post succesfully");
                 handleUploadFile(response.data.msgId); 
@@ -115,7 +115,7 @@ function Messages(){
             formData.append('allFiles',file)
         });
         try {
-            const response = await axios.post('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/fileupload', formData, {
+            const response = await axios.post(`${window.BASE_URL}/fileupload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -142,7 +142,7 @@ function Messages(){
         const you = sessionStorage.getItem('auth_user');
         const reciever = selectedUser;
         try {
-            const response = await axios.get('https://psutar9920-4000.theiaopenshiftnext-1-labs-prod-theiaopenshift-4-tor01.proxy.cognitiveclass.ai/allMessages',
+            const response = await axios.get(`${window.BASE_URL}/allMessages`,
             { params: {loggedIn :you , connected:reciever }});
             if (response.status === 200) {
                 setAllMessages(response.data);
